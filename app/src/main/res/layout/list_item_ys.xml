@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="?android:listSeparatorTextViewStyle"
+        android:background="#ffffff"
+        android:divider="#730808"
+        android:baselineAligned="true"
+        android:showDividers="middle|beginning|end"
+        android:layout_alignParentEnd="false">
+
+        <TextView
+            android:id="@+id/list_item_ys_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:padding="4dp"
+            tools:text="Name"/>
+
+        <TextView
+            android:id="@+id/list_item_ys_link_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:padding="4dp"
+            tools:text="Weblink"/>
+
+        <TextView
+            android:id="@+id/list_item_ys_address_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            tools:text="Address"/>
+
+        <TextView
+            android:id="@+id/list_item_ys_description_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            tools:text="Description"
+            android:layout_alignBottom="@+id/list_item_ys_link_text_view"/>
+
+    </TableLayout>
+
+
+</RelativeLayout>
