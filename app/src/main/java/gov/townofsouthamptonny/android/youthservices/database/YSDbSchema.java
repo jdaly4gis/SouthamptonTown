@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.UUID;
+
 /**
  * Created by JDaly on 2/24/2016.
  */
@@ -13,6 +15,7 @@ public class YSDbSchema {
 
 
         public static final class Cols {
+            public static final String UUID = "uuid";
             public static final String ID = "ID";
             public static final String LOC_ID = "loc_ID";
             public static final String F_NAME = "F_Name";

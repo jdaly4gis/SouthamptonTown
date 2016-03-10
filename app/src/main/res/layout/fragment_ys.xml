@@ -1,28 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
+    <!--com.esri.android.map.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        mapoptions.MapType="Streets">
+    </com.esri.android.map.MapView-->
+
     <TextView
+        android:id="@+id/list_item_ys_facility_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ys_title_label"
-        style="?android:listSeparatorTextViewStyle"
         />
 
     <TextView
+        android:id="@+id/list_item_ys_address_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ys_details_label"
-        style="?android:listSeparatorTextViewStyle"
+        android:text="Address"
         />
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <TextView
+        android:id="@+id/list_item_ys_fee_text_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:text="Fee"
+        />
+
+    <TextView
+        android:id="@+id/list_item_ys_contact_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contact"
+        />
+
+    <TextView
+        android:id="@+id/list_item_ys_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        />
 
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/list_item_ys_email_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        />
+
+    <TextView
+        android:id="@+id/list_item_ys_phone1_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone1"
+        />
+
+    <TextView
+        android:id="@+id/list_item_ys_weblink_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:text="Weblink"
+        />
+
+    <TextView
+        android:id="@+id/list_item_ys_category_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        />
+
+    <TextView
+        android:id="@+id/list_item_ys_description_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        />
+
 
 </LinearLayout>

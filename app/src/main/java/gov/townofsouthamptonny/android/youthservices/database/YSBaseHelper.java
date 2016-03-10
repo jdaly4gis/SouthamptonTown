@@ -21,8 +21,10 @@ public class YSBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db)  {
+
         db.execSQL("create table " + YSTable.NAME + "(" +
-                " _id integer primary key autoincrement, " +
+                        " _id integer primary key autoincrement, " +
+                        YSTable.Cols.UUID + ", " +
                         YSTable.Cols.ID + ", " +
                         YSTable.Cols.LOC_ID + ", " +
                         YSTable.Cols.F_NAME + ", " +
@@ -50,10 +52,11 @@ public class YSBaseHelper extends SQLiteOpenHelper {
                         YSTable.Cols.YCOORD + ", " +
                         YSTable.Cols.LAT + ", " +
                         YSTable.Cols.LON + ", " +
-                        YSTable.Cols.DESC + ", " +
-                        ")"
-        );
+                        YSTable.Cols.DESC +
+                        ")");
+
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)  {

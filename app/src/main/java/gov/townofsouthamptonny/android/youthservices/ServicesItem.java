@@ -1,10 +1,14 @@
 package gov.townofsouthamptonny.android.youthservices;
 
+import java.util.Date;
+import java.util.UUID;
+
 /**
  * Created by JDaly on 2/24/2016.
  */
 public class ServicesItem {
 
+    public  UUID mUUID;
     public String Phone1Ext;
     public String ID;
     public String Email;
@@ -33,6 +37,20 @@ public class ServicesItem {
     public String Phone2xt;
     public String Title;
     public String Phone1;
+
+
+    public ServicesItem() {
+        this(UUID.randomUUID());
+        mUUID= UUID.randomUUID();
+    }
+
+    public ServicesItem(UUID id)  {
+        mUUID = id;
+    }
+
+    public UUID getUUID() {
+        return mUUID;
+    }
 
     public String getPhone1Ext() {
         return Phone1Ext;
