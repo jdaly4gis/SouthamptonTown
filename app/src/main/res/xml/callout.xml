@@ -3,7 +3,7 @@
     <calloutViewStyle
         backgroundColor="#66FFCC"
         backgroundAlpha="255"
-        frameColor="#66FFCC"
+        frameColor="#000000"
         cornerCurve="10"
         anchor="5" />
 

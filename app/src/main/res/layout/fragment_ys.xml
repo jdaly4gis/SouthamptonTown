@@ -9,7 +9,7 @@
     <com.esri.android.map.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="400dp"
         mapoptions.MapType="Streets">
     </com.esri.android.map.MapView>
 
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Email"
-        />
+     />
 
     <TextView
         android:id="@+id/list_item_ys_phone1_text_view"
@@ -84,6 +84,5 @@
         android:layout_height="wrap_content"
         android:text="Description"
         />
-
 
 </LinearLayout>
