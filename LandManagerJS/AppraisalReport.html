@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="https://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />   
+    <meta name="apple-mobile-web-app-capable" content="yes" />  
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Comparative Market Analysis - Town of Southampton</title>
+    <link rel="stylesheet" href="css/claro.css"/>
+    
+    <script type="text/javascript" src="modules/SalesModule/arReport.js"></script>
+    <script  type="text/javascript"  >
+        dojoConfig = { parseOnLoad: true };
+//        var dojoConfig = {
+//            async: true
+//        };
+    </script>
+    <link rel="Stylesheet" href="css/arReport.css" />
+    <script type="text/javascript" src="javascript/api/ags_3_7.js"></script>
+    <script type="text/javascript">
+        dojo.require("dijit.dijit"); // optimize: load dijit layer
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dojo.parser");
+        dojo.require("dojo.currency");
+        dojo.require("dijit.TooltipDialog");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dojox.data.QueryReadStore");
+        dojo.require("dojox.image.LightboxNano");
+
+//        require(["dijit/dijit", "dojo/parser", "dojox/data/QueryReadStore", "dojox/image/LightboxNano"],
+//         function (dijit, parser, queryReadStore, lightBoxNano} {
+//            ready(function(){var query = window.location.search.split("&");
+//                parser.parse();
+//                var subject = query[0].substring(9);
+//                var comps = query[1].substring(6);
+//                arReport(subject, comps);
+//            });
+        //        });
+//        require(["dojo/parser", "dojo/ready", "dojox/data/QueryReadStore", "dojox/image/LightboxNano"], function (parser, ready, queryReadStore, lightBoxNano) {
+
+//                //Replaces dojo.ready / dojo.addOnLoad
+//                ready(function () {
+//                    parser.parse(); //replaces parseOnLoad = true in dojoConfig
+//                    var query = "?subject=72239&comps=72024,33491,72019";
+//                    query = query.split("&");
+//                    //http: //localhost:55175/RecentSales/AppraisalReport.html?subject=72019&comps=72024,72021,72022
+//                    //var query = window.location.search.split("&");
+//                    var subject = query[0].substring(9);
+//                    var comps = query[1].substring(6);
+//                    arReport(subject, comps);
+
+//                });
+//            });
+        function init() {
+            //var query = "?subject=10540&comps=10311,10842,10871";
+            //query = query.split("&");
+            //http: //localhost:55175/RecentSales/AppraisalReport.html?subject=72019&comps=72024,72021,72022
+            var query = window.location.search.split("&");
+            var subject = query[0].substring(9);
+            var comps = query[1].substring(6);
+            arReport(subject, comps);
+       }
+       function changeText() {
+           var qqq = dojo.query('input.changeText');
+           //alert(qqq.length);
+           for (q = 0; q < qqq.length; q++) {
+               qqq[q].onclick = function () {
+                   //this.title = (this.title != "Lock" ? "Lock" : "Unlock");
+                   //this.src = (this.title != "Unlock" ? "Images/unLock.png" : "Images/Lock.png");
+                   //this.parentNode.childNodes[1].readOnly = (this.title != "Unlock" ? false : true);
+                   //this.parentNode.childNodes[1].focus();
+                   this.onchange = function (newVal) {
+                       var val = this.value.replace(/(^\s+|\s+$)/g, '') - 0;
+                       //var val = typeof this.value == 'number' && isFinite(this.value);
+                       if (typeof val === 'number' && isFinite(val)) {
+                           if (val == '' || val == 0) {
+                               this.parentNode.style.borderColor = "#66CCFF"
+                               this.value = '';
+                           } else {
+                               this.parentNode.style.borderColor = "blue";
+                               this.value = val;
+                           }
+                           var id = "totVal" + this.parentNode.parentNode.parentNode.className.substring(1);
+
+                           document.getElementById(id).value = currency(eval(document.getElementById(id).alt) + val - (this.alt - 0));
+                           document.getElementById(id).alt = eval(document.getElementById(id).alt) + val - (this.alt - 0);
+
+                           if (document.getElementById(id).alt < eval(document.getElementById(id).alt) + val) {
+                               this.alt = val;
+                               document.getElementById(id).style.borderColor = "green";
+                           } else if (document.getElementById(id).alt > eval(document.getElementById(id).alt) + val) {
+                               this.alt = val;
+                               document.getElementById(id).style.borderColor = "red";
+                           } else {
+                               this.alt = val;
+                               document.getElementById(id).style.borderColor = "black";
+                           }
+                       } else {
+                           this.value = '';
+                           alert('Please Enter A Number');
+                       }
+                   };
+//                   this.onblur = function () {
+//                       if (this.parentNode.childNodes[0].title == "Lock") {
+//                           this.parentNode.childNodes[0].title = "Unlock";
+//                           this.parentNode.childNodes[0].src = "Images/Lock.png";
+//                           this.readOnly = true;
+//                       }
+//                   };
+               };
+           }
+       }
+       dojo.addOnLoad(init);
+          
+    </script> 
+</head>
+    <body class="claro">
+        <div id="content">
+            <img alt='' src="Images/ajax-loader.gif" style="top:50%; left:50%; position:absolute;" />
+        </div>
+        <div class="background"></div>
+    </body>
+</html>

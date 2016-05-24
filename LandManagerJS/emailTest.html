@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples
+      on iOS devices-->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Maps Toolbar</title>
+
+
+
+    <style>
+        html, body, #mainWindow {
+            font-family: sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .emailBody {
+            margin-left:25px;
+        }
+        .emailBody Div {
+            margin-top:15px;
+            margin-bottom:15px;
+        }
+        .approval {
+            padding:10px;
+            font-weight:bolder;
+            font-size:x-large          
+        }
+        .selected {
+            color: white;
+            background-color: red;
+        }
+        .email {
+            border: medium solid #C6E6FD;
+            margin: 4px;
+            background-color: white !important;
+            padding: 10px;
+            color: Black;
+            width: 8.5in;
+            margin: 0px auto;
+            font-size:medium;
+        }
+
+    </style>
+    <!--<script src="javascript/bldgEnvelopes/offset.js"></script>-->
+
+    <script>
+        var map, gsvc, centroid, selectByLocationToolBar, defaultSymbol, highlightSymbol, movedSymbol, finishedSymbol, undo, taxParcelQueryTask;
+
+        //require([
+        //  "esri/map",
+        //  "esri/toolbars/draw",
+        //  "esri/graphic",
+        //  "esri/geometry/Polygon",
+        //  "esri/geometry/Polyline",
+        //  "esri/geometry/Point",
+        //  "esri/tasks/GeometryService",
+        //  "esri/layers/GraphicsLayer",
+        //  "esri/layers/FeatureLayer",
+
+        //  "esri/symbols/SimpleMarkerSymbol",
+        //  "esri/symbols/SimpleLineSymbol",
+        //  "esri/symbols/SimpleFillSymbol", "esri/tasks/FeatureSet",
+        //  "esri/renderers/SimpleRenderer", "esri/Color", "esri/tasks/query", "esri/renderers/UniqueValueRenderer",
+
+        //  "dojo/parser", "dijit/registry", "esri/geometry/Extent", "dijit/layout/TabContainer", "dijit/form/Form", "dijit/form/SimpleTextarea", "dijit/form/Button",
+
+
+        //  "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/form/CheckBox", "dijit/form/FilteringSelect", "dojox/data/QueryReadStore", "dijit/form/Button", "dojo/dnd/Source", "dijit/form/Select", "dijit/form/SimpleTextarea",
+        //  "dijit/form/Button", "dijit/WidgetSet", "dojo/domReady!", "esri/dijit/editing/editOperation", "esri/tasks/BufferParameters"
+        //], function (
+        //  Map, Draw, Graphic, Polygon, Polyline, Point, GeometryService, GraphicsLayer, FeatureLayer,
+        //  SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, FeatureSet, SimpleRenderer, Color, Query, UniqueValueRenderer,
+        //  parser, registry, Extent
+        //) {
+        //    parser.parse(); 
+        //});
+        if (typeof String.prototype.trim !== 'function') {
+            String.prototype.trim = function () {
+                return this.replace(/^\s+|\s+$/g, '');
+            }
+        }
+
+        
+    </script>
+</head>
+<body>
+    <div class="email">
+        <h2>Southampton Town Building Division</h2>
+        <input type="text" id="emailFrom" value="test" />
+        <input type="text" id="emailTo" value="test2" />
+        <div class="emailBody" style="padding-left:25px;width:100%;">
+            <div>
+                <input id="bldgChk" type="radio" name="type" /> <label for="bldgChk">Bldg.Insp</label>
+                <input id="eleChk" type="radio" name="type" /><label for="eleChk">Ele Insp</label>
+                <input id="compChk" type="radio" name="type" /> <label for="compChk">Complaint</label>
+                <input id="typeChk" type="radio" name="type" /> <label for="typeChk">Type of Insp.</label>
+                <input id="otherType" type="text" />
+            </div>
+            <div id="datePermitNo"><span><b>Date:</b>&nbsp;4/02/2015</span>&nbsp;-&nbsp;<span><b>Permit&nbsp;#</b><span>123456</span></span></div>
+            <div><span class="approval selected">APPROVED</span><span class="approval">DISAPPROVED</span></div>
+            <p style="color:red; font-weight:bolder;">NOTE: ALL FRAMING, PLUMBING AND ELECTRICT INSPECTIONS<br />MUSTBE APPRVOVED PRIOR TO INSULATING AND SHEETROCK</p><span>Corrections Needed:</span>
+            <br />
+            <p style="font-size:small;">
+                For a re-inspection please call 702-1830 or email at:
+                <a href="mailto:requestElectricalInspection@southamptontownny.gov?Subject=Inspection Request" target="_top">requestElectricalInspection@southamptontownny.gov</a>
+            </p>
+        </div>
+    </div>
+    <input type="button" onclick="buttonClick()" />
+</body>
+</html>
+

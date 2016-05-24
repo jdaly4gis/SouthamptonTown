@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Comparative Market Analysis - Town of Southampton</title>
+    <link rel="stylesheet" href="css/claro.css" />
+
+    <script type="text/javascript" src="modules/SalesModule/arReport.js"></script>
+    <script type="text/javascript">
+        dojoConfig = { parseOnLoad: true };
+        //        var dojoConfig = {
+        //            async: true
+        //        };
+    </script>
+    <link rel="Stylesheet" href="css/arReport.css" />
+    <script type="text/javascript" src="javascript/api/ags_3_10.js"></script>
+    <script type="text/javascript">
+        dojo.require("dijit.dijit"); // optimize: load dijit layer
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dojo.parser");
+        dojo.require("dojo.currency");
+        dojo.require("dijit.TooltipDialog");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dojox.data.QueryReadStore");
+        dojo.require("dojox.image.LightboxNano");
+
+        //        require(["dijit/dijit", "dojo/parser", "dojox/data/QueryReadStore", "dojox/image/LightboxNano"],
+        //         function (dijit, parser, queryReadStore, lightBoxNano} {
+        //            ready(function(){var query = window.location.search.split("&");
+        //                parser.parse();
+        //                var subject = query[0].substring(9);
+        //                var comps = query[1].substring(6);
+        //                arReport(subject, comps);
+        //            });
+        //        });
+        //        require(["dojo/parser", "dojo/ready", "dojox/data/QueryReadStore", "dojox/image/LightboxNano"], function (parser, ready, queryReadStore, lightBoxNano) {
+
+        //                //Replaces dojo.ready / dojo.addOnLoad
+        //                ready(function () {
+        //                    parser.parse(); //replaces parseOnLoad = true in dojoConfig
+        //                    var query = "?subject=72239&comps=72024,33491,72019";
+        //                    query = query.split("&");
+        //                    //http: //localhost:55175/RecentSales/AppraisalReport.html?subject=72019&comps=72024,72021,72022
+        //                    //var query = window.location.search.split("&");
+        //                    var subject = query[0].substring(9);
+        //                    var comps = query[1].substring(6);
+        //                    arReport(subject, comps);
+
+        //                });
+        //            });
+        function init() {
+            //var query = "?subject=10311&comps=10842,10871,10540";
+            //query = query.split("&");
+            //http: //localhost:55175/RecentSales/AppraisalReport.html?subject=72019&comps=72024,72021,72022
+            var query = window.location.search.split("&");
+            var subject = query[0].substring(9);
+            var comps = query[1].substring(6);
+            arReport(subject, comps);
+        }
+        function changeText() {
+            var qqq = dojo.query('input.changeText');
+            //alert(qqq.length);
+            for (q = 0; q < qqq.length; q++) {
+                //qqq[q].onclick = function () {
+                    //this.title = (this.title != "Lock" ? "Lock" : "Unlock");
+                    //this.src = (this.title != "Unlock" ? "Images/unLock.png" : "Images/Lock.png");
+                    //this.parentNode.childNodes[1].readOnly = (this.title != "Unlock" ? false : true);
+                //this.parentNode.childNodes[1].focus();
+                var id = qqq[q].id;
+                qqq[q].onchange = function (newVal) {
+                    changeInputValue(this);
+                };
+                //};
+            }
+        }
+        function changeInputValue(input) {
+            
+            var val = input.value.replace(/(^\s+|\s+$)/g, '') - 0;
+           
+            if (typeof val === 'number' && isFinite(val)) {
+                if (val == '' || val == 0) {
+                    input.parentNode.style.borderColor = "#66CCFF"
+                    input.value = '';
+                } else {
+                    input.parentNode.style.borderColor = "blue";
+                    input.value = val;
+                }
+                var id = "totVal" + input.parentNode.parentNode.parentNode.className.substring(1);
+                var pid = input.parentNode.parentNode.parentNode.className.substring(1);
+                var startPrice = document.getElementById("startPrice" + pid).value;
+                document.getElementById(id).value = currency(eval(document.getElementById(id).alt) + val - (input.alt - 0));
+                document.getElementById(id).alt = eval(document.getElementById(id).alt) + val - (input.alt - 0);
+
+                if (startPrice < eval(document.getElementById(id).alt) + val) {
+                    input.alt = val;
+                    document.getElementById(id).style.borderColor = "green";
+                } else if (startPrice > eval(document.getElementById(id).alt) + val) {
+                    input.alt = val;
+                    document.getElementById(id).style.borderColor = "red";
+                } else {
+                    input.alt = val;
+                    document.getElementById(id).style.borderColor = "black";
+                }
+            } else {
+                input.value = '';
+                alert('Please Enter A Number');
+            }
+        }
+        dojo.addOnLoad(init);
+
+    </script>
+</head>
+<body class="claro">
+    <div id="content">
+        <img alt='' src="Images/ajax-loader.gif" style="top:50%; left:50%; position:absolute;" />
+    </div>
+    <div class="background"></div>
+</body>
+</html>

@@ -1,0 +1,463 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples
+      on iOS devices-->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Maps Toolbar</title>
+
+    <link rel="stylesheet" href="http://js.arcgis.com/3.11/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.11/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="css/Page.css" />
+    <style>
+        html, body, #mainWindow {
+            font-family: sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #header {
+            height: 80px;
+            overflow: auto;
+            padding: 0.5em;
+        }
+    </style>
+
+    <script src="http://js.arcgis.com/3.11/"></script>
+    <script>
+        var map, toolbar, symbol, geomTask, gsvc, centroid, selectByLocationToolBar, defaultSymbol, highlightSymbol, movedSymbol, getSelectedGraphics, undo, finishedSymbol;
+
+        require([
+          "esri/map",
+          "esri/toolbars/draw",
+          "esri/graphic",
+          "esri/geometry/Polygon",
+          "esri/geometry/Polyline",
+          "esri/geometry/Point",
+          "esri/tasks/GeometryService",
+          "esri/tasks/OffsetParameters",
+          "esri/layers/GraphicsLayer",
+          "esri/layers/FeatureLayer", "esri/tasks/FeatureSet",
+          "esri/dijit/editing/Update", "esri/geometry/mathUtils",
+
+          "esri/symbols/SimpleMarkerSymbol",
+          "esri/symbols/SimpleLineSymbol",
+          "esri/symbols/SimpleFillSymbol",
+
+          "dojo/parser", "dijit/registry", "esri/geometry/Extent",
+
+          "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
+          "dijit/form/Button", "dijit/WidgetSet", "dojo/domReady!", "esri/dijit/editing/editOperation", "esri/geometry/jsonUtils", "esri/geometry/Geometry", "esri/tasks/BufferParameters", "esri/dijit/analysis/DissolveBoundaries"
+        ], function (
+          Map, Draw, Graphic,Polygon,  Polyline, Point, GeometryService, OffsetParameters, GraphicsLayer, FeatureLayer, FeatureSet, Update, mathUtils,
+          SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol,
+          parser, registry, Extent
+        ) {
+            parser.parse();
+
+            undo = [];
+
+            startExtent = new Extent({
+                "xmin": 1297232.4692940111,
+                "ymin": 223864.66964762594,
+                "xmax": 1501876.5665162336,
+                "ymax": 325535.6765920704,
+                "spatialReference": { "wkid": 102718 }
+            });
+            var layer = new esri.layers.ArcGISDynamicMapServiceLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/LandManager/MapServer", { id: "lmURL", visible: true });
+            map = new Map("map", {
+                logo: false,
+                extent: startExtent
+                //,
+                //center: [1399391.757, 256525.260]
+            });
+            map.on("load", addParcelToMap);
+            map.addLayer(layer);
+
+            gsvc = new GeometryService("https://gis2.southamptontownny.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer");
+            gsvc.on("buffer-complete", bufferComplete);
+            gsvc.on("error", bufferError);
+
+
+            defaultSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASH, new dojo.Color([255, 0, 0]), 3); //red dashed line
+            highlightSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASH, new dojo.Color([127, 255, 255]), 3); //blue dashed line
+            movedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASH, new dojo.Color([255, 0, 255]), 3); //purple dashed line
+
+            finishedSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_FORWARD_DIAGONAL, new SimpleLineSymbol(SimpleLineSymbol.STYLE_NULL, null, null), new dojo.Color([0, 0, 0, 0]));
+
+            dojo.connect(dojo.byId('userInputDistance'), 'onkeypress', this, function (event) {
+                if (event.charOrCode == dojo.keys.ENTER) {
+                    createOffsetLine();
+                }
+            });
+           
+
+            function addParcelToMap(themap) {
+                var polygonJSON = {
+                    "rings": [[
+                        [1384872.2262384556, 254896.78770318147],
+                        [1384935.5942940111, 254916.75298095925],
+                        [1385011.9831829001, 254920.22520318147],
+                        [1385032.8165162333, 254790.01686984813],
+                        [1384892.1915162333, 254769.1835365148],
+                        [1384872.2262384556, 254896.78770318147]]], "spatialReference": { "wkid": 102718 }
+                };
+                //var polygonJSON = {
+                //    "rings": [[
+                //        [1384939.066516, 254908.506453],
+                //        [1385020.663738, 254864.235620],
+                //        [1384959.899850, 254779.166175],
+                //        [1384881.774850, 254837.325898],
+                //        [1384939.066516, 254908.506453]
+                //    ]], "spatialReference": { "wkid": 102718 }
+                //};
+                //var polygonJSON = { "rings": [[[1384864.0501363575, 255360.54543085396], [1384888.1865710318, 255219.95155194402], [1384884.5274576098, 255218.85936251283], [1384880.9014806151, 255217.66185835004], [1384877.3115927726, 255216.35969559848], [1384873.7607468516, 255214.95451468229], [1384870.2522236854, 255213.4469717741], [1384866.7889760286, 255211.83837918937], [1384863.3736285269, 255210.13004927337], [1384860.009133935, 255208.32362243533], [1384856.6984450221, 255206.42073909938], [1384853.4441864491, 255204.42271161079], [1384850.2489828616, 255202.33118034899], [1384847.1157870293, 255200.14811384678], [1384844.0472236127, 255197.87515251338], [1384841.0459172726, 255195.51426485181], [1384838.1138365269, 255193.06741935015], [1384835.2539341152, 255190.53691260517], [1384832.4688346982, 255187.9243850261], [1384829.7601786852, 255185.23246127367], [1384827.1305907816, 255182.46343792975], [1384824.5823675245, 255179.61928352714], [1384820.9173486084, 255175.21738943458], [1384661.3842031062, 255292.30934685469], [1384664.0046046972, 255295.53932726383], [1384665.807750687, 255297.64595034719], [1384667.6548598558, 255299.71418768167], [1384669.5449479371, 255301.74338310957], [1384671.4773587734, 255303.73189619184], [1384673.4514361918, 255305.67939884961], [1384675.4658678621, 255307.58523494005], [1384677.5199976116, 255309.44776402414], [1384679.6128411889, 255311.26698610187], [1384681.7434143573, 255313.04158885777], [1384683.9110609442, 255314.77124418318], [1384686.1144686043, 255316.45463976264], [1384688.3529811949, 255318.09111943841], [1384691.4356521964, 255320.23022277653], [1384693.7873535305, 255321.77647952735], [1384696.1712070256, 255323.27221143246], [1384698.586556524, 255324.71643427014], [1384701.0324177742, 255326.10881993175], [1384703.507150352, 255327.44871227443], [1384706.0100981146, 255328.73545511067], [1384708.539948687, 255329.96839226782], [1384711.0953897685, 255331.14686760306], [1384713.6757651865, 255332.27055302262], [1384716.2794345319, 255333.33912043273], [1384718.9050854445, 255334.3515855968], [1384721.5520617813, 255335.30762043595], [1384724.2187231034, 255336.20722493529], [1384726.9040851891, 255337.04941485822], [1384729.6065076143, 255337.83419018984], [1384732.3253341913, 255338.56089477241], [1384735.0592526048, 255339.22952860594], [1384737.8066224456, 255339.83943551779], [1384740.5664594471, 255340.39061552286], [1384743.3371231854, 255340.88274052739], [1384746.1179575324, 255341.31548243761], [1384748.9073220193, 255341.68884126842], [1384751.7042324394, 255342.00248894095], [1384760.6694376022, 255343.48247285187], [1384864.0501363575, 255360.54543085396]]], "spatialReference": { "wkid": 102718 } };
+                //add the original parcel
+                var ogParcel = new GraphicsLayer({ 'id': 'originalParcel' });
+                var polygon = new Polygon(polygonJSON);
+                var sfs = new SimpleFillSymbol();
+                var ogPolyGraphic = new Graphic(polygon, sfs);
+                ogParcel.add(ogPolyGraphic);
+                map.addLayer(ogParcel);
+                //Add the centroid
+                centroid = polygon.getCentroid();
+                var symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_X, 20,
+                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                        new dojo.Color([255, 0, 0]), 1),
+                        new dojo.Color([0, 255, 0, 0.25]));
+                var graphic = new Graphic(centroid, symbol);
+                map.graphics.add(graphic);
+
+                //add line feature
+                var firstPoint = polygonJSON.rings[0][0];
+                var lastPointIndex = polygonJSON.rings[0].length - 2;
+
+                var polyLineLayer = new GraphicsLayer({ 'id': 'polygonToLineLayer' });
+                map.addLayer(polyLineLayer);
+                var workspaceLayer = new GraphicsLayer({ 'id': 'workspaceLayer' });
+                map.addLayer(workspaceLayer);
+
+                var features = [];
+                for (i = 0; i < polygonJSON.rings[0].length - 1; i++) {
+                    currentPoint = polygonJSON.rings[0][i];
+                    var nextPoint;
+                    if (i == lastPointIndex) {
+                        nextPoint = firstPoint;
+                    } else {
+                        nextPoint = polygonJSON.rings[0][i + 1];
+                    }
+                    var polylineJson = {
+                        "paths": [[currentPoint, nextPoint]],
+                        "spatialReference": { "wkid": 102718 }
+                    };
+                    var polyline = new Polyline(polylineJson);
+                    var graphic = new Graphic(polyline, defaultSymbol, { "OBJECTID": i });
+                    //featureLayer.add(graphic);
+                    //if (polyLineLayer.graphics.indexOf(graphic) != -1) { } else {
+                    polyLineLayer.add(graphic);
+                    //}
+                }
+                map.addLayer(polyLineLayer);
+
+                //polyLineLayer.on('click', function (evt) {
+                //    createOffsetLine(evt);
+                //});
+                map.setExtent(polygon.getExtent(), true);
+            }
+            dijit.byId('undoBTN').on('click', function () {
+                //var layer = map.getLayer('workspaceLayer');
+                //var ogLayer = map.getLayer('polygonToLineLayer');
+
+                //for (var i = 0; i < ogLayer.graphics.length; i++) {
+                //    if (undo.length > 0) {
+                //        if (ogLayer.graphics[i].attributes.OBJECTID == undo[undo.length - 1].objectID) {
+                //            ogLayer.graphics[i].setGeometry(undo[undo.length - 1].lastGraphic.geometry);
+                //            ogLayer.graphics[i].setSymbol(defaultSymbol);
+                //            undo.splice(undo.length - 1, 1);
+                //        }
+                //    }
+                //}
+                //if (undo.length < 1) {
+                //    dijit.byId('undoBTN').set('disabled', true);
+                //}
+                var layer = map.getLayer('workspaceLayer');
+                layer.remove(layer.graphics[layer.graphics.length - 1]);
+
+            });
+            function getDistanceTransformation(inverseSlope, point, xDist, yDist) {
+                var theta = Math.atan(inverseSlope);
+                var deltaX = point[0] + xDist * Math.cos(theta);
+                var deltaY = point[1] + yDist * Math.sin(theta);
+                return [deltaX, deltaY];
+            }
+
+            function getQuadrantDistance(x, y) {
+                var xDist, yDist;
+                //quadrant 1
+                if (x > 0 && y > 0) {
+                    xDist = document.getElementById('userInputDistance').value * -1;
+                    yDist = document.getElementById('userInputDistance').value * -1;
+                }
+                    //quadrant 4
+                else if (x > 0 && y < 0) {
+                    xDist = document.getElementById('userInputDistance').value * -1;
+                    yDist = document.getElementById('userInputDistance').value * -1;
+                }
+                    //quadrant 2
+                else if (x < 0 && y > 0) {
+                    xDist = document.getElementById('userInputDistance').value * 1;
+                    yDist = document.getElementById('userInputDistance').value * 1;
+                }
+                    //quadrant 3
+                else if (x < 0 && y < 0) {
+                    xDist = document.getElementById('userInputDistance').value * 1;
+                    yDist = document.getElementById('userInputDistance').value * 1;
+                }
+                return [xDist, yDist];
+            }
+            function createOffsetLine(evt) {
+                var pt1, pt2;
+                pt1 = evt.geometry.paths[0][0];
+                pt2 = evt.geometry.paths[0][1];
+                var slope = (pt2[1] - pt1[1]) / (pt2[0] - pt1[0]);
+                var inverseSlope = -1 / slope;
+
+                var midPoint = [(pt1[0] + pt2[0]) / 2, (pt1[1] + pt2[1]) / 2];
+                var ss = (pt2[0] - pt1[0]) * (centroid.y - pt1[1]);
+                var ii = (pt2[1] - pt1[1]) * (centroid.x - pt1[0]);
+                var x = midPoint[0] - centroid.x;
+                var y = midPoint[1] - centroid.y;
+
+                var midSlope = (midPoint[1] - centroid.y) / (midPoint[0] - centroid.x);
+
+                var xDist, yDist;
+                //quadrant 1
+                if (x > 0 && y > 0) {
+                    xDist = document.getElementById('userInputDistance').value * -1;
+                    yDist = document.getElementById('userInputDistance').value * -1;
+                }
+                //quadrant 4
+                else if (x > 0 && y < 0) {
+                    xDist = document.getElementById('userInputDistance').value * -1;
+                    yDist = document.getElementById('userInputDistance').value * -1;
+                }
+                //quadrant 2
+                else if (x < 0 && y > 0) {
+                    xDist = document.getElementById('userInputDistance').value * 1;
+                    yDist = document.getElementById('userInputDistance').value * 1;
+                }
+                //quadrant 3
+                else if (x < 0 && y < 0) {
+                    xDist = document.getElementById('userInputDistance').value * 1;
+                    yDist = document.getElementById('userInputDistance').value * 1;
+                }
+                //var userInputDistance = document.getElementById('userInputDistance').value;
+                //if (Math.abs(x) > Math.abs(y)) {
+                //    if (x < 0) {
+                //        userInputDistance *= -1;
+                //    }
+                //} else {
+                //    if (y > 0) {
+                //        userInputDistance *= -1;
+                //    }
+                //}
+
+                var deltaPT1 = getDistanceTransformation(inverseSlope, pt1, xDist, yDist);
+                var deltaPT2 = getDistanceTransformation(inverseSlope, pt2, xDist, yDist);
+
+                var path = [[[deltaPT1[0], deltaPT1[1]], [deltaPT2[0], deltaPT2[1]]]];
+                var polylineJson = {
+                    "paths": path,
+                    "spatialReference": { "wkid": 102718 }
+                };
+                
+                
+                var polyline = new Polyline(polylineJson);
+                var graphic = new Graphic(polyline, movedSymbol, evt.attributes);
+
+                //map.getLayer('workspaceLayer').add(graphic);
+                undo.push({ objectID: evt.attributes.OBJECTID, lastGraphic: new Graphic(evt.geometry, defaultSymbol, evt.attributes), currentGraphic: new Graphic(polyline, movedSymbol, evt.attributes) });
+                evt.setSymbol(movedSymbol);
+                evt.setGeometry(polyline);
+                //document.getElementById('undoManagerDiv').innerHTML += polyline.toJson();
+
+                dijit.byId('undoBTN').set('disabled', false);
+            }
+            function line_intersects(line1Pt1, Line1Pt2, line2Pt1, line2Pt2) {
+                var line1Slope = slope(line1Pt1, Line1Pt2);
+                var line2Slope = slope(line2Pt1, line2Pt2);
+
+                var line1Y_Intercept = yIntercept(line1Slope, line1Pt1.x, line1Pt1.y);
+                var line2Y_Intercept = yIntercept(line2Slope, line2Pt1.x, line2Pt1.y);
+
+                var x = ((line2Y_Intercept - line1Y_Intercept) / (line1Slope - line2Slope));
+                var y = (line1Slope * x) + line1Y_Intercept;
+                return [x, y];
+            }
+            function slope(pt1, pt2) {
+                return (pt2.y - pt1.y) / (pt2.x - pt1.x);
+            }
+            function yIntercept(slope, x, y) {
+                return y - (slope * x);
+            }
+
+            function line_intersects_Y_N(p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y) {
+
+                var s1_x, s1_y, s2_x, s2_y;
+                s1_x = p1_x - p0_x;
+                s1_y = p1_y - p0_y;
+                s2_x = p3_x - p2_x;
+                s2_y = p3_y - p2_y;
+
+                var s, t;
+                s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+                t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+                if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+                    // Collision detected
+                    return 1;
+                }
+                return 0; // No collision
+            }
+            selectByLocationToolBar = new esri.toolbars.Draw(map);
+            function buffer(geoms) {
+                var params = new esri.tasks.BufferParameters();
+                params.geometries = geoms;
+
+                params.distances = [document.getElementById('userInputDistance').value];
+                params.unit = GeometryService.UNIT_FOOT;
+                params.bufferSpatialReference = map.spatialReference
+                params.outSpatialReference = map.spatialReference;
+                gsvc.buffer(params);
+
+            }
+
+            function bufferComplete(geoms) {
+                var layer = map.getLayer('workspaceLayer');
+                for (var i = 0; i < geoms.geometries.length; i++) {
+                    var graphic = new Graphic(geoms.geometries[i], movedSymbol);
+                    layer.add(graphic);
+                }
+                //undo.push({ objectID: evt.attributes.OBJECTID, lastGraphic: new Graphic(evt.geometry, defaultSymbol, evt.attributes), currentGraphic: new Graphic(polyline, movedSymbol, evt.attributes) });
+                dijit.byId('undoBTN').set('disabled', false);
+            }
+            function bufferError() {
+
+            }
+            dijit.byId('finishBtn').on('click', function () {
+                var layer = map.getLayer('workspaceLayer');
+                var ogParcel = map.getLayer('originalParcel');
+                var geoms = [];
+                for (var i = 0; i < layer.graphics.length; i++) {
+                    geoms.push(layer.graphics[i].geometry);
+                }
+                layer.clear();
+                gsvc.intersect(geoms, ogParcel.graphics[0].geometry, function (geoms) {
+                    for (var z = 0; z < geoms.length; z++) {
+                        layer.add(new Graphic(geoms[z], finishedSymbol));
+                    }
+                    
+                }, function (e) {
+                    alert('test');
+                });
+            });
+            dijit.byId('goBtn').on('click', function () {
+                var ogLayer = map.getLayer('polygonToLineLayer');
+                var geoms = []
+                for (var i = 0; i < ogLayer.graphics.length; i++) {
+                    if (ogLayer.graphics[i].symbol == highlightSymbol) {
+                        //createOffsetLine(ogLayer.graphics[i]);
+                        ogLayer.graphics[i].setSymbol(defaultSymbol);
+                        geoms.push(ogLayer.graphics[i].geometry);
+                    }
+                }
+                if (geoms.length > 0) {
+                    buffer(geoms);
+                }
+            });
+            dojo.connect(selectByLocationToolBar, "onDrawEnd", function (geometry) {
+                //selectByLocationToolBar.deactivate();
+                var ogLayer = map.getLayer('polygonToLineLayer');
+                var originalP = map.getLayer('originalParcel').graphics[0];
+                var offsetGeometry = [];
+                for (var i = 0; i < ogLayer.graphics.length; i++) {
+                    if (ogLayer.graphics[i].symbol == defaultSymbol) {
+                        var line1start = new Point(ogLayer.graphics[i].geometry.paths[0][0], map.spatialReference);
+                        var line1end = new Point(ogLayer.graphics[i].geometry.paths[0][1], map.spatialReference);
+
+                        var firstPoint = geometry.rings[0][0];
+                        for (var g = 0; g < geometry.rings[0].length; g++) {
+                            currentPoint = geometry.rings[0][g];
+                            var nextPoint;
+                            if (g == geometry.rings[0].length - 1) {
+                                nextPoint = firstPoint;
+                            } else {
+                                nextPoint = geometry.rings[0][g + 1];
+                            }
+
+                            if (currentPoint[0] != nextPoint[0] && currentPoint[1] != nextPoint[1]) {
+                                var line2start = new Point(currentPoint, map.spatialReference);
+                                var line2end = new Point(nextPoint, map.spatialReference);
+
+                                var intersects = line_intersects_Y_N(line1start.x, line1start.y, line1end.x, line1end.y, line2start.x, line2start.y, line2end.x, line2end.y);
+                                if (intersects == 1 || geometry.contains(line1start) || geometry.contains(line1end)) {
+                                    var iiiii = offsetGeometry.indexOf(ogLayer.graphics[i]);
+                                    if (iiiii == -1) {
+                                        if (ogLayer.graphics[i].symbol != highlightSymbol) {
+                                            offsetGeometry.push(ogLayer.graphics[i]);
+                                            ogLayer.graphics[i].setSymbol(highlightSymbol);
+                                        } else if (ogLayer.graphics[i].symbol == highlightSymbol) {
+                                            offsetGeometry.push(ogLayer.graphics[i]);
+                                            ogLayer.graphics[i].setSymbol(defaultSymbol);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            function getSelectedGraphics() {
+                var ogLayer = map.getLayer('polygonToLineLayer');
+                for (var i = 0; i < ogLayer.graphics.length; i++) {
+                    if (ogLayer.graphics[i].symbol == highlightSymbol) {
+                        createOffsetLine(ogLayer.graphics[i]);
+                    }
+                }
+            }
+        });
+
+    </script>
+</head>
+<body class="claro">
+    <div id="mainWindow" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'headline'">
+        <div id="header" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'">
+            Distance:<br />
+            <input type="text" id="userInputDistance" value="25" />
+            <input type="hidden" id="selectedGraphicIndex" value="" />
+            <div class="undoButtons">
+                <button id="undoBTN" data-dojo-type="dijit.form.Button" data-dojo-props="disabled:true, iconClass:'undoIcon'">Undo</button>
+            </div>
+            
+            <div>
+                <!--<button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){selectByLocationToolBar.activate(esri.toolbars.Draw.POINT);},iconClass:'measurePoint'"></button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){selectByLocationToolBar.activate(esri.toolbars.Draw.POLYLINE);},iconClass:'measureLine'"></button>-->
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){selectByLocationToolBar.activate(esri.toolbars.Draw.POLYGON);},iconClass:'measurePolygon'"></button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="showLabel:true, iconClass:'deactivateIcon', onClick:function(){selectByLocationToolBar.deactivate();},iconClass:'deactivateIcon'"></button>
+                <button data-dojo-type="dijit.form.Button" id="goBtn" data-dojo-props="showLabel:true">GO</button><br/>
+                <button data-dojo-type="dijit.form.Button" id="finishBtn" data-dojo-props="showLabel:true">Finish</button>
+            </div> 
+            <div id="undoManagerDiv"></div>
+        </div>
+        <div id="map" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'"></div>
+    </div>
+
+</body>
+</html>

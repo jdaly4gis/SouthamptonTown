@@ -1,0 +1,16 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MailingLabel.master.cs" Inherits="MailingLabel" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html >
+<head runat="server">
+    <title>Mailing Labels</title>
+    <link href="css/MailingLabels.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
+        </asp:contentplaceholder>
+    </form>
+</body>
+</html>

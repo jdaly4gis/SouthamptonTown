@@ -1,0 +1,268 @@
+﻿html
+{
+    
+    } 
+body
+{
+    width: 8.5in;
+    height: 11in;
+    margin: 0px auto 0px auto;
+    font-family: Calibri;
+    font-size: medium;
+}
+
+.background
+{
+    height: 11in;
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    left: 1px;
+    background-image: url('../Images/page_bg.jpg');
+    z-index: -1;
+}
+#content
+{
+    background-color: #FFFFFF;
+    height: 11in;
+    width:8.5in;
+}
+.comp
+{
+    border-style: solid;
+    border-width: thick thin thick thin;
+    border-color: #58A9D5;
+    float: left;
+    width: 24%;
+    height: 11in;
+    padding: 2px;
+    margin: 1px 1px 0px 1px;
+}
+.subject
+{
+    border-style: solid;
+    border-width: thick thin thick thin;
+    border-color: #66FF33;
+    float: left;
+    width: 23%;
+    height: 11in;
+    padding: 2px;
+    margin: 1px 1px 0px 1px;
+}
+.arLbl
+{
+    border-bottom: 1px solid #66CCFF;
+    display: inline-block;
+    width: 47%;
+    float: left;
+    height: 22px;
+    padding: 2px;
+}
+input.totLbl
+{
+    font-family: 'Arial Black';
+    font-size: medium;
+    width: 95%;
+    font-weight: bold;
+    border: 2px solid black;
+}
+.arVal
+{
+    border-bottom: 1px solid #66CCFF;
+    display: inline-block;
+    width: 47%;
+    float:left;
+    height: 22px;
+    padding: 2px;
+}
+input.arVal
+{
+    border-style: none none solid none;
+    vertical-align: middle;
+    width: 47%;
+    border-bottom-width: 1px;
+    border-bottom-color: #66CCFF;
+    color: #000066;
+    font-weight: bold;
+    font-family: calibri;
+    font-size: small;
+}
+img.changeText
+{
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    border: none;
+}
+input.changeText
+{
+    border-style: none none none none;
+    border-width: medium;
+    border-color: inherit;
+    vertical-align: middle;
+    width: 85%;
+}
+
+span.changeTextPRICE
+{
+    font-family: 'Arial Black';
+    font-size: medium;
+    width: 95%;
+    float: left;
+    font-weight: bold;
+    border: 2px solid black;
+    margin-bottom: 10px;
+}
+span.changeText
+{
+    border: 2px solid #66CCFF;
+    display: inline-block;
+    white-space: nowrap;
+    width: 47%;
+}
+ul
+{
+    font-size: x-small;
+    list-style-type: none;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+li
+{
+    width: 100%;
+    float:left;
+    padding:1px;
+    vertical-align:middle;
+}
+li.roomCNT
+{
+    border-bottom: 1px solid #66CCFF;
+    display: inline-block;
+    width: 100%;
+    vertical-align: bottom;
+    height: 50px;
+}
+table
+{
+    border-collapse: collapse;
+    height: 42px;
+}
+.arAddress
+{
+    font-family: Arial;
+    font-size: medium;
+    height: 64px;
+    float: left;
+    font-weight: bold;
+}
+.arTM
+{
+    font-family: Arial;
+    font-size: small;
+    height: 22px;
+    float: left;
+    font-weight: lighter;
+}
+.arPrice
+{
+    font-size: medium;
+    float: left;
+    margin-bottom: 10px;
+}
+.arNBHD
+{
+    font-size: medium;
+}
+.notestextarea
+{
+    border-style: solid none solid solid;
+    width: 90% !important;
+    height: 180px !important;
+    padding: 5px;
+    font-family: Tahoma, sans-serif;
+    border-bottom-width: medium;
+    border-left-width: medium;
+    border-bottom-color: #F0F0F0;
+    border-left-color: #F0F0F0;
+    border-top-width: medium;
+    border-top-color: #F0F0F0;
+    font-size: small;
+}
+.noImage
+{
+    width:193px; 
+    height:138px;
+
+}
+.claro .dijitTooltipContainer
+{
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid #000000;
+    font-size: small;
+    font-family: Calibri;
+    z-index: 1000;
+}
+.claro .dijitTooltipConnector
+{
+    background-image: none;
+}
+input.TOTVal
+{
+    font-family: 'Arial Black';
+    font-size: medium;
+    font-weight: bold;
+    border: 2px solid black;
+    display: inline-block;
+    width: 70%;
+    float: left;
+    padding: 2px;
+}
+.TOTVal1
+{
+    border-bottom: 1px solid #66CCFF;
+    display: inline-block;
+    width: 20%;
+    float:left;
+    height: 22px;
+    padding: 2px;
+}
+.reSortComps
+{
+    height: 10px;
+    width: 195px;
+    background-color: #58A9D5;
+    opacity: 0.8;
+    position: absolute;
+    filter: alpha(opacity=80);
+}
+.hover img:hover
+{
+    background-color: #FFFFFF;
+}
+.hover img
+{
+    display: block;
+}
+.hover
+{
+    display: block;
+    height: 24px;
+    width: 195px;
+    position: absolute;
+    background-color: #99CBE6;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+}
+.reSortComps img
+{
+    display: none;
+}
+.multiplier
+{
+    border: 2px solid #FF00FF;
+    display: inline-block;
+    white-space: nowrap;
+    z-index:1000;
+    position:absolute;
+}

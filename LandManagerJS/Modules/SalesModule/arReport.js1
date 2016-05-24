@@ -1,0 +1,410 @@
+﻿function openArReport() {
+    var table = document.getElementById("arResults");
+    var subject = "";
+    var comps = new Array();
+    var c = 0;
+    for (var i = 0; i < table.rows.length; i++) {
+        if (table.rows[i].childNodes[0].childNodes[0].checked) {
+            if (table.rows[i].title == "Subject") {
+                subject = table.rows[i].id.substring(1);
+            }
+            else {
+                comps[c] = table.rows[i].id.substring(1);
+                c++;
+            }
+        }
+    }
+    if (c < 1 && subject == '') {
+        alert('You need more comps and choose a subject');
+    } else if (subject == '') {
+        alert('Please choose a subject');
+    } else if (c < 1) {
+        alert('You need more comps');
+    } else if (c > 3) {
+        alert('You have too many comps \r\The maximum is 3');
+    } else {
+        var windowToOpen = "AppraisalReport.html?subject=" + subject + "&comps=" + comps.join(',');
+        window.open(windowToOpen);
+    }
+    //window.open('https://localhost:55175/recentsales/changetext.htm');
+}
+function arReport(subject, others) {
+    //var subject = "38570";
+    var contentString = "";
+    var subjectString = "";
+    var comps = "";
+    
+    var adjustments = {};
+    //adjustment Fields
+    var lSize, qualC, yearBuilt, cond, lv, fire, miscVal;
+
+    var query = subject + ',' + others;
+    var arStore = new dojox.data.QueryReadStore({ url: 'getJSON.ashx' });
+    arStore.fetch({ serverQuery: { type: query, sender: "arForm" },
+        onBegin: function (items) {
+            document.getElementById('content').innerHTML = "<img  alt='' src='images/ajax-loader.gif' />";
+        },
+        onError: function (e) {
+            alert('error');
+        },
+        onComplete: function (items, request) {
+            var compCount = 1;
+            //var subjectBuildingInfo;
+            for (var q = 0; q < items.length; q++) {
+                if (items[q].i["P_ID"] == subject) {
+                    adjustments['subject'] = items[q].i;
+                    if (items[q].i.BuildingInfo != "") {
+                        adjustments['subjectBuilding'] = eval("( " + items[q].i.BuildingInfo + ")");
+                    }
+                    else {
+                        adjustments['subjectBuilding'] = "no Building Info";
+                    }
+                } else {
+                    adjustments['comp' + compCount] = items[q].i;
+                    compCount++;
+                }
+            }
+//            lSize = adjustments.subject.Area;
+//            qualC = adjustments.subjectBuilding.items[0].Quality;
+//            yearBuilt = adjustments.subjectBuilding.items[0].YEAR_BUILT;
+//            cond = adjustments.subjectBuilding.items[0].condition;
+//            lv = adjustments.subjectBuilding.items[0].TOTAL_EFFECTIVE;
+//            fire = adjustments.subjectBuilding.items[0].fireplace;
+            miscVal = adjustments.subject.MISC_VALUE;
+            //voteable = (age < 18) ? "Too young" : "Old enough";
+
+            for (var q = 0; q < items.length; q++) {
+                var val = "";
+                var fields = request.store.getAttributes(items[q]);
+                fields.sort();
+                var subjectBuidingIds = "";
+                var compBuidingIds = "";
+
+                var buildinginfo, picinginfo;
+                if (items[q].i.BuildingInfo != "") {
+                    buildinginfo = eval("( " + items[q].i.BuildingInfo + ")");
+                } else {
+                    buildinginfo = "";
+                }
+
+                if (items[q].i.BuildingInfo != "") {
+                    pics = eval("( " + items[q].i.Pictures + ")");
+                    picinginfo = pics.items[0].Image;
+
+                } else {
+                    picinginfo = "<div class='noImage'>No Image</div>";
+                }
+                var buildingValue = [2];
+                buildingValue[0] = 0;
+                buildingValue[1] = 0;
+                var buildingInfoString = "";
+                if (items[q].i["P_ID"] == subject) {
+
+                    var thisBuildingValue = otherBuidingValue = 0;
+                    if (items[q].i.BuildingInfo == "") {
+                        subjectBuidingIds = "<option>None</option>";
+                        buildingInfoString = noBuilding(items[q].i.P_ID);
+                        subjectString = subjectPropertyInfo(items[q], buildingInfoString, picinginfo, subjectBuidingIds, "subject", "0");
+                    } else {
+                        for (b = 0; b < buildinginfo.items.length; b++) {
+                            subjectBuidingIds += "<option>" + buildinginfo.items[b].BLDG_ID + "." + buildinginfo.items[b].BLDG_SEQ +  "</option>";
+                            if (b == 0) {
+                                buildingValue[0] = buildinginfo.items[b].BuildingValue - 0;
+                                buildingInfoString += subjectBuildingInfo(buildinginfo.items[b], "block", items[q].i.P_ID);
+                            } else {
+                                buildingValue[1] += buildinginfo.items[b].BuildingValue - 0;
+                                buildingInfoString += subjectBuildingInfo(buildinginfo.items[b], "none", items[q].i.P_ID);
+                            }
+                        }
+                        subjectString = subjectPropertyInfo(items[q], buildingInfoString, picinginfo, subjectBuidingIds, "subject", buildingValue);
+                    }
+                } else {
+                    if (items[q].i.BuildingInfo == "") {
+                        subjectBuidingIds = "<option>None</option>";
+                        buildingInfoString = noBuilding(items[q].i.P_ID);
+                        comps += compPropertyInfo(items[q], buildingInfoString, picinginfo, subjectBuidingIds, "comp", "0");
+                    } else {
+                        for (b = 0; b < buildinginfo.items.length; b++) {
+                            var compsString = "";
+                            compBuidingIds += "<option>" + buildinginfo.items[b].BLDG_ID + "." + buildinginfo.items[b].BLDG_SEQ + "</option>";
+                            if (b == 0) {
+                                buildingValue[0] = buildinginfo.items[b].BuildingValue - 0;
+                                buildingInfoString += compBuildingInfo(buildinginfo.items[b], 'block', items[q].i.P_ID);
+                            } else {
+                                buildingValue[1] += buildinginfo.items[b].BuildingValue - 0;
+                                buildingInfoString += compBuildingInfo(buildinginfo.items[b], 'none', items[q].i.P_ID);
+                            }
+                        }
+                        comps += compPropertyInfo(items[q], buildingInfoString, picinginfo, compBuidingIds, "comp", buildingValue);
+                    }
+                }
+            }
+            document.getElementById('content').innerHTML = subjectString + comps;
+            changeText();
+            straigUpAdjustment(miscVal, 'misc');
+        }
+    });
+}
+function adjustmentFactorBuildings(ele, itemType) {
+    var multiplier = ele.parentNode.childNodes[1].value;
+    var subjValue = ele.value;
+    var list = dojo.query('input.' + itemType);
+    for (q = 0; q < list.length; q++) {
+        var input = list[q];
+        if (input.parentNode.parentNode.parentNode.style.display != "none") {
+            var compValue = input.parentNode.childNodes['0'].value;
+            input.value = multiplier * (subjValue - compValue);
+            changeInputValue(input);
+        }        
+    }
+}
+function straigUpAdjustment(subjValue, itemType) {
+   
+    var list = dojo.query('input.' + itemType);
+    for (q = 0; q < list.length; q++) {
+        var input = list[q];
+        if (input.parentNode.parentNode.parentNode.style.display != "none") {
+            var val = input.parentNode.childNodes['0'].value * 1;
+            input.value = (subjValue * 1) - val;
+            changeInputValue(input);
+        }
+    }
+}
+function subjectPropertyInfo(item, buildings, picInfo, changeBuildingString, infoclass, buildingValue) {
+    var price, priceText;
+    if (item.i.SALE_PRICE != "none") {
+        price = item.i.SALE_PRICE;
+        priceText = "<span class='changeTextPRICE' >" + currency(item.i.SALE_PRICE) + '<img style="right:0px; top:0px;" src="Images/info.gif" onmouseover="arTip(this, \'Sale Price\' )" onmouseout="closeArDialog()" /></span>';
+    } else {
+        price = item.i.APPRAISED_VALUE;
+        priceText = "<span class='changeTextPRICE' >" + currency(item.i.APPRAISED_VALUE) + '<img style="right:0px; top:0px;" src="Images/info.gif" onmouseover="arTip(this, \'Appraised Value\' )" onmouseout="closeArDialog()" /></span>';
+    }
+    //Template for locks
+    //<img alt='' class='changeText' title='Unlock' src='Images/Lock.png'/><input class='changeText' readonly='readonly' value=''/>
+
+    var subInfo = "<div id='" + item.i.P_ID + "' class='" + infoclass + "'>" + picInfo +
+                    "<ul class='c" + item.i.P_ID + "'>" +
+                    "<li><span class='arAddress'>" + item.i.FORMATED_ADDRESS + "</span></li>" +
+                    "<li><span class='arTM'>" + item.i.TAX_MAP + "</span></li> " +
+                    "<li><span class='arTM'>" + item.i.SALE_DATE + "</span></li>" +
+                    "<li>" + priceText + "</li>" +
+                    "<li><span class='arLbl'><strong>Location:</strong></span><span class='arVal'>" + item.i.NBHD + "</span></li>" +
+                    "<li><span class='arLbl' title='LandSize'><strong>Acreage:</strong></span><span class='arVal'>" + item.i.Area + "</span></li>" +
+                    "<li><span class='arLbl'><strong>Water:</strong></span><span class='arVal'>" + item.i.water + "</span></li>" +
+                    "<li>View Building:&nbsp;<select onChange='changeBuilding(this)'>" + changeBuildingString + "</select></li>" +
+                    "<li>" + buildings + "</li>" +
+                    '<li><span class="arLbl"><strong>Other Building Value:<img style="right:0px; top:0px;" src="Images/info.gif" onmouseover="arTip(this, \'This value is calculated by <br/>subtracting the largest <br/>building\\&#39;s value from the <br/>total building value\')"  onmouseout="closeArDialog()" /></strong></span><span class="arVal">' + currency(buildingValue[1]) + "</span></li>" +
+                    "<li>" +
+                        "<span class='arLbl'><strong>Misc Value (Pools, sheds, TC, etc.):</strong></span><span class='arVal'>" + currency(item.i.MISC_VALUE) +
+                        //    "<span><label for='sqFtMULT'>&nbsp;X&nbsp;</label></span>" +
+                        //    "<input id='sqFtMULT' type='checkbox' onChange='this.checked ? document.getElementById(\"miscSqFt\").style.display = \"block\" : document.getElementById(\"miscSqFt\").style.display = \"none\";'/>" +
+ 					    //    "<span id='miscSqFt' class='multiplier' style='display:none;'>" +
+                        //    "    <input type='text' style='width:75px;' value='0'/><button onclick='straigUpAdjustment(this, \"misc\")'>GO</button></span>" +
+                         "</span>" +
+                    "</li>" +
+                    "<li><span class='arLbl'><strong>Other Adjustments:</strong></span><span class='arVal'></span></li>" +
+//                    "<li><span class='arLbl'><strong>Building Value:</strong></span><span class='arVal'>" + currency(item.i.BLDG_VALUE) + "</span></li>" +
+    //                    "<li><span class='arLbl'><strong>Land Value:</strong></span><span class='arVal'>" + currency(item.i.LAND_VALUE) + "</span></li>" +
+                    "<li><span class='TOTVal1'>Indicated Value:</span><input class='TOTVal' id='totVal" + item.i.P_ID + "'value='" + currency(price) + "'/></li>" +
+                    "</ul>Notes:<textarea class='notestextarea'></textarea></div></div>";
+    return subInfo;
+}
+function compPropertyInfo(item, buildings, picInfo, changeBuildingString, infoclass, buildingValue) {
+    var price, priceText;
+//    price = item.i.SALE_PRICE;
+//    priceText = "<span class='changeTextPRICE' >" + currency(item.i.SALE_PRICE) + '<img style="right:0px; top:0px;" src="Images/info.gif" onmouseover="arTip(this, \'Sale Price\' )" onmouseout="closeArDialog()" /></span>';
+    if (item.i.SALE_PRICE != "none") {
+        price = item.i.SALE_PRICE;
+        priceText = "<span class='changeTextPRICE' ><input type='hidden' id='startPrice" + item.i.P_ID + "' value='" + item.i.SALE_PRICE + "' />" + currency(item.i.SALE_PRICE) + '<img style="right:0px; top:0px;" src="Images/info.gif" onmouseover="arTip(this, \'Sale Price\' )" onmouseout="closeArDialog()" /></span>';
+    } else {
+        price = item.i.APPRAISED_VALUE;
+        priceText = "<span class='changeTextPRICE' ><input type='hidden' id='startPrice" + item.i.P_ID + "' value='" + item.i.APPRAISED_VALUE + "' />" + currency(item.i.APPRAISED_VALUE) + '<img style="right:0px; top:0px;" src="Images/info.gif" onmouseover="arTip(this, \'Appraised Value\' )" onmouseout="closeArDialog()" /></span>';
+    }
+    var compInfo = "<div id='" + item.i.P_ID + "' class='" + infoclass + "'>" +
+                    "<div style='float:left; width:100%;'>" +
+                    "<div class='reSortComps' onmouseover='mouseOverSortComps(this)' onmouseout='mouseOutSortComps(this)' >" +
+                    "<div style='float:left;' onclick='moveDiv(this, \"less\")'; ><img alt='previous' src='Images/navigate-left-icon.png' /></div><div style='float:right;' onclick='moveDiv(this, \"more\")'; ><img alt='next' src='Images/navigate-right-icon.png' /></div>" +
+                    "</div>" + picInfo + 
+                    "<ul class='c" + item.i.P_ID + "'><li><span class='arAddress'>" + item.i.FORMATED_ADDRESS + "</span></li>" +
+                    "<li><span class='arTM'>" + item.i.TAX_MAP + "</span></li> " +
+                    "<li><span class='arTM'>" + item.i.SALE_DATE + "</span></li>" +
+                    "<li>" + priceText + "</li>" +
+                    "<li><span class='arLbl'>" + item.i.NBHD + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><span class='arLbl'>" + item.i.Area + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><span class='arLbl'>" + item.i.water + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li>View Building:&nbsp;<select onChange='changeBuilding(this)'>" + changeBuildingString + "</select></li>" +
+                    "<li>" + buildings + "</li>" +
+//                    "<li><span class='arLbl'>" + currency(item.i.MISC_VALUE) + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+//                    "<li><span class='arLbl'>" + currency(item.i.BLDG_VALUE) + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><span class='arLbl'>" + currency(buildingValue[1]) + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li>" +
+                        "<span class='arLbl'>" + currency(item.i.MISC_VALUE) + "</span>" +
+                        "<span class='changeText'><input type='hidden' value='" + item.i.MISC_VALUE * 1 + "' ><input class='changeText misc' value='' onchange=''/></span>" +
+                    "</li>" +
+                    "<li><span class='arLbl'></span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><input readonly='readonly' class='totLbl' alt='" + price + "' id='totVal" + item.i.P_ID + "'value='" + currency(price) + "'/></li>" +
+                    "</ul>Notes: <textarea class='notestextarea'></textarea></div></div>";
+   return compInfo;
+
+}
+function compBuildingInfo(item, display, parcel) {
+    var building = "<ul style='display:" + display + "' id='" + item.BLDG_ID + "." + item.BLDG_SEQ + "' class='b" + parcel + "'>" + 
+                    //"<li style='border-top-style: solid; border-top-width:2px; border-top-color: #666666; '><span class='arLbl' ><strong>Buiding ID:</strong></span><span class='arLbl'>" + item.BLDG_ID + "</span></li>" +
+                    "<li style='border-top-style: solid; border-top-width:2px; border-top-color: #666666; '><input  class='arVal' value='" + item.design + "'/><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><input  class='arVal' value='" + item.Quality + "'/><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><span class='arLbl'>" + item.YEAR_BUILT + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><input  class='arVal' value='" + item.condition + "'/><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li class='roomCNT' >" +
+                        "<table style='width:47%; float:left; text-align:right;'><tr><td>Total</td><td>Beds</td><td>Bath</td></tr><tr><td></td><td>" + item.bedrooms + "</td><td>" + item.Totbaths + "</td></tr><tr><td colspan='3'>" + item.TOTAL_EFFECTIVE + "</td></tr></table>" +
+                        "<span style='margin-left: 5px;' class='changeText' ><input class='changeText'  value=''/></span>" +
+                        "<span style='margin-left: 5px;' class='changeText' ><input type='hidden' value='" + item.TOTAL_EFFECTIVE * 1 + "' ><input class='changeText gla'  value=''/></span>" +
+                    "</li>" +
+                    "<li><span class='arLbl'>" + item.houseType + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><span class='arLbl'>" + item.bsmtfin + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><span class='arLbl' >" + item.hvac + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li><span class='arLbl'>" + item.fireplace + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li>" +
+                    "<li style='border-bottom-style: solid; border-bottom-width:2px; border-bottom-color: #666666; '><span class='arLbl' >" + item.garage + "</span><span class='changeText' ><input class='changeText'  value=''/></span></li></ul>";
+   return building;
+}
+function subjectBuildingInfo(item, display, parcel) {
+    var building = "<ul style='display:" + display + "' id='" + item.BLDG_ID + "." + item.BLDG_SEQ + "' class='b" + parcel + "'>" +
+                    //"<li style='border-top-style: solid; border-top-width:2px; border-top-color: #666666;'><span class='arLbl' ><strong>Buiding ID:</strong></span><span  class='arVal'>" + item.BLDG_ID + "</span></li>" +
+                    "<li style='border-top-style: solid; border-top-width:2px; border-top-color: #666666;'><span class='arLbl' ><strong>Design:</strong></span><input  class='arVal' value='" + item.design + "'/></li>" +
+                    "<li><span class='arLbl' ><strong>Quality:</strong></span><input  class='arVal' value='" + item.Quality + "'/></li>" +
+                    "<li><span class='arLbl' ><strong>Year Built:</strong></span><span  class='arVal'>" + item.YEAR_BUILT + "</span></li>" +
+                    "<li><span class='arLbl' ><strong>Condition:</strong></span><input  class='arVal' value='" + item.condition + "'/></li>" +
+                    "<li class='roomCNT' >" +
+                        "<table style='width:47%; float:left;'><tr><td>Above Grade</td></tr><tr><td>Room Count</td></tr><tr><td>Gross Living Area" + "</td></tr></table>" +
+                        "<table style='width:47%; float:left; text-align:right;'><tr><td>Total</td><td>Beds</td><td>Bath</td></tr><tr><td></td><td>" + item.bedrooms + "</td><td>" + item.Totbaths +
+                            "</td></tr><tr><td colspan='2'>" +
+                                "<input type='checkbox' onChange='this.checked ? document.getElementById(\"glaSqFt\").style.display = \"block\" : document.getElementById(\"glaSqFt\").style.display = \"none\";'/>" +
+                                "<span id='glaSqFt' style='display:none;' class='multiplier'>" +
+                                "    <input type='text' style='width:75px;' value='' /><button onclick='adjustmentFactorBuildings(this, \"gla\")' value='" + item.TOTAL_EFFECTIVE + "'>GO</button>" +
+                                "</span>&nbsp;X&nbsp;" +
+                                "</td><td >" + item.TOTAL_EFFECTIVE +
+                        "</td></tr></table>" +
+                    "</li>" +
+                    "<li><span class='arLbl' ><strong>Functional Utility:</strong></span><span  class='arVal'>" + item.houseType + "</span></li>" +
+                    "<li><span class='arLbl' ><strong>Basement Finish:</strong></span><span  class='arVal'>" + item.bsmtfin + "</span></li>" +
+                    "<li><span class='arLbl' ><strong>Heating/Cooling:</strong></span><span  class='arVal'>" + item.hvac + "</span></li>" +
+                    "<li><span class='arLbl' ><strong>Fire Places:</strong></span><span  class='arVal'>" + item.fireplace + "</span></li>" +
+                    "<li style='border-bottom-style: solid; border-bottom-width:2px; border-bottom-color: #666666;'><span class='arLbl' ><strong>Garage:</strong></span><span  class='arVal' >" + item.garage + "</span></li></ul> ";
+    return building;
+}
+function noBuilding(pid) {
+    var building = "<ul class='b"+ pid + "'>" +
+                    //"<li style='border-top-style: solid; border-top-width:2px; border-top-color: #666666;'><span class='arLbl' ><strong>Buiding ID:</strong></span><span class='arVal'>none</span></li>" +
+                    "<li style='border-top-style: solid; border-top-width:2px; border-top-color: #666666;'><span class='arLbl' ><strong>Design:</strong></span><span class='arVal'>none</span></li>" +
+                    "<li><span class='arLbl' ><strong>Quality:</strong></span><span  class='arVal'>none</span></li>" +
+                    "<li><span class='arLbl' ><strong>Year Built:</strong></span><span  class='arVal'>none</span></li>" +
+                    "<li><span class='arLbl' ><strong>Condition:</strong></span><span  class='arVal'>none</span></li>" +
+                    "<li class='roomCNT' >" +
+                    "<table style='width:47%; float:left;'><tr><td>Above Grade</td></tr><tr><td>Room Count</td></tr><tr><td>Gross Living Area</td></tr></table>" +
+                    "<table style='width:47%; float:left; text-align:right;'><tr><td>Total</td><td>Beds</td><td>Bath</td></tr><tr><td></td><td>0</td><td>0</td></tr><tr><td colspan='3'>0</td></tr></table>" +
+                    "</li>" +
+                    "<li><span class='arLbl' ><strong>Functional Utility:</strong></span><span  class='arVal'>none</span></li>" +
+                    "<li><span class='arLbl' ><strong>Basement Finish:</strong></span><span  class='arVal'>none</span></li>" +
+                    "<li><span class='arLbl' ><strong>Heating/Cooling:</strong></span><span  class='arVal'>none</span></li>" +
+                    "<li><span class='arLbl' ><strong>Fire Places:</strong></span><span  class='arVal'>none</span></li>" +
+   
+                    "<li style='border-bottom-style: solid; border-bottom-width:2px; border-bottom-color: #666666;'><span class='arLbl' ><strong>Garage:</strong></span><span  class='arVal' >none</span></li></ul> ";
+    return building;
+}
+function currency(localeCurrency) {
+    if (dojo.currency.format(localeCurrency, "USD")) {
+        return "$" + dojo.currency.format(localeCurrency, "USD");
+    } else {
+        return "No Value";
+    }
+}
+function changeBuilding(obj) {
+    var id = obj.value;
+    if (!id) {
+        alert('Error in viewing a different Buiding \rPlease Contact GIS');
+    } else {
+        var ele = document.getElementById(id);
+        var ul = document.querySelectorAll("ul." + ele.className);
+        for (i = 0; i < ul.length; i++) {
+            if (ul[i].id == id) {
+                ul[i].style.display = "block";
+            } else {
+                ul[i].style.display = "none";
+            }
+        }
+    }
+}
+function arTip(evt, text) {
+    var posx = 0;
+    var posy = 0;
+
+    closeArDialog();
+    var dialog = new dijit.TooltipDialog({
+        id: "tooltipDialog",
+        content: text,
+        style: "position: absolute; font: normal normal bold 10pt Tahoma; z-index:100;"
+    });
+    dialog.startup();
+
+    var point = findPos(evt);
+    dojo.style(dialog.domNode, "opacity", 0.85);
+    dijit.placeOnScreen(dialog.domNode, { x: point[0] + 5, y: point[1] + 5 }, ["TL", "BL"], { x: 10, y: 10 });
+}
+function closeArDialog(graphic) {
+    if (graphic) {
+        if (graphic.graphic.symbol == graphic.graphic.getLayer().getSelectionSymbol() && graphic.graphic.getLayer() == map.getLayer("waterLayer")) {
+            graphic.graphic.getLayer().clearSelection();
+            //graphic.graphic.symbol.outline.style == graphic.graphic.getLayer().getSelectionSymbol();
+        }
+    }
+    var widget = dijit.byId("tooltipDialog");
+    if (widget) {
+        widget.destroy();
+    }
+}
+function findPos(obj) {
+    var curleft = curtop = 0;
+    if (obj.offsetParent) {
+        do {
+            curleft += obj.offsetLeft;
+            curtop += obj.offsetTop;
+        }
+        while (obj = obj.offsetParent);
+    }
+    return [curleft, curtop];
+}
+
+function moveDiv(obj, direction) {
+    var content = document.getElementById(obj.parentNode.parentNode.parentNode.id);
+    for (i = 0; i < obj.parentNode.parentNode.parentNode.parentNode.children.length; i++) {
+        if (obj.parentNode.parentNode.parentNode.parentNode.children[i].id == obj.parentNode.parentNode.parentNode.id) {
+            objIndex = i;
+        }
+    }
+    if (direction == "more" && objIndex < obj.parentNode.parentNode.parentNode.parentNode.children.length - 1) {
+        insertAfter(content, obj.parentNode.parentNode.parentNode.parentNode.children[objIndex + 1]);
+        obj.parentNode.className = "reSortComps";
+    } else if (direction == "less" && objIndex > 1) {
+        obj.parentNode.parentNode.parentNode.parentNode.insertBefore(content, obj.parentNode.parentNode.parentNode.parentNode.children[objIndex - 1]);
+        obj.parentNode.className = "reSortComps";
+    }
+}
+//create function, it expects 2 values.
+function insertAfter(newElement, targetElement) {
+    //target is what you want it to go after. Look for this elements parent.
+    var parent = targetElement.parentNode;
+
+    //if the parents lastchild is the targetElement...
+    if (parent.lastchild == targetElement) {
+        //add the newElement after the target element.
+        parent.appendChild(newElement);
+    } else {
+        // else the target has siblings, insert the new element between the target and it's next sibling.
+        parent.insertBefore(newElement, targetElement.nextSibling);
+    }
+}
+function mouseOverSortComps(obj) {
+    obj.className = "hover";
+}
+function mouseOutSortComps(obj) {
+    obj.className = "reSortComps";
+}

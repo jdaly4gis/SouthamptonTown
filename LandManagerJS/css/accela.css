@@ -1,0 +1,74 @@
+﻿.accela
+{
+    font-size: small;
+    font-family: Calibri;
+    padding: 20px;
+    
+}
+.Rent
+{
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: #E7F8E4;
+    border: 1px solid #999999;
+}
+.Comp
+{
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;    
+    background-color: #E6EEF7;
+    border: 1px solid #999999;
+
+}
+
+.accelaRecordTypes
+{
+    padding: 5px;
+    background-color: #FFFF00;
+    border: 1px solid #999999;
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.accelaInspectionInfo
+{
+    background-color: white;
+    padding: 5px;
+    border: 1px solid #999999;
+     margin-left:25px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    color: #000000;
+    font-size: small;
+}
+.accelaRecordInfoStatus
+{
+    color: #000000;
+    font-weight: bolder;
+}
+.accelaComments
+{
+    padding: 5px;
+    border: 1px solid #999999;
+    background-color: #E6E6E6;
+    margin-left:25px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: #000000;
+    font-size: small;
+}
+.accela table
+{
+
+    border-collapse: collapse;
+}
+::selection
+{
+    background: #FF9933; /* WebKit/Blink Browsers */
+}
+::-moz-selection
+{
+    background: #FF9933; /* Gecko Browsers */
+}

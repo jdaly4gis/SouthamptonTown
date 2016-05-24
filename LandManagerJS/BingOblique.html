@@ -1,0 +1,49 @@
+﻿
+
+<html>
+<head>
+    <title>Map with birds eye view</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1"></script>
+    <script type="text/javascript">
+        var map = null;
+
+        function getRequestParam(name) {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.href);
+            if (results == null)
+                return "";
+            else
+                return results[1];
+        }
+
+        var y = getRequestParam('ycoord');
+        var x = getRequestParam('xcoord');
+        //var y = 40.863986297778844;
+        //var x = -72.51193791167402;
+
+        function getMap() {
+            map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                credentials: 'AlJ9MLUKNT-N2HvaW6jP8EvneR7NlOhQg3FVgcBvj2mJoyEaq4WNuphtRVqmok1c',
+                center: new Microsoft.Maps.Location(y, x),
+                mapTypeId: Microsoft.Maps.MapTypeId.birdseye,
+                zoom: 18
+            });
+            updatePushpinLocation();
+        }
+        function updatePushpinLocation() {
+            var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), null);
+            map.entities.push(pushpin);
+            pushpin.setLocation(new Microsoft.Maps.Location(y, x));
+            //map.setView({ center: new Microsoft.Maps.Location(47.5, -122.33) });
+            // alert('pushpin location updated');
+        }
+
+    </script>
+</head>
+<body onload="getMap();">
+    <div id='myMap' style=" width:100%; height:100%;"></div>
+</body>
+</html>

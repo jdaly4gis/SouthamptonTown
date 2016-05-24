@@ -1,0 +1,1768 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <!-- <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />-->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />   
+    <meta name="apple-mobile-web-app-capable" content="yes" />  
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+       <title>Referrals</title>
+    <link rel="stylesheet" type="text/css" href="referrals.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/claro.css"/>
+    <script type="text/javascript">
+        dojoConfig = { parseOnLoad: true };
+    </script>
+    <!--<script src="../../proxy.ashx" ></script>-->
+    <script type="text/javascript" src="../../javascript/api/ags_3_8.js"></script>
+
+	<script type="text/javascript">
+	    dojo.require("dijit.Menu");
+	    dojo.require("dijit.form.Form");
+	    dojo.require("dijit.layout.ContentPane");
+	    dojo.require("dijit.form.CheckBox");
+	    dojo.require("dijit.form.Button");
+	    dojo.require("dijit.form.FilteringSelect");
+	    dojo.require("dijit.form.Select");
+	    dojo.require("dijit.form.TextBox");
+	    dojo.require("dijit.form.Textarea");
+	    dojo.require("dijit.layout.BorderContainer");
+	    dojo.require("dijit.ProgressBar");
+	    dojo.require("dijit.form.ValidationTextBox");
+	    dojo.require("dijit.form.DateTextBox");
+	    dojo.require("dijit.form.RadioButton");
+	    dojo.require("dojo.data.ItemFileReadStore");
+	    dojo.require("dojo.date.locale");
+	    dojo.require("dojox.validate.web");
+	    dojo.require("dojox.validate.us");
+	    dojo.require("dojox.validate.check");
+	    dojo.require("esri.map");
+	    dojo.require("esri.tasks.query");
+	    dojo.require("esri.tasks.geometry");
+	    dojo.require('dijit.form.NumberTextBox')
+	    dojo.require('dijit.Tooltip');
+
+         //var mouseX = __MOUSE_X__;
+         //var mouseY = __MOUSE_Y__;
+         var mouseX = "";
+         var mouseY = "";
+         var restUrls = new Array();
+         var sender;
+         var profile;
+         
+
+        restUrls[0]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/0";  //Airport_1mile_Buffer
+        restUrls[1]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/1";  //FED_NYS_SC_500_Buffer
+        restUrls[2]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/2";  //Channels_500_Buffer
+        restUrls[3]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/3";  //Trustee_Lands
+        restUrls[4]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/4";  //Shin_Indian
+        restUrls[5]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/5";  //Historical_Districts
+        restUrls[6]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/6";  //Arch_Sensitive
+        restUrls[7]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/7";  //apod
+        restUrls[8]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/8";  //agod
+        restUrls[9]  = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/9";  //CAC
+        restUrls[10] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/10"; //pine2plan
+        restUrls[11] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/11"; //sfpb
+        restUrls[12] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/12"; //Fire_districts
+        restUrls[13] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/13"; //Amb_service_areas
+        restUrls[14] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/14"; //Village_500_Buffer
+        restUrls[15] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/15"; //Coastline_500_Buffer
+        restUrls[16] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/16"; //Municpal_500_Buffer
+        restUrls[17] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/17"; //DEC_FWW_300_Buffer
+        restUrls[18] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/18"; //DEC_TIDAL_300_Buffer
+        restUrls[19] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/19"; //Parks_500_Buffer
+        restUrls[20] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/20"; //SCWA_1000_Buffer
+        restUrls[21] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/21"; //Historic_Resource
+        restUrls[22] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/22"; //Trustee_Rd_50_Buffer
+        restUrls[23] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/23"; //CR_50_Buffer
+        restUrls[24] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/24"; //SR_50_Buffer
+        restUrls[25] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/25"; //Trails
+        restUrls[26] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/26"; //Trustee_Lands_50_Buffer
+        restUrls[27] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/27"; //Bldgs_Older_1950
+        restUrls[28] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/28"; //Basemap
+        restUrls[29] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/29"; //AgDist5_500_Buffer
+        restUrls[30] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/30"; //CR_500_Buffer
+        restUrls[31] = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/Referrals/MapServer/31"; //SR_500_Buffer
+
+        
+        dojo.ready(function () {
+            //	wait until after our requires are actually loaded.
+
+            profile = {
+                trim: ["appname"],
+                required: ["appname"],
+                constraints: {
+                    appname: dojox.validate.isText
+                }
+            };
+
+            //	set up the form handler.
+            var f = dojo.query("form")[0];
+            f.onsubmit = function (e) {
+                if (!doCheck(f) == true)
+                    dojo.stopEvent(e);
+            };
+
+        });
+
+	   function onSuccess()
+	   {
+		//alert("successful query");
+	   }
+
+	   function onErr(e)
+	   {
+		alert("Error thrown on getting Polygon geometry. Name: " + e.name + " => Message: " + e.message);	
+	   }
+
+	   function onErr2()
+	   {
+		alert("Error thrown on Intersects:" + index);
+	   }
+
+    function doPreChecking() {
+        dojo.query("input:checkbox").forEach(function (selectTag) {
+            selectTag.onclick = preChecking;
+        });
+    }
+    function sitePlanSqFt(val) {
+        if (val < 5000) {
+            dijit.byId('cbrefbysuffcoplancom').set('checked', false);
+        } else if (val > 5000){
+	 dijit.byId('cbrefbysuffcoplancom').set('checked', true);
+}
+    }
+    function initFunctionality() {
+        var oid, dsbl, city, address, pointX, pointY;
+        //var query = "?object_id=15840";
+        //http: //localhost:54273/LandManagerJS/referrals/Referrals.html?parcel_id=72239&dsbl=900%20-%20295%20-%201%20-%201.9&hamlet=Hampton%20Bays&address=30B%20Bay%20Ave&pointX=1392970.3165162333&pointY=256734.02728651476
+        //query = query.split("&");
+
+        //oid = 15840;
+        var query = window.location.search.split("&");
+        oid = query[0].substring(11);
+        
+        //dijit.byId('taxmapno').set('value', unescape(query[1].substring(5)));
+        //dijit.byId('hamlet').set('value', unescape(query[2].substring(7)));
+        //dijit.byId('propaddress').set('value', unescape(query[3].substring(8)));
+        //mouseX = query[4].substring(7);
+        //mouseY = query[5].substring(7);
+        //var query = window.location.search.split("&");
+
+        esri.config.defaults.io.proxyUrl = "../../proxy.ashx";
+        esri.config.defaults.io.alwaysUseProxy = true;
+
+        doPreChecking();
+
+        var queryTaskIntersects;
+        //var currentClick;
+        var restIndex;
+        var queryTask;
+        var query;
+        var qsvc;
+        var poly;
+        
+        //gsvc = new esri.tasks.GeometryService("https://gis.southamptontownny.gov/ArcGIS/rest/services/Geometry/GeometryServer");
+        query = new esri.tasks.Query();
+
+        //query.spatialRelationship = esri.tasks.Query.SPATIAL_REL_INTERSECTS;
+        //currentClick = query.geometry = new esri.geometry.Point([mouseX, mouseY], new esri.SpatialReference({ wkid: 2263 }));
+        //currentClick = new esri.geometry.Point([mouseX, mouseY], new esri.SpatialReference({ wkid: 2263 }));
+        query.returnGeometry = true;
+        query.outSpatialReference = esri.SpatialReference({ wkid: 2263 });
+        query.outFields = ["*"];
+        
+        query.objectIds = [oid];
+        //query.where = "OBJECT_ID = " + oid;
+        
+        queryTask = new esri.tasks.QueryTask("https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/LandManager/MapServer/0");
+        
+        queryTask.execute(query, checkIntersect, onErr);
+    }
+    function checkIntersect(fset) {
+        var resultFeatures = fset.features;
+
+        if (resultFeatures.length > 0) {
+            poly = resultFeatures[0];
+        }
+        dijit.byId('taxmapno').set('value', fset.features[0].attributes.DSBL);
+        dijit.byId('hamlet').set('value', fset.features[0].attributes.HAMLET);
+        dijit.byId('propaddress').set('value', fset.features[0].attributes.ADDRESS);
+
+        var numParts = Math.floor(100 / 4);
+        jsProgress.update({ maximum: 31, progress: 0 });
+
+        var query2 = new esri.tasks.Query();
+        query2.geometry = poly.geometry;
+        query2.returnGeometry = false;
+        query2.outFields = ['*'];
+        //query2.spatialRelationship = esri.tasks.Query.SPATIAL_REL_INTERSECTS;
+
+        dojo.forEach(restUrls, function (url, i) {
+            IntersectAndCheck(query2, i);
+            setTimeout("jsProgress.update({ progress: " + i + " })", (i + 1) * 100 + Math.floor(Math.random() * 100));
+        });
+    }
+    function doSimplify(poly) {
+        //simplify the polygon if self-intersecting
+        if (esri.geometry.polygonSelfIntersecting(poly.geometry)) {
+            alert("poly IS self intersecting");
+            //gsvc.simplify([ polygonGraphic.geometry ], simplifyCallback);
+        }
+    }
+
+    function IntersectAndCheck(queryIn, index) {
+        var startCheckIDs = "";
+        queryTaskIntersects = new esri.tasks.QueryTask(restUrls[index]);
+        queryTaskIntersects.execute(queryIn, function (fset) {
+            if (fset.features.length != 0) {
+                switch (index) {
+                    case 0:
+                        dijit.byId('cbother1mileair').attr('value', true);
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        startCheckIDs += ';cbother1mileair;cbrefbysuffcoplancom';
+                        break;
+                    case 1:
+                        dijit.byId('cbother500fedland').attr('value', true);
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        startCheckIDs += ';cbother500fedland;cbrefbysuffcoplancom';
+                        break;
+                    case 2:
+                        dijit.byId('cbother500scchannel').attr('value', true);
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        startCheckIDs += ';cbother500scchannel;cbrefbysuffcoplancom';
+                        break;
+                    case 3:
+                        dijit.byId('cbtowntrustees').attr('value', true);
+                        dijit.byId('cbotheradjtrusteeland').attr('value', true);
+                        startCheckIDs += ';cbtowntrustees;cbotheradjtrusteeland';
+                        break;
+                    case 4:
+                        dijit.byId('cbarchsensitive').attr('value', true);
+                        dijit.byId('cbrefbylandmarks').attr('value', true);
+                        startCheckIDs += ';cbarchsensitive;cbrefbylandmarks';
+                        break;
+                    case 5:
+                        dijit.byId('cbrefbylandmarks').attr('value', true);
+                        dijit.byId('cbrefbyparksrec').attr('value', true);
+                        //dijit.byId('cbother250historic').attr('value', true);
+                        startCheckIDs += ';cbrefbylandmarks;cbrefbyparksrec';
+                        break;
+                    case 6:
+                        dijit.byId('cbrefbylandmarks').attr('value', true);
+                        dijit.byId('cbarchsensitive').attr('value', true);
+                        dijit.byId('cbrefbyparksrec').attr('value', true);
+                        startCheckIDs += ';cbrefbylandmarks;cbarchsensitive;cbrefbyparksrec';
+                        break;
+                    case 7:
+                        dijit.byId('cbaqoverlay').attr('value', true);
+                        startCheckIDs += ';cbaqoverlay';
+                        break;
+                    case 8:
+                        dijit.byId('cbagroverlay').attr('value', true);
+                        dijit.byId('cbtownagadviscomm').attr('value', true);
+                        startCheckIDs += ';cbaqoverlay;cbtownagadviscomm';
+                        break;
+                    case 9:
+                        SetCACDistrict(fset.features);
+                        break;
+                    case 10:
+                        dijit.byId('cbcentralpinebarrens').attr('value', true);
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        dijit.byId('cbrefbypinbarrenscom').attr('value', true);
+                        startCheckIDs += ';cbcentralpinebarrens;cbrefbysuffcoplancom;cbrefbypinbarrenscom';
+                        break;
+                    case 11:
+                        //dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        //dijit.byId('cbrefbypinbarrenscom').attr('value', true);
+                        //startCheckIDs += ';cbrefbysuffcoplancom;cbrefbypinbarrenscom';
+                        break;
+                    case 12:
+                        SetFireDistrict(fset.features);
+                        break;
+                    case 13:
+                        SetAmbulanceDistrict(fset.features);
+                        break;
+                    case 14:
+                        SetPlanningDept(fset.features);
+                        break;
+                    case 15:
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        dijit.byId('cbdistfromcoast').attr('value', true);
+                        startCheckIDs += ';cbrefbysuffcoplancom;cbdistfromcoast';
+                        break;
+                    case 16:
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        dijit.byId('cbother500boundary').attr('value', true);
+                        startCheckIDs += ';cbrefbysuffcoplancom;cbother500boundary';
+                        break;
+                    case 17:
+                        dijit.byId('cbrefbynysdec').attr('value', true);
+                        dijit.byId('cbdistfromwetlandsfw').attr('value', true);
+                        dijit.byId('cbtownconservation').attr('value', true);
+                        startCheckIDs += ';cbrefbynysdec;cbdistfromwetlandsfw;cbtownconservation';
+                        break;
+                    case 18:
+                        dijit.byId('cbrefbynysdec').attr('value', true);
+                        dijit.byId('cbdistfromwetlandstidal').attr('value', true);
+                        dijit.byId('cbtownconservation').attr('value', true);
+                        startCheckIDs += ';cbrefbynysdec;cbdistfromwetlandstidal;cbtownconservation';
+                        break;
+                    case 19:
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        dijit.byId('cbdistfromgovpark').attr('value', true);
+                        dijit.byId('cbrefbyparksrec').attr('value', true);
+                        startCheckIDs += ';cbrefbysuffcoplancom;cbdistfromgovpark;cbtownconservation';
+                        break;
+                    case 20:
+                        dijit.byId('cbrefbyscwa').attr('value', true);
+                        startCheckIDs += ';cbrefbyscwa';
+                        break;
+                    case 21:
+                        dijit.byId('cbrefbyparksrec').attr('value', true);
+                        dijit.byId('cbrefbylandmarks').attr('value', true);
+                        startCheckIDs += ';cbrefbyparksrec;cbrefbylandmarks';
+                        break;
+                    case 22:
+                        dijit.byId('cbtrusteeroad').attr('value', true);
+                        dijit.byId('cbtowntrustees').attr('value', true);
+                        dijit.byId('cbotheradjtrusteeland').attr('value', true);
+                        startCheckIDs += ';cbtrusteeroad;cbtowntrustees;cbotheradjtrusteeland';
+                        break;
+                    case 23:
+                        dijit.byId('cbcountyroad').attr('value', true);
+                        dijit.byId('cbrefbysuffcodpw').attr('value', true);
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        startCheckIDs += ';cbcountyroad;cbrefbysuffcodpw;cbrefbysuffcoplancom';
+                        break;
+                    case 24:
+                        dijit.byId('cbstateroad').attr('value', true);
+                        dijit.byId('cbrefbynysdot').attr('value', true);
+                        startCheckIDs += ';cbstateroad;cbrefbynysdot';
+                        break;
+                    case 25:
+                        dijit.byId('cbtrails').attr('value', true);
+                        dijit.byId('cbtowntrailsadvisory').attr('value', true);
+                        startCheckIDs += ';cbtrails;cbtowntrailsadvisory';
+                        break;
+                    case 26:
+                        dijit.byId('cbwaterfront').attr('value', true);
+                        dijit.byId('cbtowntrustees').attr('value', true);
+                        dijit.byId('cbotheradjtrusteeland').attr('value', true);
+                        startCheckIDs += ';cbwaterfront;cbtowntrustees;cbotheradjtrusteeland';
+                        break;
+                    case 27:
+                        dijit.byId('cbrefbylandmarks').attr('value', true);
+                        startCheckIDs += ';cbrefbylandmarks';
+                        break;
+                    case 29:
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        dijit.byId('cb500agdist').attr('value', true);
+                        startCheckIDs += ';cbrefbysuffcoplancom;cb500agdist';
+                        break;
+                    case 30:
+                        dijit.byId('cbrefbysuffcodpw').attr('value', true);
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        dijit.byId('cbcountyroad500').attr('value', true);
+                        startCheckIDs += ';cbrefbysuffcoplancom;cbcountyroad500;cbrefbysuffcodpw';
+                        break;
+                    case 31:
+                        dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+                        dijit.byId('cbstateroad500').attr('value', true);
+                        dijit.byId('cbrefbynysdot').attr('value', true);
+                        startCheckIDs += ';cbrefbysuffcoplancom;cbstateroad500;cbrefbynysdot';
+                        break;
+                }
+                document.getElementById('startIDs').value += startCheckIDs;
+            }
+        }, onErr2);
+
+    }
+    function SetAmbulanceDistrict(features) {
+        dojo.forEach(features, function (feature, i) {
+            switch (i) {
+                case 0:
+                    dijit.byId('AmbDist1').attr('value', feature.attributes.DISTRICT);
+                    break;
+                case 1:
+                    dijit.byId('AmbDist2').attr('value', feature.attributes.DISTRICT);
+                    break;
+            }
+        });
+    }
+
+
+    function SetFireDistrict(features) {
+        dojo.forEach(features, function (feature, i) {
+            switch (i) {
+                case 0:
+                    dijit.byId('FireDist1').attr('value', feature.attributes.FD_NAME);
+                    break;
+                case 1:
+                    dijit.byId('FireDist2').attr('value', feature.attributes.FD_NAME);
+                    break;
+            }
+        });
+    }
+
+    function SetCACDistrict(features) {
+        dojo.forEach(features, function (feature, i) {
+            switch (i) {
+                case 0:
+                    dijit.byId('CAC1').attr('value', feature.attributes.CAC);
+                    break;
+                case 1:
+                    dijit.byId('CAC2').attr('value', feature.attributes.CAC);
+                    break;
+            }
+        });
+    }
+
+    function SetPlanningDept(features) {
+        dojo.forEach(features, function (feature, i) {
+            switch (i) {
+                case 0:
+                    dijit.byId('VillagePlanning').attr('value', feature.attributes.VILLAGE);
+                    break;
+                case 1:
+                    dijit.byId('VillagePlanning').attr('value', feature.attributes.VILLAGE);
+                    break;
+            }
+        });
+    }      
+    dojo.addOnLoad(initFunctionality);
+
+
+    function setAppType() {
+        var atypes = new Array();
+        dojo.query(".apptype").forEach(function (node, index, arr) {
+            var n = dijit.getEnclosingWidget(node)
+            if (n.checked) {
+                atypes.push(n.value);
+            }
+        });
+        dojo.byId('apptypeall').value = atypes.join(", ");
+    }
+
+    function setEncType() {
+        var enctypes = new Array();
+        dojo.query(".enclosures").forEach(function (node, index, arr) {
+            var n = dijit.getEnclosingWidget(node)
+            if (n.checked) {
+                enctypes.push(n.value);
+            }
+        });
+        dojo.byId('enclosuresall').value = enctypes.join(", ");
+    }
+
+	
+	function doCheck(form) {
+		var send = true;
+		var results = dojox.validate.check(form, profile),
+			r = dojo.byId("response");
+
+		if (results.isSuccessful()) {
+		    setAppType();
+		    setEncType();
+    	} else {
+		    var s = "";
+		    var missing = results.getMissing();
+		    if (missing.length) {
+		        s += 'The following fields are missing: ';
+
+		        dojo.forEach(missing, function (field) {
+		            s += field;
+		        });
+		        s += '.';
+		    }
+
+		    var invalid = results.getInvalid();
+		    if (invalid.length) {
+		        s += '<h4>The following fields are invalid:</h4>'
+					+ '<ol>';
+		        dojo.forEach(invalid, function (field) {
+		            s += '<li>' + field + '</li>';
+		        });
+		        s += '</ol>';
+
+		    }
+		    alert(s);
+		    send = false;
+		}
+		return (send);
+	}
+	function setPlannerInfo(name) {
+		dojo.byId('planName').value = name;
+
+		switch (name) {
+		    case "Clare Vail":
+		        dojo.byId('planTitle').value = 'Principal Planner';
+		        dojo.byId('planEmail').value = 'cvail@southamptontownny.gov';
+		        break;
+		    case "David Wilcox":
+		        dojo.byId('planTitle').value = 'Town Planning Director';
+		        dojo.byId('planEmail').value = 'dwilcox@southamptontownny.gov';
+		        break;
+		    case "Jacqueline Fenlon":
+		        dojo.byId('planTitle').value = 'Senior Planner';
+		        dojo.byId('planEmail').value = 'jfenlon@southamptontownny.gov';
+		        break;
+		    case "Janice Scherer":
+		        dojo.byId('planTitle').value = 'Principal Planner';
+		        dojo.byId('planEmail').value = 'JScherer@southamptontownny.gov';
+		        break;
+		    case "Gretchen Coperine":
+		        dojo.byId('planTitle').value = 'Planner';
+		        dojo.byId('planEmail').value = 'GCoperine@southamptontownny.gov';
+		        break;
+		    case "Anthony Trezza":
+		        dojo.byId('planTitle').value = 'Planner';
+		        dojo.byId('planEmail').value = 'Atrezza@southamptontownny.gov';
+		        break;
+
+		    default:
+
+		}
+	}
+	function ToggleSitePlan(check) {
+
+	    dijit.byId('cbrefbysuffcoplancom').set('checked', check);
+
+		//if (!dijit.byId('cbspecex').checked) {
+	    dijit.byId('cbarchreviewboard').set('checked', check); ;
+		//}
+
+		//if (!dijit.byId('cbsubdivision').checked) {
+	    dijit.byId('cbtownconservation').set('checked', check); ;
+		//}
+	}
+
+	function ParksAndRec() {
+		var hasCheckedBox = false;
+		dojo.query(".parksrec").forEach(function (node, index, arr) {
+		    var n = dijit.getEnclosingWidget(node)
+		    if (n.checked) {
+		        hasCheckedBox = true;
+		    }
+		});
+		dijit.byId('cbrefbyparksrec').attr('value', hasCheckedBox);
+	}
+	function ToggleSubdivision(check) {
+	    dijit.byId('cbrefbyparksrec').set('checked', check);
+	    dijit.byId('cbtownconservation').set('checked', check);
+	    dijit.byId('cbtownhighwaydept').set('checked', check);
+	    dijit.byId('cbtowntrailsadvisory').set('checked', check);
+	    dijit.byId('cbseqratype1').set('checked', check);
+	    dijit.byId('cbseqraunlisted').set('checked', check);
+	}
+	function ToggleArchReview(check) {
+	    dijit.byId('cbarchreviewboard').set('checked', check);
+	    ToggleSitePlan(check);
+	}
+	function preChecking() {
+	    var isChecked = (this.checked) ? true : false;
+	    sender = dijit.getEnclosingWidget(this);
+	    switch (sender.name) {
+	        case 'appname':
+	        case 'appnumber':
+	        case 'taxmapno':
+	        case 'hamlet':
+	        case 'propaddress':
+	            break;
+	        default:
+	            if (sender.name) {
+	                dijit.byId(sender.name).attr('value', isChecked);
+	            }
+	            break;
+	    }
+	    switch (sender.name) {
+	        //	           case 'cbsiteplan': 
+	        //	               dijit.byId('cbencapp').attr('value', isChecked); 
+	        //	               dijit.byId('cbencgrad').attr('value', isChecked); 
+	        //	               dijit.byId('cbencelev').attr('value', isChecked); 
+	        //	               dijit.byId('cbencsiteplan').attr('value', isChecked); 
+	        //	               break; 
+	        case 'cbsubdivision':
+	            //dijit.byId('cbencapp').attr('value', isChecked);
+	            //dijit.byId('cbencdrain').attr('value', isChecked);
+	            //dijit.byId('cbenccluster').attr('value', isChecked);
+	            break;
+	        //	           case 'cboldfilemap': 
+	        //	               dijit.byId('cbencapp').attr('value', isChecked); 
+	        //	               break; 
+	        //	           case 'cbspecex': 
+	        //	               dijit.byId('cbencapp').attr('value', isChecked); 
+	        //	               dijit.byId('cbencexcpermit').attr('value', isChecked); 
+	        //	               dijit.byId('cbencsiteplan').attr('value', isChecked); 
+	        //	               break; 
+	        //	           case 'cbconstpermit': 
+	        //	               dijit.byId('cbencapp').attr('value', isChecked); kandesudes 
+	        //	               dijit.byId('cbencgrad').attr('value', isChecked); 
+	        //	               dijit.byId('cbencelev').attr('value', isChecked); 
+	        //	               dijit.byId('cbencsiteplan').attr('value', isChecked); 
+	        //	               break; 
+	        //	           case 'cbsitedistplan': 
+	        //	               dijit.byId('cbencapp').attr('value', isChecked); 
+	        //	               dijit.byId('cbencsiteplan').attr('value', icbother500fedlansChecked); 
+	        //	               break; 
+	        case 'cbseqratype2':
+	            dijit.byId('cbrefbysuffcoplancom').set('checked', false);
+	            //dijit.byId('cbrefbysuffcoplancom').set('disabled', isChecked);
+	            break;
+	        case 'cbeafpart1':
+	            dijit.byId('cbenceaf1').attr('value', isChecked);
+	            break;
+	        case 'cbeafpart2':
+	            dijit.byId('cbenceaf2').attr('value', isChecked);
+	            break;
+	        case 'cbeafpart3':
+	            dijit.byId('cbenceaf3').attr('value', isChecked);
+	            break;
+	        case 'cbseqradecneg':
+	            dijit.byId('cbencseqra').attr('value', isChecked);
+	            break;
+	        case 'cbseqradecpos':
+	            dijit.byId('cbencseqra').attr('value', isChecked);
+	            break;
+	        case 'cbsubcluster':
+	            dijit.byId('cbenccluster').attr('value', isChecked);
+	            break;
+	        case 'cbsubstandard':
+	            dijit.byId('cbencstandard').attr('value', isChecked);
+	            break;
+	        case 'cbsubreduced':
+	            dijit.byId('cbencother').attr('value', isChecked);
+	            break;
+	        case 'cbsubincentive':
+	            dijit.byId('cbencother').attr('value', isChecked);
+	            break;
+	        default:
+	    }
+	}
+	function AppTypeToggles(ele) {
+		var hasCheckedBox = false;
+		var check = sender.checked;
+        var checkIDs = document.getElementById('startIDs').value.split(';');
+		dojo.query(".apptype").forEach(function (node, index, arr) {
+		    var n = dijit.getEnclosingWidget(node);
+		    if (sender.name != n.name) {
+		        n.set('checked', false);
+		    }
+		});
+		if (ele.value == sender.value) {
+		    dojo.query("div#changeTypes input").forEach(function (node, index, arr) {
+		        var n = dijit.getEnclosingWidget(node);
+		        n.set('checked', false);
+		    });
+		    dojo.query("#referrAgency input").forEach(function (node, index, arr) {
+		        var n = dijit.getEnclosingWidget(node);
+		        //var vl = checkIDs.indexOf(n.id);
+		        if (dojo.indexOf(checkIDs, n.id) == -1) {
+		            n.set('checked', false);
+		        }
+		    });
+		    switch (sender.value) {
+		        case "Site Plan":
+		            dijit.byId('cbrefbysuffcoplancom').set('checked', check);
+		            dijit.byId('cbarchreviewboard').set('checked', check);
+		            dijit.byId('cbtownconservation').set('checked', check);
+		            dijit.byId('cbencapp').set('checked', check);
+		            dijit.byId('cbencgrad').set('checked', check);
+		            dijit.byId('cbencelev').set('checked', check);
+		            dijit.byId('cbencsiteplan').set('checked', check);
+		            dijit.byId('cbrefbysuffcodhs').attr('value', check);
+			    dijit.byId('cbtownhighwaydept').set('checked', check);
+		            break;
+		        case "Subdivision":
+		            dijit.byId('cbrefbyparksrec').set('checked', check);
+		            dijit.byId('cbtownconservation').set('checked', check);
+		            dijit.byId('cbtownhighwaydept').set('checked', check);
+		            dijit.byId('cbtowntrailsadvisory').set('checked', check);
+		            //dijit.byId('cbseqratype1').set('checked', check);
+		            dijit.byId('cbseqraunlisted').set('checked', check);
+		            dijit.byId('cbencapp').set('checked', check);
+		            dijit.byId('cbencdrain').set('checked', check);
+		            dijit.byId('cbenccluster').set('checked', check);
+		            dijit.byId('cbencstandard').set('checked', check);
+		            dijit.byId('cbencres').set('checked', check);
+		            dijit.byId('cbrefbysuffcodhs').attr('value', check);
+		            //dijit.byId('cbarchreviewboard').set('checked', check);
+		            break;
+		        case "Special Exception":
+		            dijit.byId('cbencexcpermit').set('checked', check);
+		            dijit.byId('cbrefbysuffcoplancom').set('checked', check);
+		            dijit.byId('cbarchreviewboard').set('checked', check);
+		            dijit.byId('cbtownconservation').set('checked', check);
+		            dijit.byId('cbencapp').set('checked', check);
+		            dijit.byId('cbencgrad').set('checked', check);
+		            dijit.byId('cbencelev').set('checked', check);
+		            dijit.byId('cbencsiteplan').set('checked', check);
+		            dijit.byId('cbrefbysuffcodhs').attr('value', check);
+		            break;
+		        case "Old File Map":
+		            dijit.byId('cbencapp').set('checked', check);
+		            dijit.byId('cbtownconservation').set('checked', check);
+		            dijit.byId('cbtowntrailsadvisory').set('checked', check);
+		            dijit.byId('cbrefbysuffcoplancom').set('checked', check);
+		            break;
+		        case "Construction Permit":
+		            dijit.byId('cbencapp').set('checked', check);
+		            dijit.byId('cbencgrad').set('checked', check);
+		            dijit.byId('cbencelev').set('checked', check);
+		            dijit.byId('cbencsiteplan').set('checked', check);
+		            break;
+//		        case "Site Disturbance Plan":
+//		            dijit.byId('cbencapp').set('checked', check);
+//		            dijit.byId('cbencsiteplan').set('checked', check);
+//		            //dijit.byId('cbencsiteplan').attr('value', icbother500fedlansChecked);
+//		            break;
+		    }
+		}
+		dijit.byId('cbtownengineer').attr('value', check);
+		dijit.byId('cbtownpubsafety').attr('value', check);
+		dijit.byId('cbrefbylandmarks').attr('value', check);
+		for (i = 0; i < checkIDs.length; i++) {
+		    if (checkIDs[i] != "") {
+		        dijit.byId(checkIDs[i]).set('checked', true);
+		    }
+		}
+//		dijit.byId('cbrefbysuffcodhs').attr('value', hasCheckedBox);
+//		dijit.byId('cbtownengineer').attr('value', hasCheckedBox);
+//		dijit.byId('cbtownpubsafety').attr('value', hasCheckedBox);
+//		dijit.byId('cbrefbylandmarks').attr('value', hasCheckedBox);
+    }
+
+	function DoSubdivision(name) {
+		switch (name) {
+		    case 'cbsubdivision':
+		        if (dijit.byId('SubStatus').attr('value') == "Preliminary" ||
+                                    dijit.byId('SubStatus').attr('value') == "Final") {
+		            dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+		            dijit.byId('cbtownhighwaydept').attr('value', true);
+		        }
+		        else {
+		            dijit.byId('cbrefbysuffcoplancom').attr('value', false);
+		            dijit.byId('cbtownhighwaydept').attr('value', false);
+		        }
+		    break;
+		    case 'SubStatus':
+		        if (dijit.byId('cbsubdivision').checked) {
+                    if (dijit.byId('SubStatus').attr('value') == "Pre-Application") {
+		                dijit.byId('cbseqratype2').set('checked', false);
+		                dijit.byId('cbseqratype1').set('checked', false);
+		                dijit.byId('cbseqraunlisted').set('checked', false);
+                    } 
+                    else {
+		                dijit.byId('cbrefbysuffcoplancom').attr('value', false);
+		                dijit.byId('cbtownhighwaydept').attr('value', false);
+		            }
+		        }
+		    break;
+		}
+        if (dijit.byId('SubStatus').attr('value') == "Preliminary" ||  dijit.byId('SubStatus').attr('value') == "Final") {
+		    dijit.byId('cbrefbysuffcoplancom').attr('value', true);
+		    dijit.byId('cbtownhighwaydept').attr('value', true);
+		}
+	}
+</script>
+</head>
+              
+<body class="claro">               
+    <form method="post" action="http://gis2.southamptontownny.gov/ServeDocuments/default.aspx" id="myform" >                                      
+        <div style="width:100%; height:100%; min-width:1240px;">
+        <div dojoType="dijit.layout.ContentPane" style="width:578px; height:100%; float:left; display:inline-block; white-space:normal;">
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                <fieldset>
+                    <legend>Application Info</legend>
+                    <table style="border: 0px solid #9f9f9f;" cellspacing="2">
+                        <tr>
+                            <td>
+                                <div style="width:10em;"><label for="appname">Application Name:</label></div>
+                            </td>
+                            <td colspan="2">
+                                <div style="width: 30em;" id="appname" name="appname" dojoType="dijit.form.ValidationTextBox" required="true" promptMessage="Enter App Name" invalidMessage="App name is required"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                               Applicant Name:
+                            </td>
+                            <td colspan="2">
+                                <div style="width: 30em;" id="applicantName" dojotype="dijit.form.TextBox" data-dojo-props="placeHolder:'Applicant Name'"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Mailing Address:
+                            </td>
+                            <td colspan="2">
+                                <div style="width: 30em;" id="mailaddress" dojotype="dijit.form.TextBox" data-dojo-props="placeHolder:'Mailing Address'"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="appnumber">App Number:</label>
+                            </td>
+                            <td>
+                                <label for="taxmapno">Tax Map Number:</label>
+                            </td>
+                            <td>
+                                <label for="hamlet">Hamlet:</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width: 100%;" id="appnumber" name="appnumber" dojoType="dijit.form.TextBox"></div>
+                            </td>
+                            <td>
+                                <div style="width: 100%" id="taxmapno" name="taxmapno" value="" dojoType="dijit.form.TextBox" data-dojo-props="placeHolder:'Enter a DSBL'"></div>
+                            </td>
+                            <td>
+                                <div style="width: 100%" id="hamlet" name="hamlet" value="" dojoType="dijit.form.TextBox" data-dojo-props="placeHolder:'Enter a Hamlet'"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width:10em;"><label for="propaddress">Property Address:</label></div>
+                            </td>
+                            <td colspan="2">
+                                <div style="width: 30em;" id="propaddress" name="propaddress" value="" dojoType="dijit.form.TextBox" data-dojo-props="placeHolder:'Enter an Address'"></div>
+                            </td>
+                        </tr>
+                        
+                    </table> 
+                </fieldset>
+                <table width="100%" style="border: 0px solid #9f9f9f;" cellspacing="2">
+                    <tr valign="top">
+                        <td>
+                            <fieldset>
+                                <legend>Application Type</legend>
+                                <table class="tdHover" border="0" cellpadding="2" cellspacing="2">
+                                    <tr>
+                                        <td>
+                                            <input id="cbsubdivision" name="cbsubdivision" class="apptype" dojoType="dijit.form.CheckBox" value="Subdivision" onchange="AppTypeToggles(this);"/>
+                                            <label for="lblapptype">Subdivision</label>
+                                        </td>
+                                        <td>
+                                            <input id="cbspecex" name="cbspecex" class="apptype" dojoType="dijit.form.CheckBox" value="Special Exception" onchange="AppTypeToggles(this);"/>
+                                            <label for="lblspecex">Special Exception</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="cbsiteplan" name="cbsiteplan" class="apptype" dojoType="dijit.form.CheckBox" value="Site Plan" onchange="AppTypeToggles(this); this.checked ? document.getElementById('sitePlanSqFt').style.display = 'block' : document.getElementById('sitePlanSqFt').style.display = 'none';"/>
+                                            <label for="lblsiteplan">Site Plan</label>
+ 					    <div id="sitePlanSqFt" style="display:none;">
+                                                <input data-dojo-type="dijit.form.NumberTextBox" style="width:75px;" id="sitePlanSqFt" onchange="sitePlanSqFt(this.value)" />sqft
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input id="cbconstpermit" name="cbconstpermit" class="apptype" dojoType="dijit.form.CheckBox" value="Site Plan" onchange="AppTypeToggles(this);"/>
+                                            <label for="lblconstpermit">Construction Permit</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="cboldfilemap" name="cboldfilemap" class="apptype" dojoType="dijit.form.CheckBox" value="Old File Map" onchange="AppTypeToggles(this);" />
+                                            <label for="lbloldfilemap">Old File Map</label>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                        </td>
+                        <td width="35%">
+                            <fieldset>
+                                <legend>EAF Type</legend>
+                                <table class="tdHover" width="164px"  border="0" cellpadding="2" cellspacing="2">
+                                <tr>
+                                    <td>
+                                    <div id="cbeafpart1" name="cbeafpart1" dojoType="dijit.form.CheckBox" value="EAF_Part1"></div>
+                                    <label for="lbleafpart1">Part I</label>
+                                    </td>
+                                    <td>
+                                        <div id="cbeafpart2" name="cbeafpart2" dojoType="dijit.form.CheckBox" value="EAF_Part2"></div>
+                                        <label for="lbleafpart2">Part II</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div id="cbeafpart3" name="cbeafpart3" dojoType="dijit.form.CheckBox" value="EAF_Part3"></div>
+                                        <label for="lbleafpart3">Part III</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">&nbsp;</td>
+                                </tr>
+                                </table>
+                            </fieldset>
+                        </td>
+                    </tr>
+                </table>
+                <div id="changeTypes">
+                    <table style="border: 0px solid #9f9f9f;" cellspacing="2">
+                        <tr valign="top">
+                            <td>
+                                <fieldset>
+                                <legend>SEQRA Status</legend>
+                                    <table class="tdHover" width="100px" border="0" cellpadding="2" cellspacing="2">
+                                    <tr>
+                                        <td>
+                                            <input id="cbseqratype1" name="cbseqratype1" dojoType="dijit.form.CheckBox" value="Type I"/>
+                                            <label for="lblseqratype1">Type I</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="cbseqratype2" name="cbseqratype2" dojoType="dijit.form.CheckBox" value="Type II"/>
+                                            <label for="lblseqratype2">Type II</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="cbseqraunlisted" name="cbseqraunlisted" dojoType="dijit.form.CheckBox" value="Unlisted"/>
+                                            <label for="lblseqraunlisted">Unlisted</label>
+                                        </td>
+                                    </tr>
+                                    </table>
+                                </fieldset>
+                            </td>
+                            <td>
+                                <fieldset>
+                                <legend>SEQRA Determination</legend>
+                                <table class="tdHover" width="195px" border="0" cellpadding="2" cellspacing="2">
+                                    <tr>
+                                        <td>
+                                            <input id="cbseqradecneg" name="cbseqradecneg" dojoType="dijit.form.CheckBox" value="Negative Declaration"/>
+                                            <label for="lblseqradetneg">Negative Declaration</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="cbseqradecpos" name="cbseqradecpos" dojoType="dijit.form.CheckBox" value="Positive Declaration"/>
+                                            <label for="lblseqradecpos">Positive Declaration</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="cbseqradecna" name="cbseqradecna" dojoType="dijit.form.CheckBox" value="N/A"/>
+                                            <label for="lblseqradecpos">N/A</label>
+                                        </td>
+                                    </tr>
+                                </table>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+                    <table width="63%" style="border: 0px solid #9f9f9f;" cellspacing="2">
+                        <tr valign="top">
+                            <td> 
+                                <fieldset>
+                                    <legend>Enclosures</legend>
+                                    <table  border="0" width="100%" cellpadding="0" cellspacing="0">
+                                        <tr valign="top">
+                                            <td>
+                                                <table class="tdHover" width="115px" border="0" cellpadding="2" cellspacing="2">
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbencapp" name="cbencapp" class="enclosures" dojoType="dijit.form.CheckBox" value="Application"/>
+                                                            <label for="lblencapp">Application</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbenceaf1" name="cbenceaf1" class="enclosures" dojoType="dijit.form.CheckBox" value="EAF Part I"/>
+                                                            <label for="lblenceaf1">EAF Part I</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbenceaf2" name="cbenceaf2" class="enclosures" dojoType="dijit.form.CheckBox" value="EAF Part II"/>
+                                                            <label for="lblenceaf2">EAF Part II</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbenceaf3" name="cbenceaf3" class="enclosures" dojoType="dijit.form.CheckBox" value="EAF Part III"/>
+                                                            <label for="lblenceaf3">EAF Part III</label>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table class="tdHover" width="210px" border="0" cellpadding="2" cellspacing="2">
+                                                <tr>
+                                                    <td>
+                                                        <input id="cbencres" name="cbencres" class="enclosures" dojoType="dijit.form.CheckBox" value="Resolution"/>
+                                                        <label for="lblencres">Resolution</label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input id="cbencgrad" name="cbencgrad" class="enclosures" dojoType="dijit.form.CheckBox" value="Grading/Landscaping"/>
+                                                        <label for="lblencgrad">Grading/Landscape</label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input id="cbencdrain" name="cbencdrain" class="enclosures" dojoType="dijit.form.CheckBox" value="Road/Drainage"/>
+                                                        <label for="lblencgrad">Road/Drainage</label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input id="cbencelev" name="cbencelev" class="enclosures" dojoType="dijit.form.CheckBox" value="Building Elevations"/>
+                                                        <label for="lblencelev">Building Elevations</label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input id="cbencseqra" name="cbencseqra" class="enclosures" dojoType="dijit.form.CheckBox" value="SEQRA Determination"/>
+                                                        <label for="lblenqseqra">SEQRA Determination</label>
+                                                    </td>
+                                                </tr>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table class="tdHover" width="175px" border="0" cellpadding="2" cellspacing="2">
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbenccluster" name="cbenccluster" class="enclosures" dojoType="dijit.form.CheckBox" value="Cluster Plan"/>
+                                                            <label for="lblenqcluster">Cluster Plan</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbencstandard" name="cbencstandard" class="enclosures" dojoType="dijit.form.CheckBox" value="Standard Plan"/>
+                                                            <label for="lblenqcluster">Standard Plan</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbencexcpermit" name="cbencexcpermit" class="enclosures" dojoType="dijit.form.CheckBox" value="Special Exception Petition"/>
+                                                            <label for="lblenqexcpermit">Spec Ex Petition</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbencsiteplan" name="cbencsiteplan" class="enclosures" dojoType="dijit.form.CheckBox" value="Site Plan"/>
+                                                            <label for="lblenqsiteplan">Site Plan</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input id="cbencother" name="cbencother" class="enclosures" dojoType="dijit.form.CheckBox" value="Other"/>
+                                                            <label for="lblenqother">Other</label>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                                           <table width="63%" style="border: 0px solid #9f9f9f;" cellspacing="2">
+              
+                               <tr valign="top">
+                                 <td>
+                                   <fieldset><legend>Project Description</legend>
+                                    <table width="165px" border="0" cellpadding="2" cellspacing="2">
+                                        <tr>
+                                            <td>
+                                                <textarea id="description" name="description" style="height:10em; width:20em"></textarea>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center">
+                                                <button type="submit" dojoType="dijit.form.Button" id="submitButton" style="color:Black;">
+                                                Submit
+                                                </button>
+                                            &nbsp;<div id="response"></div>
+                                            <!--<button data-dojo-type="dijit.form.Button" type="button">         
+                                                Print
+                                                <script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt"></script>
+                                            </button>
+                                            &nbsp;
+                                            <button data-dojo-type="dijit.form.Button" type="button">
+                                                Cancel
+                                                <script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">alert("Cancel");</script>
+                                            </button>-->
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                        </td>
+                        <td>
+                            <table width="220px" border="0" cellpadding="2" cellspacing="2">
+                                <tr align="center">
+                                  <td>
+                                  <fieldset><legend>Project Administration</legend>
+			                        Subdivision Status
+                                    <div align="center">
+                                        <select name="SubStatus" id="SubStatus"  style="width:15em;" dojoType="dijit.form.Select" onchange="DoSubdivision(this.name);">
+                                            <option value="Application">N/A</option>
+                                            <option value="Pre-Application">Pre-Application</option>
+                                            <option value="Preliminary">Preliminary</option>
+                                            <option value="Final">Final</option>
+                                            <option value="Pre Submission">Pre Submission</option>
+                                        </select>
+                                    </div>
+			                        Planner
+                                    <div align="center">
+                                        <select name="Planner" id="Planner"  style="width:15em;" dojoType="dijit.form.Select" onchange="setPlannerInfo(this.value);">
+                                            <option value="N/A">N/A</option>
+                                            <option value="Clare Vail">Clare Vail</option>
+                                            <option value="David Wilcox">David Wilcox</option>
+                                            <option value="Jacqueline Fenlon">Jacqueline Fenlon</option>
+                                            <option value="Janice Scherer">Janice Scherer</option>
+                                            <option value="Gretchen Coperine">Gretchen Coperine</option>
+                                            <option value="Anthony Trezza">Anthony Trezza</option>
+                                        </select>
+                                    </div>
+                                    <label for="lblpubhearing">Public Hearing Date: </label>
+                                    <div id="pubhearingdate" name="pubhearingdate" dojoType="dijit.form.DateTextBox"></div>
+                               
+                                </fieldset>
+                                </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                	    <div align="center">
+                                            <div dojoType="dijit.ProgressBar" style="width:220px" jsId="jsProgress" id="downloadProgress" maximum="10"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                            </tr>
+                            </table>
+
+                    </td>
+            </tr>
+        </table>
+        </div>
+        <div dojoType="dijit.layout.ContentPane" style="width:185px; height:100%; float:left; display:inline-block; white-space:normal;" >
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                    <fieldset id="referrAgency">
+                    <legend>Parcel Referred To:</legend>
+                        <table class="tdHover" style="border: 0px solid #9f9f9f;" cellspacing="2" cellpadding="2">
+                            <tr>
+                                <td>
+                                    <input id="cbrefbynysdec" name="cbrefbynysdec" dojoType="dijit.form.CheckBox" value="NYSDEC"/>
+                                    <label for="lblrefbynysdec">NYSDEC</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbynysdot" name="cbrefbynysdot" dojoType="dijit.form.CheckBox" value="NYSDOT"/>
+                                    <label for="lblrefbynysdot">NYSDOT</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbysuffcoplancom" name="cbrefbysuffcoplancom" dojoType="dijit.form.CheckBox" value="SuffCoPlanComm"/>
+                                    <label for="lblrefbysuffcoplancom">Suff Co. Plan. Comm.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbysuffcodpw" name="cbrefbysuffcodpw" dojoType="dijit.form.CheckBox" value="SuffCoDPW"/>
+                                    <label for="lblrefbysuffcodpw">Suff Co. DPW</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbysuffcodhs" name="cbrefbysuffcodhs" dojoType="dijit.form.CheckBox" value="SuffCoDHS"/>
+                                    <label for="lblrefbysuffcodhs">Suff Co. DHS</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbyscwa" name="cbrefbyscwa" dojoType="dijit.form.CheckBox" value="SCWA"/>
+                                    <label for="lblrefbysuffcodhs">SCWA</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbyparksrec" name="cbrefbyparksrec" dojoType="dijit.form.CheckBox" value="Office of Parks and Rec"/>
+                                    <label for="lblrefbyparksrec">Office of Parks and Rec.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbypinbarrenscom" name="cbrefbypinbarrenscom" dojoType="dijit.form.CheckBox" value="Central Pine Barrens Comm."/>
+                                    <label for="lblrefbypinbarrenscom">Central Pine Barrens Comm.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbrefbylandmarks" name="cbrefbylandmarks" dojoType="dijit.form.CheckBox" value="Landmarks Hist. Dist. Bd."/>
+                                    <label for="lblrefbylandmarks">Landmarks Hist. Dist. Bd.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtowntrustees" name="cbtowntrustees" dojoType="dijit.form.CheckBox" value="Town Trustees"/>
+                                    <label for="lblrefbytowntrustees">Town Trustees</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtownengineer" name="cbtownengineer" dojoType="dijit.form.CheckBox" value="Town Engineer"/>
+                                    <label for="lblrefbytownengineer">Town Engineer</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbarchreviewboard" name="cbarchreviewboard" dojoType="dijit.form.CheckBox" value="Town ARB"/>
+                                    <label for="lblrefbytownARB">Arch Review Bd</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtownagadviscomm" name="cbtownagadviscomm" dojoType="dijit.form.CheckBox" value="Town Ag. Advis. Comm"/>
+                                    <label for="lblrefbytownagadviscomm">Town Ag. Advis. Comm.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtownbldgzoning" name="cbtownbldgzoning" dojoType="dijit.form.CheckBox" value="Town Dept. Bldg. Zoning"/>
+                                    <label for="lblrefbytownbldgzoning">Town Dept. Bldg. Zoning</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtowntrailsadvisory" name="cbtowntrailsadvisory" dojoType="dijit.form.CheckBox" value="Town Trails Advisory Bd."/>
+                                    <label for="lblrefbytowntrailsadvisory">Trails Advisory Bd.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtownconservation" name="cbtownconservation" dojoType="dijit.form.CheckBox" value="Town Conservation Bd."/>
+                                    <label for="lblrefbytownconservation">Town Conservation Bd.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtownpubsafety" name="cbtownpubsafety" dojoType="dijit.form.CheckBox" value="Town Dept. Pub. Safety"/>
+                                    <label for="lblrefbytownpubsafety">Town Dept. Public Safety</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbtownhighwaydept" name="cbtownhighwaydept" dojoType="dijit.form.CheckBox" value="Town Highway Dept."/>
+                                    <label for="lblrefbytownhighwaydept">Town Highway Dept.</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    <br />
+                        <fieldset><legend>Other:</legend>
+                            <table class="tdHover" style="border: 0px solid #9f9f9f;" cellspacing="2" cellpadding="2">
+                            <tr>
+                                <td>
+                                    <input id="cbother1mileair" name="cbother1mileair" dojoType="dijit.form.CheckBox" value="RefBy_Other1mile"/>
+                                    <label for="lblrefbyother1mileair">1 mi from Airport</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbother500boundary" name="cbother500boundary" dojoType="dijit.form.CheckBox" value="RefBy_Other500boundary"/>
+                                    <label for="lblrefbyother500boundary">500' from Muni. Boundary</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cb500agdist" name="cb500agdist" dojoType="dijit.form.CheckBox" value="RefBy_500agdist"/>
+                                    <label for="lblrefby500agdist">500' from Ag District</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbother500scchannel" name="cbother500scchannel" dojoType="dijit.form.CheckBox" value="RefBy_Other500scchannel"/>
+                                    <label for="lblrefbyother500scchannel">500' from SC Channel</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cbother500fedland" name="cbother500fedland" dojoType="dijit.form.CheckBox" value="RefBy_Other500fedland"/>
+                                    <label for="lblrefbyother500fedland">500' from Fed Land</label>
+                                </td>
+                            </tr>
+                            <tr>              
+                                <td>
+                                    <input id="cbotheradjtrusteeland" name="cbotheradjtrusteeland" dojoType="dijit.form.CheckBox" value="RefBy_Otheradjtrusteeland"/>
+                                    <label for="lblrefbyotheradjtrusteeland">Adj. Trustee Land</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="parksrec" id="cbother250historic" name="cbother250historic" dojoType="dijit.form.CheckBox" value="RefBy_Other250historic" onclick="ParksAndRec();"/>
+                                    <label for="lblrefbyother250historic">250' from Historic Site</label>
+                                </td>
+                            </tr>
+                            </table>
+                        </fieldset>
+                    </td>
+                </tr>
+            </table>
+            </div>
+        <div dojoType="dijit.layout.ContentPane" style="width:400px; height:100%; float:left; display:inline-block; white-space:normal;">
+            <table class="tdHover" width="380px" border="0" cellpadding="2" cellspacing="2">
+            <tr align="center">
+            <td>
+            <div align="center">
+            Ambulance District 1<br />
+            <select name="AmbDist1" id="AmbDist1" style="width:25em;" dojoType="dijit.form.Select">
+            <option value="N/A"  selected="selected">
+            N/A
+            </option>
+            <option value="Westhampton Beach Ambulance">
+            Westhampton Beach
+            </option>
+            <option value="Southampton Ambulance">
+            Southampton
+            </option>
+            <option value="Hampton Bays Ambulance">
+            Hampton Bays
+            </option>
+            <option value="Northampton-Flanders Ambulance">
+            Northampton-Flanders
+            </option>
+            <option value="East Quogue Ambulance">
+            East Quogue
+            </option>
+            <option value="Southampton Village Ambulance">
+            Southampton Village
+            </option>
+            <option value="Bridgehampton Ambulance">
+            Bridgehampton
+            </option>
+            <option value="Sag Harbor Ambulance">
+            Sag Harbor
+            </option>
+            </select>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <div align="center">
+            Ambulance District 2<br>
+            <select name="AmbDist2" id="AmbDist2" style="width:25em;" dojoType="dijit.form.Select">
+            <option value="N/A"  selected="selected">
+            N/A
+            </option>
+            <option value="Westhampton Beach Ambulance">
+            Westhampton Beach
+            </option>
+            <option value="Southampton Ambulance">
+            Southampton
+            </option>
+            <option value="Hampton Bays Ambulance">
+            Hampton Bays
+            </option>
+            <option value="Northampton-Flanders Ambulance">
+            Northampton-Flanders
+            </option>
+            <option value="East Quogue Ambulance">
+            East Quogue
+            </option>
+            <option value="Southampton Village Ambulance">
+            Southampton Village
+            </option>
+            <option value="Bridgehampton Ambulance">
+            Bridgehampton
+            </option>
+            <option value="Sag Harbor Ambulance">
+            Sag Harbor
+            </option>
+            </select>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            </tr>
+            <tr align="center">
+            <td>
+            <div align="center">
+            Fire District 1<br>
+            <select name="FireDist1" id="FireDist1" style="width:25em;" dojoType="dijit.form.Select">
+            <option value="N/A"  selected="selected">
+            N/A
+            </option>
+            <option value="North Haven Village Fire Protection Area">
+            North Haven Village FPA
+            </option>
+            <option value="Bay Point Fire Protection Area">
+            Bay Point FPA
+            </option>
+            <option value="Quogue Village Fire Department">
+            Quogue Village FD
+            </option>
+            <option value="East Quogue Fire District">
+            East Quogue District
+            </option>
+            <option value="Southampton Village Fire District">
+            Southampton Village FD
+            </option>
+            <option value="Bridgehampton Fire District">
+            Bridgehampton District
+            </option>
+            <option value="Riverhead Fire District">
+            Riverhead District
+            </option>
+            <option value="Sag Harbor Village Fire Department">
+            Sag Harbor FD
+            </option>
+            <option value="Eastport Fire District">
+            Eastport District
+            </option>
+            <option value="Westhampton Beach Fire District">
+            Westhampton Beach District
+            </option>
+            <option value="Southampton Fire District">
+            Southampton District
+            </option>
+            <option value="Noyac Fire Protection Area">
+            Noyac FPA
+            </option>
+            <option value="North Sea Fire District">
+            North Sea District
+            </option>
+            <option value="Hampton Bays Fire District">
+            Hampton Bays District
+            </option>
+            <option value="Flanders Fire District">
+            Flanders District
+            </option>
+            <option value="Village of Westhampton Dunes Fire Protection Area">
+            Westhampton Dunes FPA
+            </option>
+            <option value="N/E Quogue Fire Protection Area">
+            N/E Quogue FPA
+            </option>
+            </select>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <div align="center">
+            Fire District 2<br>
+            <select name="FireDist2" id="FireDist2" style="width:25em;" dojoType="dijit.form.Select">
+            <option value="N/A"  selected="selected">
+            N/A
+            </option>
+            <option value="North Haven Village Fire Protection Area">
+            North Haven Village FPA
+            </option>
+            <option value="Bay Point Fire Protection Area">
+            Bay Point FPA
+            </option>
+            <option value="Quogue Village Fire Department">
+            Quogue Village FD
+            </option>
+            <option value="East Quogue Fire District">
+            East Quogue District
+            </option>
+            <option value="Southampton Village Fire Department">
+            Southampton Village FD
+            </option>
+            <option value="Bridgehampton Fire District">
+            Bridgehampton District
+            </option>
+            <option value="Riverhead Fire District">
+            Riverhead District
+            </option>
+            <option value="Sag Harbor Village Fire Department">
+            Sag Harbor FD
+            </option>
+            <option value="Eastport Fire District">
+            Eastport District
+            </option>
+            <option value="Westhampton Beach Fire District">
+            Westhampton Beach District
+            </option>
+            <option value="Southampton Fire District">
+            Southampton District
+            </option>
+            <option value="Noyac Fire Protection Area">
+            Noyac FPA
+            </option>
+            <option value="North Sea Fire District">
+            North Sea District
+            </option>
+            <option value="Hampton Bays Fire District">
+            Hampton Bays District
+            </option>
+            <option value="Flanders Fire District">
+            Flanders District
+            </option>
+            <option value="Village of Westhampton Dunes Fire Protection Area">
+            Westhampton Dunes FPA
+            </option>
+            <option value="N/E Quogue Fire Protection Area">
+            N/E Quogue FPA
+            </option>
+            </select>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            </tr>
+            <tr align="center">
+            <td>
+            <div align="center">
+            CAC 1<br/>
+            <select name="CAC1" id="CAC1" style="width:25em;" dojoType="dijit.form.Select">
+            <option value="N/A"  selected="selected">
+            N/A
+            </option>
+            <option value="Bridgehampton">
+            Bridgehampton
+            </option>
+            <option value="CAC West">
+            CAC West
+            </option>
+            <option value="East Quogue">
+            East Quogue
+            </option>
+            <option value="Flanders-Riverside-Northampton">
+            Flanders-Riverside-Northampton
+            </option>
+            <option value="Hampton Bays">
+            Hampton Bays 
+            </option>
+            <option value="North Sea">
+            North Sea
+            </option>
+            <option value="Noyac">
+            Noyac
+            </option>
+            <option value="Village of Sag Harbor">
+            Sag Harbor
+            </option>
+            <option value="Southampton-Tuckahoe-Shinnecock Hills">
+            Southampton-Tuckahoe-Shinnecock Hills
+            </option>
+            <option value="Water Mill">
+            Water Mill
+            </option>
+            </select>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <div align="center">
+            CAC 2<br>
+            <select name="CAC2" id="CAC2" style="width:25em;" dojoType="dijit.form.Select">
+            <option value="N/A"  selected="selected">
+            N/A
+            </option>
+            <option value="Bridgehampton">
+            Bridgehampton
+            </option>
+            <option value="CAC West">
+            CAC West
+            </option>
+            <option value="East Quogue">
+            East Quogue
+            </option>
+            <option value="Flanders-Riverside-Northampton">
+            Flanders-Riverside-Northampton
+            </option>
+            <option value="Hampton Bays">
+            Hampton Bays
+            </option>
+            <option value="North Sea">
+            North Sea
+            </option>
+            <option value="Noyac">
+            Noyac
+            </option>
+            <option value="Sag Harbor">
+            Sag Harbor
+            </option>
+            <option value="Southampton-Tuckahoe-Shinnecock Hills">
+            Southampton-Tuckahoe-Shinnecock Hills
+            </option>
+            <option value="Water Mill">
+            Water Mill
+            </option>
+            </select>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            </tr>
+            <tr align="center">
+            <td>
+            <div align="center">
+            Village Planning Department<br />
+            <select name="VillagePlanning" id="VillagePlanning" style="width:25em;" dojoType="dijit.form.Select">
+            <option value="N/A"  selected="selected">
+            N/A
+            </option>
+            <option value="North Haven">
+            North Haven
+            </option>
+            <option value="Quogue">
+            Quogue
+            </option>
+            <option value="Sag Harbor">
+            Sag Harbor
+            </option>
+            <option value="Sagaponack">
+            Sagaponack
+            </option>
+            <option value="Southampton">
+            Southampton
+            </option>
+            <option value="Westhampton Beach">
+            Westhampton Beach
+            </option>
+            <option value="Westhampton Dunes">
+            Westhampton Dunes
+            </option>
+            </select>
+            </div>              
+
+            </td>
+              
+            </tr>
+            </table>
+
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                    <br />
+                    <h3>PARCEL REFERRED FOR:</h3>
+                        <fieldset>
+                        <legend>Environment</legend>
+                            <table class="tdHover" width="380" style="border: 0px solid #9f9f9f;" cellspacing="2" cellpadding="2">
+                                <tr align="left">
+                                    <td>
+                                        <input class="parksrec" id="cbdistfromgovpark" name="cbdistfromgovpark" dojoType="dijit.form.CheckBox" value="DistFromGovPark" onclick="ParksAndRec();"/>
+                                        <label for="lbldistfromgovpark">500' from Gov Park</label>
+                                    </td>
+                                    <td> 
+                                        <input class="parksrec" id="cbarchsensitive" name="cbarchsensitive" dojoType="dijit.form.CheckBox" value="ArchSensitive" onclick="ParksAndRec();"/>
+                                        <label for="lblarchsensitive">Arch. Sensitive</label>
+                                    </td>
+                                </tr>
+                                <tr align="left">
+                                    <td>
+                                        <input id="cbdistfromcoast" name="cbdistfromcoast" dojoType="dijit.form.CheckBox" value="Distfromcoast"/>
+                                        <label for="lbldistfromcoast">500' from Coast</label>
+                                    </td>
+                                    <td> 
+                                        <input id="cbaqoverlay" name="cbaqoverlay" dojoType="dijit.form.CheckBox" value="Aqoverlay"/>
+                                        <label for="lblaqoverlay">Aq. Overlay</label>
+                                    </td>
+                                </tr>
+                                <tr align="left">
+                                    <td>
+                                        <input id="cbdistfromwetlands" name="cbdistfromwetlands" dojoType="dijit.form.CheckBox" value="Distfromwetlands"/>
+                                        <label for="lbldistfromwetlands">200' from Wetlands</label>
+                                    </td>
+                                    <td> 
+                                        <input id="cbagroverlay" name="cbagroverlay" dojoType="dijit.form.CheckBox" value="cbagroverlay"/>
+                                        <label for="lblagroverlay">Agr. Overlay</label>
+                                    </td>
+                                </tr>
+                                <tr align="left">
+                                    <td>
+                                        <input id="cbdistfromwetlandsfw" name="cbdistfromwetlandsfw" dojoType="dijit.form.CheckBox" value="Distfromwetlandsfw"/>
+                                        <label for="lbldistfromwetlandsfw">300' from Wetlands (fw)</label>
+                                    </td>
+                                    <td> 
+                                        <input id="cbwaterfront" name="cbwaterfront" dojoType="dijit.form.CheckBox" value="Waterfront"/>
+                                        <label for="lblwaterfront">Waterfront</label>
+                                    </td>              
+                                </tr>
+                                <tr align="left">
+                                    <td>
+                                        <input id="cbdistfromwetlandstidal" name="cbdistfromwetlandstidal" dojoType="dijit.form.CheckBox" value="Distfromwetlandstidal"/>
+                                        <label for="lbldistfromwetlandstidal">300' from Wetlands (tidal)</label>
+                                    </td>
+                                    <td> 
+                                        <input id="cbtrails" name="cbtrails" dojoType="dijit.form.CheckBox" value="Trails"/>
+                                        <label for="lbltrails">Trails</label>
+                                    </td>
+                                </tr>
+                                <tr align="left">
+                                    <td colspan="2">
+                                        <input id="cbcentralpinebarrens" name="cbcentralpinebarrens" dojoType="dijit.form.CheckBox" value="Central Pine Barrens Comm."/>
+                                        <label for="lblcentralpinebarrens">Central Pine Barrens</label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </td>
+                </tr>
+            </table>
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                    <br/>  
+                    <fieldset>
+                    <legend>Roads</legend>
+                    <table class="tdHover" width="380" style="border: 0px solid #9f9f9f;" cellspacing="2" cellpadding="2">
+                        <tr align="left">
+                            <td>
+                                <input id="cbcountyroad" name="cbcountyroad" dojoType="dijit.form.CheckBox" value="Countyroad"/>
+                                <label for="lblcountyroad">County Road</label>
+                            </td>
+                            <td> 
+                                <input id="cbtrusteeroad" name="cbtrusteeroad" dojoType="dijit.form.CheckBox" value="Trusteeroad"/>
+                                <label for="lbltrusteeroad">Trustee Road</label>
+                            </td>
+                        </tr>
+                        <tr align="left">
+                            <td>
+                                <input id="cbstateroad" name="cbstateroad" dojoType="dijit.form.CheckBox" value="Stateroad"/>
+                                <label for="lblstateroad">State Road</label>
+                            </td>
+                            <td>
+                                <input id="cbstateroad500" name="cbstateroad500" dojoType="dijit.form.CheckBox" value="Stateroad500"/>
+                                <label for="lblstateroad500">500' from State Road</label>
+                            </td>
+                        </tr>
+                        <tr align="left">
+                            <td>
+                                <input id="cbcountyroad500" name="cbcountyroad500" dojoType="dijit.form.CheckBox" value="CountyRoad500"/>
+                                <label for="lblstateroad">500' from County Road</label>
+                            </td>
+                        </tr>
+                    </table>
+                    </fieldset>
+                </td>
+                </tr>
+            </table>
+        </div>
+        </div>
+		<input id="apptypeall" name="apptypeall" type="hidden" />
+		<input id="enclosuresall" name="enclosuresall" type="hidden" />
+		<input id="planName" name="planName" type="hidden" />
+		<input id="planTitle" name="planTitle" type="hidden" />
+		<input id="planEmail" name="planEmail" type="hidden" />
+    </form>
+    <input id="startIDs" type="text" style="display:none;" />
+    </body>
+</html>

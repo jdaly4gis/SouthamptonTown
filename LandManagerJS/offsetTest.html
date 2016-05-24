@@ -1,0 +1,428 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples
+      on iOS devices-->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Maps Toolbar</title>
+
+    <link rel="stylesheet" href="http://js.arcgis.com/3.11/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.11/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="css/Page.css" />
+    <link rel="stylesheet" type="text/css" href="css/searchResults.css" />
+    <link rel="stylesheet" type="text/css" href="css/Dialog.css" />
+    <link rel="stylesheet" type="text/css" href="css/commonIcons.css" />
+
+    <style>
+        html, body, #mainWindow {
+            font-family: sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #header {
+            height: 80px;
+            overflow: auto;
+            padding: 0.5em;
+        }
+        #navcontainer ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            text-align:center;
+        }
+
+        #navcontainer ul li {
+            display: inline;
+            text-decoration: none;
+            padding: .2em 1em;
+            color: #fff;
+            background-color: #036;
+            font-weight: bold;
+        }
+        #navcontainer ul li:hover {
+            cursor: pointer;
+            background-color: lightblue;
+        }
+        #navcontainer ul li:hover {
+            cursor: pointer;
+            background-color: #369;
+        }
+        #navcontainer li#selected  {
+            cursor: pointer;
+            background-color: fuchsia;
+        }
+        /* Style */
+        #dlg1 {
+            top: 25%;
+            left: 25%;
+            width: 550px;
+        }
+
+            #dlg1 INPUT, #dlg1 TEXTAREA {
+                background-color: #000000;
+                color: #ffffff;
+                width: 95%;
+                font-size: 17px;
+                margin: 4px;
+            }
+
+            #dlg1 TEXTAREA {
+                height: 160px;
+            }
+
+        .dlgTitle {
+            font-family: Helvetica;
+            font-size: 17px;
+            margin: 14px;
+        }
+
+    </style>
+    <!--<script src="javascript/bldgEnvelopes/offset.js"></script>-->
+    <script src="http://js.arcgis.com/3.12/"></script>
+    <script type="text/javascript" src="javascript/tools/httpRequest.js"></script>	
+    <script type="text/javascript" src="javascript/utilities/json_sans_eval.js"></script>
+    <script type="text/javascript" src="modules/Inspections/Inspections.js"></script>
+    <script type="text/javascript" src="javascript/utilities/myUtils.js"></script>
+    <script type="text/javascript" src="javascript/tools/legend.js"></script>
+    <script type="text/javascript" src="javascript/tools/openPermits.js"></script>
+    <script type="text/javascript" src="javascript/utilities/credentials.js"></script>
+
+    <script>
+        var map, gsvc, centroid, selectByLocationToolBar, defaultSymbol, highlightSymbol, movedSymbol, finishedSymbol, undo, taxParcelQueryTask;
+
+        require([
+          "esri/map",
+          "esri/toolbars/draw",
+          "esri/graphic",
+          "esri/geometry/Polygon",
+          "esri/geometry/Polyline",
+          "esri/geometry/Point",
+          "esri/tasks/GeometryService",
+          "esri/layers/GraphicsLayer",
+          "esri/layers/FeatureLayer",
+          
+          "esri/symbols/SimpleMarkerSymbol",
+          "esri/symbols/SimpleLineSymbol",
+          "esri/symbols/SimpleFillSymbol", "esri/tasks/FeatureSet",
+          "esri/renderers/SimpleRenderer", "esri/Color", "esri/tasks/query", "esri/renderers/UniqueValueRenderer",
+
+          "dojo/parser", "dijit/registry", "esri/geometry/Extent", "dijit/layout/TabContainer", "dijit/form/Form",   "dojox/mobile",
+  "dojox/mobile/parser",
+  "dojox/mobile/SimpleDialog",
+  "dojox/mobile/Button",
+  "dojox/mobile/TextBox",
+
+
+
+          "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/form/CheckBox", "dijit/form/FilteringSelect", "dojox/data/QueryReadStore", "dijit/form/Button", "dojo/dnd/Source", "dijit/form/Select", "dijit/form/SimpleTextarea",
+          "dijit/form/Button", "dijit/WidgetSet", "dojo/domReady!", "esri/dijit/editing/editOperation", "esri/tasks/BufferParameters"
+        ], function (
+          Map, Draw, Graphic, Polygon, Polyline, Point, GeometryService, GraphicsLayer, FeatureLayer,
+          SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, FeatureSet, SimpleRenderer, Color, Query, UniqueValueRenderer,
+          parser, registry, Extent
+        ) {
+            parser.parse();
+            dijit.byId('dlg1').show();
+
+            //lmURL = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/LandManager/MapServer";
+            //taxParcelQueryTask = new esri.tasks.QueryTask(lmURL + "/0");
+
+            //startExtent = new Extent({
+            //    "xmin": 1297232.4692940111,
+            //    "ymin": 223864.66964762594,
+            //    "xmax": 1501876.5665162336,
+            //    "ymax": 325535.6765920704,
+            //    "spatialReference": { "wkid": 102718 }
+            //});
+            //var layer = new esri.layers.ArcGISDynamicMapServiceLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/LandManager/MapServer", { id: "lmURL", visible: true });
+            //map = new Map("map", {
+            //    logo: false,
+            //    extent: startExtent
+            //});
+            //map.addLayer(layer);
+            
+            //dojo.connect(map, "onUpdateStart", function () {
+            //    esri.show(dojo.byId("status"));
+            //});
+            //dojo.connect(map, "onUpdateEnd", function () {
+            //    esri.hide(dojo.byId("status"));
+            //});
+            //checkCredentials("init");
+            //var BLDG_DIQ = new esri.layers.ArcGISDynamicMapServiceLayer("http://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/DIQ/MapServer", { id: "BLDG_DIQ", visible: true });
+            //var SITE_DIQ = new esri.layers.ArcGISDynamicMapServiceLayer("http://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/DIQ/MapServer", { id: "SITE_DIQ", visible: false });
+            //var LAND_DIQ = new esri.layers.ArcGISDynamicMapServiceLayer("http://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/DIQ/MapServer", { id: "LAND_DIQ", visible: false });
+            //map.addLayers([BLDG_DIQ, SITE_DIQ, LAND_DIQ]);
+            //map.on('layers-add-result', function (layer) {
+            //    layer.layers
+            //    switch (layer.layer.id) {
+            //        case ('BLDG_DIQ'):
+            //            layer.layer.setVisibleLayers([0]);
+            //            getDIQ("E_Homes");
+            //            break;
+            //        case ('SITE_DIQ'):
+            //            layer.layer.setVisibleLayers([1]);
+            //            break;
+            //        case ('LAND_DIQ'):
+            //            layer.layer.setVisibleLayers([2]);
+            //            break;
+            //    }
+            //});
+        });
+        
+        
+       
+    </script>
+</head>
+<body class="claro">
+    <!--<div id="enableJava" style="z-index:200; display:block; height:100%; width:100%; position:absolute; top:0px;left:0px; background-color:White;">
+        <span style="position:absolute; top:40%; left:40%; font-size: large; font-family: 'arial black'; color: #0099CC;">
+            <span style="font-family: 'arial black'; color: #006699; font-size: x-large;">Welcome </span><br />
+            Town of Southampton Land Manager <br /> <img alt='' src="images/waitBlue2.gif" />
+        </span>
+    </div>-->
+    <div id="dlg1" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='closeButton:true'>
+        <div class="dlgTitle">
+            Account Information
+            <button id="btn1" data-dojo-type="dojox/mobile/Button"
+                    class="mblBlueButton" style="margin-top:-5px;width:60px;float:right;">
+                Edit
+            </button>
+        </div>
+        <hr />
+        <table style="width:100%">
+            <tr>
+                <td style="width:250px"><img alt="" src="images/pic1.jpg" width="230" height="230"></td>
+                <td style="vertical-align:top">
+                    <input data-dojo-type="dojox/mobile/TextBox" value="Kirena Kobe" readonly="readOnly"><br>
+                    <input data-dojo-type="dojox/mobile/TextBox" value="123-456-7891"><br>
+                    <input data-dojo-type="dojox/mobile/TextBox" value="kkobe@acme.com">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <textarea>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!--<div id="mainWindow" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'headline'">
+        <div data-dojo-type="dijit/layout/ContentPane" id="leftPane" data-dojo-props="region:'left', style:'width:25%;'">
+            <div dojotype="dijit/form/Button" data-dojo-props="" onclick="doInspectors()">Go1</div>
+            <div dojotype="dijit/form/Button" data-dojo-props="" onclick="updateInspection()">Go2</div>
+            <input type="hidden" id="inspectionDept" value="0" />
+            <div style="padding:5px 3px 5px 5px; width:240px; z-index:1000; background:white;vertical-align:top; ">
+                <table>
+                    <tr>
+                        <td style=""><div id="selectInspector" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="placeHolder:'Select Inspector'" pagesize="6" searchattr='field'></div></td>
+                        <td><div dojotype="dijit/form/Button" data-dojo-props="" onclick="doInspections()">Go</div></td>
+                    </tr>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Change Dates:&nbsp;<input id="inspectionChangeDates" dojotype="dijit.form.CheckBox" style="margin:0px !important;" onclick="dijit.byId('inspectionEndDate').set('disabled', !this.checked); dijit.byId('inspectionStartDate').set('disabled', !this.checked);" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>
+                            <input style="width:100%;" id="inspectionStartDate" data-dojo-type="dijit/form/DateTextBox" data-dojo-props="disabled:true" required="true" value="now" onchange="dijit.byId('inspectionEndDate').constraints.min = arguments[0];"
+                                    constraints="{datepattern:'dd-mm-yyyy'}" lang="en-us" promptmessage="Start Date" invalidmessage="Invalid date." /><br />
+                        </td>
+                        <td>&nbsp;To:&nbsp;</td>
+                        <td>
+                            <input style="width:100%;" id="inspectionEndDate" data-dojo-props="disabled:true" data-dojo-type="dijit/form/DateTextBox" required="true" value="now" onchange=""
+                                    constraints="{datepattern:'dd-mm-yyyy'}" lang="en-us" promptmessage="End Date" invalidmessage="Invalid date." /><br />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="padding:120px 10px 10px 10px;">
+                <table id="inspectTable" style="border-collapse: collapse; width:100%;">
+                    <tr>
+                        <td>
+                            <div></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table style="padding:120px 0px 0px 0px;">
+                <tr>
+                    <td><input id="rad1" type="radio" name="dept" value="Basic" /><label for='rad1'>Basic</label></td>
+                    <td><input id="rad2" type="radio" name="dept" value="all" checked="checked" /><label for='rad2'>No Department</label></td>
+                </tr>
+                <tr>
+                    <td><input id="rad3" type="radio" name="dept" value="02" checked /><label for='rad3'>Building</label></td>
+                    <td><input id="rad4" type="radio" name="dept" value="10" /><label for='rad4'>Assessors</label></td>
+                </tr>
+                <tr>
+                    <td><input id="rad5" type="radio" name="dept" value="05" /><label for='rad5'>Environment</label></td>
+                    <td><input id="rad6" type="radio" name="dept" value="16" /><label for='rad6'>Fire Prevention</label></td>
+                </tr>
+                <tr>
+                    <td><input id="rad7" type="radio" name="dept" value="code" /><label for='rad7'>Code</label></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div id="map" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'">
+            <span id="status" style="position: absolute; right: 5px; bottom: 5px; display:none;">
+                The Map is Updating...
+            </span>
+        </div>
+        
+
+        <div id="editInspectionsDialog" data-dojo-type="dijit/Dialog" style="width:80%;">
+            <h2 id="inTitle"></h2>
+            <div id="inspectionForm" style="margin-left:15px; max-height:450px; min-width:250px; overflow:auto;" class="dijitDialogPaneContentArea">
+                <h3>Inspection Status</h3>
+                <select style="margin-left:15px;" id="inStatus">
+                    <option value=""></option>
+                    <option value="c">Completed</option>
+                    <option value="s">Scheduled</option>
+                    <option value="u">UnScheduled</option>
+                    <option value="v">Void</option>
+                </select>
+                <hr />
+                <h3>Inspection Types</h3>
+                <div style="max-width:450px; margin-left:15px" id="inTypes">
+                    <span class="inspectionTypes">
+                        Damage Assessment <img style='vertical-align:middle;' class='picImg' src='images/unEdited.png' alt='' onclick="updateInspectionType(this, 1123)" />
+                    </span>
+                    <span class="inspectionTypes">
+                        Miscellaneous<img style='vertical-align:middle;' class='picImg' src='images/unEdited.png' alt='' onclick="updateInspectionType(this, 121424)" />
+                    </span>
+                </div>
+                <hr />
+                <h3>Notes</h3>
+                <div style="margin-left: 15px;"><textarea style="width:90%;" rows="4" id="inNotes"></textarea></div>
+            </div>
+            <div class="dijitDialogPaneActionBar">
+                <button data-dojo-type="dijit/form/Button" disabled="true" onclick="dijit.byId('editInspectionsDialog').hide();">Save</button>
+                <button data-dojo-type="dijit/form/Button" onclick="dijit.byId('editInspectionsDialog').hide();">Cancel</button>
+            </div>
+        </div>
+        <input id="passValid" type="hidden" value='' />
+        <input type="hidden" value="jgormle" id="lmUser" />        
+        
+    </div>-->
+</body>
+</html>
+ <!--function workspace() {
+            //function getDIQ2() {
+            //    var taxParcelQueryTask = new esri.tasks.QueryTask("https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/LandManager/MapServer/0");
+            //    var selectionQuery = new esri.tasks.Query();
+
+            //    selectionQuery.outSpatialReference = map.spatialReference;
+            //    selectionQuery.returnGeometry = true;
+            //    selectionQuery.outFields = ["*"];
+            //    selectionQuery.where = "1=1";
+            //    //if (map.getLayer('DIQ')) { } else {
+            //    //}
+            //    var diqLayer = new esri.layers.GraphicsLayer({id : "DIQ"});
+
+            //    taxParcelQueryTask.execute(selectionQuery, function (results) {
+            //        var query = "?type=subNHBD&sender=DIQ";
+
+            //        var masterInfo = jsonParse(callASHX("getJSON.ashx" + query));
+            //        var unique = dojo.fromJson(masterInfo[masterInfo.length - 1].DIQ);
+            //        var colors = {};
+
+            //        var defaultSymbol = new esri.symbol.SimpleFillSymbol().setStyle(esri.symbol.SimpleFillSymbol.STYLE_NULL);
+            //        defaultSymbol.outline.setStyle(esri.symbol.SimpleLineSymbol.STYLE_NULL);
+            //        var renderer = new esri.renderer.UniqueValueRenderer(defaultSymbol, "DIQ");
+            //        for (var i = 0; i < unique.length; i++) {
+            //            renderer.addValue(masterInfo[i].P_ID, new esri.symbol.SimpleFillSymbol().setColor(new esri.Color([Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5])));
+            //        }
+            //        for (var i = 0; i < results.features.length; i++) {
+            //            var pid = results.features[i].attributes.PARCEL_ID;
+            //            results.features[i].attributes["DIQ"] = masterInfo[pid];
+            //        }
+            //    });
+            //}
+            //function getDIQ3() {
+            //    var unique = ['210', '421', '422', '423', '426', '450', '451', '452', '453', '454', '486', '420w', '421w', '422w', '423w', '426w', '450w', '451w', '452w', '453w', '454w', '486w'];
+
+            //    var colors = {};
+            //    var defaultSymbol = new esri.symbol.SimpleFillSymbol().setStyle(esri.symbol.SimpleFillSymbol.STYLE_NULL);
+            //    defaultSymbol.outline.setStyle(esri.symbol.SimpleLineSymbol.STYLE_NULL);
+            //    var renderer = new esri.renderer.UniqueValueRenderer(defaultSymbol, "PROP_TYPE");
+
+            //    for (var u = 0; u < unique.length; u++) {
+            //        //var r = function () { return Math.floor(Math.random() * 256) };
+            //        var cc = '#' + Math.random().toString(16).substring(2, 8);
+            //        var color = dojo.Color.fromHex('#' + Math.random().toString(16).substring(2, 8));
+            //        renderer.addValue(unique[u], new esri.symbol.SimpleFillSymbol().setColor(new esri.Color([color.r, color.g, color.b, 0.5])));
+            //    }
+            //    var layerDrawingOptions = [];
+            //    var layerDrawingOption = new esri.layers.LayerDrawingOptions();
+            //    layerDrawingOption.renderer = renderer;
+            //    layerDrawingOptions[0] = layerDrawingOption;
+            //    map.getLayer('DIQ').setLayerDrawingOptions(layerDrawingOptions);
+            //}
+            //function getDIQ() {
+            //    var featureLayer = new esri.layers.FeatureLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/LandManager/MapServer/0", {
+            //        mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
+            //        outFields: ['*']
+            //    });
+            //    featureLayer.setDefinitionExpression("PARCEL_ID in (71175,76180,51578)");
+            //    featureLayer.on("load", function (layer) {
+            //        var query = new esri.tasks.Query();
+            //        //query.where = "DSBL like '9%'";
+            //        query.where = "PARCEL_ID in (71175,76180,51578)";
+            //        query.outFields = ["*"];
+            //        //use a fast objectIds selection query (should not need to go to the server)
+            //        layer.layer.selectFeatures(query, esri.layers.FeatureLayer.SELECTION_NEW, function (results) {
+            //            var querys = "?type=subNHBD&sender=DIQ";
+            //            var max = 0;
+            //            var min = 0;
+            //            var masterInfo = jsonParse(callASHX("getJSON.ashx" + querys));
+            //            for (var i = 0; i < results.length; i++) {
+            //                var pid = results[i].attributes.PARCEL_ID;
+            //                if (masterInfo.items[0][pid] * 1 > max) {
+            //                    max = masterInfo.items[0][pid];
+            //                }
+            //                if (masterInfo.items[0][pid] * 1 < min) {
+            //                    min = masterInfo.items[0][pid];
+            //                }
+            //                results[i].attr("AREA", masterInfo.items[0][pid] ? masterInfo.items[0][pid] * 1 : null);
+            //                //results[i].attributes["DIQ"] =  masterInfo.items[0][pid] ? masterInfo.items[0][pid] * 1 : null;
+            //            }
+            //            var breaks = Math.round((max - min) / 6);
+
+            //            var outline = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0, 0, 0]), 0.5);
+            //            var fillColor = new dojo.Color([240, 150, 240, 0.75]);
+            //            var defaultSymbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(
+            //                    esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([127, 127, 127]), 0.5), null);
+
+            //            var renderer = new esri.renderer.SimpleRenderer(new esri.symbol.SimpleFillSymbol().setOutline(new esri.symbol.SimpleLineSymbol().setWidth(1)));
+            //            renderer.setColorInfo({
+            //                field: "AREA",
+            //                minDataValue: min,
+            //                maxDataValue: 99999,
+            //                colors: [
+            //                    new esri.Color([0, 104, 214]), new esri.Color([20, 120, 220]), new esri.Color([39, 136, 226]),
+            //                    new esri.Color([59, 152, 232]), new esri.Color([78, 169, 237]), new esri.Color([98, 185, 243]),
+            //                    new esri.Color([131, 197, 181]), new esri.Color([164, 210, 120]), new esri.Color([197, 222, 58]),
+            //                    new esri.Color([205, 188, 80]), new esri.Color([212, 155, 102]), new esri.Color([220, 121, 124]),
+            //                    new esri.Color([216, 87, 115]), new esri.Color([211, 53, 106]), new esri.Color([206, 19, 97])
+            //                ]
+            //            });
+            //            featureLayer.setRenderer(renderer);
+            //        }, function (e) {
+            //            alert(e);
+            //        });
+            //    });
+            //    map.addLayer(featureLayer);
+
+            //}
+        }-->

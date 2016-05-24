@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Quick Start Guide Example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.draw/leaflet.draw.css" />
+</head>
+<body>
+    <div id="map" style="width: 600px; height: 400px"></div>
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="http://leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
+    <script>
+
+        var map = L.map('map', { drawControl: true }).setView([40.857083, -72.551359], 15);
+
+        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Town of Southampton',
+            id: 'examples.map-i875mjb7'
+        }).addTo(map);
+
+        // Initialise the FeatureGroup to store editable layers
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        // Initialise the draw control and pass it the FeatureGroup of editable layers
+        //var drawControl = new L.Control.Draw({
+        //    edit: {
+        //        featureGroup: drawnItems
+        //    }
+        //});
+        //map.addControl(drawControl);
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'marker') {
+                // Do marker specific actions
+            }
+
+            // Do whatever else you need to. (save to db, add to map etc)
+            map.addLayer(layer);
+        });
+        map.on('draw:edited', function (e) {
+            var layers = e.layers;
+            layers.eachLayer(function (layer) {
+                //do whatever you want, most likely save back to db
+            });
+        });
+
+        //L.marker([51.5, -0.09]).addTo(map)
+		//	.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+
+        //L.circle([51.508, -0.11], 500, {
+        //    color: 'red',
+        //    fillColor: '#f03',
+        //    fillOpacity: 0.5
+        //}).addTo(map).bindPopup("I am a circle.");
+
+        L.polygon([
+              [40.857220235009464, -72.551693385842526],
+              [40.857273329277987, -72.551187333353269],
+              [40.856916059388993, -72.551121717651753],
+              [40.856862655542031, -72.551628695877184],
+              [40.857220235009464, -72.551693385842526]
+        ]).addTo(map).bindPopup("My House");
+
+        var popup = L.popup();
+
+        //function onMapClick(e) {
+        //    popup
+		//		.setLatLng(e.latlng)
+		//		.setContent("You clicked the map at " + e.latlng.toString())
+		//		.openOn(map);
+        //}
+
+        //map.on('click', onMapClick);
+
+    </script>
+</body>
+</html>

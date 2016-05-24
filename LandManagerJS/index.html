@@ -1,0 +1,2269 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=8"/>-->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />   
+    <meta name="apple-mobile-web-app-capable" content="yes" />  
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples on iOS devices-->
+    <!--<meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>-->
+    
+    <title>Land Manager</title>
+    <link rel="stylesheet" type="text/css" href="css/esri3_8.css"/>
+    <link rel="stylesheet" type="text/css" href="css/dndLegend.css"/>
+    <link rel="stylesheet" type="text/css" href="css/Page.css"/>
+    <link rel="stylesheet" type="text/css" href="css/searchResults.css"/>
+    <link rel="stylesheet" type="text/css" href="css/Dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="css/claro.css"/>
+    <link rel="stylesheet" type="text/css" href="css/claroGrid.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/ResizeHandle.css" />
+    <link rel="Stylesheet" type="text/css" href="css/ExpandoPane.css" />
+    <link rel="stylesheet" type="text/css" href="css/commonIcons.css" />
+    <link rel="stylesheet" type="text/css" href="css/accela.css" />
+    <script type="text/javascript">
+        function redirectHttpToHttps()
+         {
+             var httpURL= window.location.host + window.location.pathname + window.location.search;
+             var httpsURL= "https://" + httpURL;
+             window.location = httpsURL;
+         }
+	    if (window.location.protocol != "https:"){
+             redirectHttpToHttps();
+	    }
+    </script>
+    <script type="text/javascript">
+        var djConfig = {
+            parseOnLoad: false
+            //,modulePaths: {"myModules": "./myModules"}
+        };
+    </script>
+      <!--<script src="https://js.arcgis.com/3.15/"></script>-->
+      <script src="javascript/api/ags_3_8.js"></script>
+    
+      
+      <script type="text/javascript" src="javascript/utilities/customoperation.js"></script>
+
+    <!--Building Envelopes-->
+    <script src="Modules/bldgEnvelopes/offset.js"></script>
+
+    <!--Sales Module-->
+    <script type="text/javascript" src="Modules/SalesModule/addComps.js"></script>	
+    <script type="text/javascript" src="Modules/SalesModule/SearchComps.js"></script>
+    <script type="text/javascript" src="Modules/SalesModule/arReport.js"></script>
+
+    <!--Utilities-->
+    <script type="text/javascript" src="Javascript/utilities/dragAndDrop.js"></script>
+    <script type="text/javascript" src="javascript/utilities/createCookie.js"></script>
+    <script type="text/javascript" src="javascript/utilities/pageUtilities.js"></script>
+    <script type="text/javascript" src="javascript/utilities/geolocation.js"></script>
+    <script type="text/javascript" src="javascript/utilities/myUtils.js"></script>
+    <script type="text/javascript" src="javascript/utilities/json_sans_eval.js"></script>
+    <script type="text/javascript" src="Javascript/utilities/rightClickNav.js"></script>
+    <script type="text/javascript" src="javascript/utilities/credentials.js"></script>
+    <script type="text/javascript" src="javascript/utilities/popUps.js"></script>	
+
+    <!--Tools-->
+    <script type="text/javascript" src="javascript/tools/identify.js"></script>    
+    <script type="text/javascript" src="Javascript/tools/buildingInfo.js"></script>	
+    <script type="text/javascript" src="Javascript/tools/HistoricSales.js"></script>
+    <script type="text/javascript" src="javascript/tools/measureTools.js"></script>
+    <script type="text/javascript" src="javascript/tools/googleStreetView.js"></script>
+    <script type="text/javascript" src="javascript/tools/MailingLabels.js"></script>
+    <script type="text/javascript" src="javascript/tools/drawPanel.js"></script>
+    <script type="text/javascript" src="modules/permitsPanel/permitsPanel.js"></script>
+
+    <script type="text/javascript" src="Javascript/tools/pictures.js"></script>
+    <script type="text/javascript" src="javascript/tools/operationalLayerContext.js"></script>
+    <script type="text/javascript" src="Javascript/tools/showPictometry.js"></script>
+    <script type="text/javascript" src="javascript/tools/legend.js"></script>
+    <script type="text/javascript" src="javascript/tools/httpRequest.js"></script>	
+    <script type="text/javascript" src="javascript/tools/labels.js"></script>
+    
+    <!--Modules-->
+    <script type="text/javascript" src="Modules/inspections/Inspections.js"></script>
+	<script type="text/javascript" src="Modules/DIQ/getDIQ.js"></script>
+    <script type="text/javascript" src="modules/TransferToGovern/governTransfer.js"></script>
+    <script type="text/javascript" src="modules/Accela/Accela.js"></script>
+    <script type="text/javascript" src="Modules/Flags/getFlags.js"></script>
+ <script type="text/javascript" src="Modules/namePermits/namePermits.js"></script>
+
+      <!--point Editor-->
+    <script type="text/javascript" src="javascript/editor/editor.js"></script>    
+    <!-- Google StreetView --> 
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script> 
+    <!-- Pictometry Navigator Style Sheet --> 
+    <link type="text/css" rel="stylesheet" href="https://pol.pictometry.com/load/?module=ImageNavigator&type=css&v=12" /> 
+    <!-- Pictometry Navigator API --> 
+    <script type="text/javascript" src="https://pol.pictometry.com/load/?module=ImageNavigator&type=api&v=12"></script>
+
+    <script type="text/javascript">
+        dojo.require("dijit.dijit"); // optimize: load dijit layer
+        dojo.require("esri.map");
+        dojo.require("esri.request");
+        dojo.require("esri.toolbars.draw");
+        dojo.require("esri.toolbars.edit");
+        dojo.require("dojo.parser");
+        //dojo.require("dojo.fx");
+        //dojo.require("dojo.fx.Toggler");
+        dojo.require("dijit.ColorPalette");
+        dojo.require("dijit.Calendar");
+        dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.Select");
+        dojo.require("dijit.form.CheckBox");
+        dojo.require("dojo.data.ItemFileReadStore");
+	    dojo.require("dojo.data.ItemFileWriteStore");
+        //dojo.require("dojo.store.Memory");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.Menu");
+        dojo.require("dojox.form.CheckedMultiSelect");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.layout.TabContainer");
+        dojo.require("dijit.layout.AccordionContainer");
+        dojo.require("dijit.Toolbar");
+        dojo.require("dijit.Dialog");
+        dojo.require("dojox.data.QueryReadStore");
+        dojo.require("dojox.grid.DataGrid");
+        dojo.require("esri.dijit.Popup");
+        dojo.require("esri.tasks.identify");
+        dojo.require("esri.tasks.query");
+        dojo.require("esri.tasks.geometry");
+        dojo.require("esri.tasks.find");
+        
+        //Print Tasks
+        dojo.require("esri.tasks.PrintTemplate");
+        dojo.require("esri.tasks.LegendLayer");
+        dojo.require("esri.dijit.Print");
+
+        dojo.require("dijit.Tooltip");
+        dojo.require("dijit.form.ToggleButton");
+        dojo.require("esri.dijit.Bookmarks");
+        dojo.require("dojox.widget.Dialog");
+        dojo.require("dojox.image.LightboxNano");
+        dojo.require("dojox.layout.ResizeHandle");
+        dojo.require("esri.dijit.Scalebar");
+        dojo.require("dijit.form.NumberSpinner");
+        dojo.require("dijit.form.HorizontalSlider");
+        dojo.require("dojox.layout.ExpandoPane");
+        dojo.require("dijit.form.SimpleTextarea");
+        dojo.provide("ComboBoxReadStore");
+        dojo.provide("MailingComboBoxReadStore");
+        dojo.require("dijit.form.CurrencyTextBox");
+        dojo.require("dijit.form.DateTextBox");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("dojo.dnd.Moveable");
+        dojo.require("dojo.promise.all");
+        dojo.require('esri.layers.LabelClass');
+        dojo.require("esri.layers.LayerDrawingOptions");
+        dojo.require("esri.symbols.TextSymbol");
+        dojo.require('esri.symbols.Font');
+
+        var app = {}, gviewClient, Pano, Glocator, viewPoint, viewStatus = false;
+        var map, grid, query, drawToolbar, eventObj, clickHandler, hoverHandler, findParams, /*findTask,*/ taxParcelQueryTask, sliderToc, undoManager, /*graphicsUndoManager,*/ measureToolbar, lmURL, permitPageInfo;
+        var _HPM, _DEM, _1930, _1962, _1976, _1984, _2001, _2004, _2008, _2010, _2013, _2014, taxParcels, basemap, lmCore, navToolbar, measurement, selectByLocationToolBar, mailingLablesToolBar;
+        var queryTask, queryTaskTouches, identifyTask, identifyParams, identifyPrint, advPrintParams, gsvc, printUrl, drawToolsTextLayer, drawToolsLayer, startExtent, dialog;
+        var polysymbol, highlightSymbol, prevFillSymbol, prevOutSymbol, pointSymbolURL, editToolbar, selected, activeDrawTool, offenderEditToolbar;
+
+        var defaultSymbol, highlightSymbol, movedSymbol, finishedSymbol, frontHighlightSymbol, rearHighlightSymbol, beToolBar;        
+
+        var connections = {};
+        var allLayers = [];
+        var layerDrawingOptions = [];
+        document.dojoClick = false;
+
+        function init() {
+                dojo.declare(
+			    "MailingComboBoxReadStore",
+			    dojox.data.QueryReadStore,
+			    {
+			        fetch: function (request) {
+			            request.serverQuery =
+				                {
+				                    type: dojo.byId('mltype').value,
+				                    q: request.query.eltype.replace("*", "%"),
+				                    sender: "parcel"
+				                };
+			            return this.inherited("fetch", arguments);
+			        }
+			    });
+                //dojo.provide("ComboBoxReadStore");
+                dojo.declare(
+			    "ComboBoxReadStore",
+			    dojox.data.QueryReadStore,
+			    {
+			        fetch: function (request) {
+			            if (request.query.eltype.length > 3) {
+			                request.serverQuery =
+                                    {
+                                        type: dojo.byId('type').value,
+                                        q: request.query.eltype.replace("*", "%"),
+                                        sender: "parcel"
+                                    };
+			            }
+			            return this.inherited("fetch", arguments);
+			        }
+			    });
+ 		dojo.declare("NamePermitComboBoxReadStore", dojox.data.QueryReadStore, {
+                    fetch: function (request) {
+                        //request.serverQuery = { q: request.query.name };
+                        //return this.inherited("fetch", arguments);
+                        if (request.query.name.length > 3) {
+                            request.serverQuery =
+                               {
+                                   type: namePermitSearchType(),
+                                   value: request.query.name.replace("*", "%"),
+                                   dept: getDepartment(),
+                                   start: request.start,
+                                   count: request.count,
+                                   sender: "namePermitsearch"
+                               };
+                        }
+                        return this.inherited("fetch", arguments);
+                    }
+                });
+                lmURL = "https://gis2.southamptontownny.gov/arcgis/rest/services/DataServices/LandManager/MapServer";
+                esri.config.defaults.io.proxyUrl = "proxy.ashx";
+                esri.config.defaults.io.alwaysUseProxy = false;
+                //esriConfig.defaults.map.slider = { left: "35px", top: "90px", width: null, height: "150px" };
+                esri.config.defaults.geometryService = new esri.tasks.GeometryService("https://gis2.southamptontownny.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer");
+
+                taxParcelQueryTask = new esri.tasks.QueryTask(lmURL + "/0");
+
+                gsvc = new esri.tasks.GeometryService("https://gis2.southamptontownny.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer");
+
+                dojo.parser.parse();
+                printInfo = esri.request({
+		    url: "https://gis2.southamptontownny.gov/arcgis/rest/services/Printers/ExportWebMap_Custom/GPServer/Export%20Web%20Map",
+                    //url: "https://gis2.southamptontownny.gov/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task/",
+                    content: { "f": "json" }
+                });
+                printInfo.then(handlePrintInfo, handlePrintError);
+                esri.setRequestPreCallback(fixPrintIssues);
+
+                dojo.query('.stype').onclick(handleChange);
+
+                //Mailing Lables Type handler
+                dojo.query('.mlstype').onclick(handleMLChange);
+
+                dojo.connect(dojo.byId('fs'), 'onkeypress', this,
+			    function (event) {
+			        if (event.charOrCode == dojo.keys.ENTER) {
+			            doFind();
+			        }
+			    });
+
+                dojo.connect(dojo.byId('mls'), 'onkeypress', this,
+			    function (event) {
+			        if (event.charOrCode == dojo.keys.ENTER) {
+			            doMailingLabels();
+			        }
+			    });
+
+                var query = window.location.search.substring(1);
+                //var query = "pids=33148;9,41676;9";
+                var vars = query.split('&');
+
+                var extent = findURLParameters(vars, "extent");
+                if (extent) {
+                    //var extentString = ;
+                    var extentVals = extent.split(',');
+                    startExtent = new esri.geometry.Extent({
+                        "xmin": extentVals[0] * 1,
+                        "ymin": extentVals[1] * 1,
+                        "xmax": extentVals[2] * 1,
+                        "ymax": extentVals[3] * 1,
+                        "spatialReference": { "wkid": 102718 }
+                    });
+                } else {
+                    startExtent = new esri.geometry.Extent({
+                        "xmin": 1297232.4692940111,
+                        "ymin": 223864.66964762594,
+                        "xmax": 1501876.5665162336,
+                        "ymax": 325535.6765920704,
+                        "spatialReference": { "wkid": 102718 }
+                    });
+                }
+
+                var popup = new esri.dijit.Popup({
+                    fillSymbol: new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 2), new dojo.Color([255, 255, 0, 0.25]))
+                }, dojo.create("div"));
+
+                map = new esri.Map("map", {
+                    infoWindow: popup,
+                    logo: false,
+                    //sliderOrientation: "horizontal",
+                    extent: startExtent
+                    //center: [1399391.757, 256525.260]
+                });
+                dojo.addClass(map.infoWindow.domNode, "myTheme");
+
+                //findTask = new esri.tasks.FindTask(lmURL);
+
+                //Create the find parameters
+                findParams = new esri.tasks.FindParameters();
+                findParams.returnGeometry = true;
+                findParams.layerIds = [0];
+                findParams.searchFields = ["PARCEL_ID"];
+                findParams.outSpatialReference = map.spatialReference;
+
+                _HPM = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/Historic_Plan_Maps/MapServer", "_HPM", "Historic Planning Maps");
+                _DEM = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/DEM/MapServer", "_DEM", "Elevation");
+                _1930 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/1930Imagery/MapServer", "_1930", "1930 Aerial Imagery");
+                _1962 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/1962Imagery/MapServer", "_1962", "1962 Aerial Imagery");
+                _1976 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/1976Imagery/MapServer", "_1976", "1976 Aerial Imagery");
+                _1984 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/1984Imagery/MapServer", "_1984", "1984 Aerial Imagery");
+		        _1994 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/1994Imagery/MapServer", "_1994", "1994 Aerial Imagery");
+		        _1996 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/1996Imagery/MapServer", "_1996", "1996 Aerial Imagery");
+                _2001 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/2001Imagery/MapServer", "_2001", "2001 Aerial Imagery");
+                _2004 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/2004Imagery/MapServer", "_2004", "2004 Aerial Imagery");
+                _2008 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/2008Imagery/MapServer", "_2008", "2008 Aerial Imagery");
+                _2010 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/2010Imagery/MapServer", "_2010", "2010 Aerial Imagery");
+                _2013 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/2013Imagery/MapServer", "_2013", "2013 Aerial Imagery");
+                _2014 = initTiledLayer("https://gis2.southamptontownny.gov/arcgis/rest/services/Imagery/2014Imagery/MapServer", "_2014", "2014 Aerial Imagery");
+                lmCore = initDynamicLayer(lmURL, "lmCore");
+
+                map.addLayers(allLayers);
+		        addDIQLayers();
+
+                navToolbar = new esri.toolbars.Navigation(map);
+                dojo.connect(navToolbar, "onExtentHistoryChange", extentHistoryChangeHandler);
+
+                //Right Click Menu
+                createMapMenu();
+                createOLMenu();
+
+                identifyTask = new esri.tasks.IdentifyTask(lmURL);
+                identifyParams = new esri.tasks.IdentifyParameters();
+
+                dojo.connect(map, 'onLoad', function (map) {
+                    dojo.connect(dijit.byId('map'), 'resize', map, map.resize);
+                    var scalebar = new esri.dijit.Scalebar({
+                        map: map,
+                        scalebarUnit: 'english'
+                    });
+                    var pids = findURLParameters(vars, "pids");
+                    if (pids) {
+                        doFind(pids);
+                    }
+                    //graphicsUndoManager = new esri.UndoManager();
+                    initDrawPanel(map);
+                    measureToolbar = new esri.toolbars.Draw(map);
+
+                    dojo.connect(measureToolbar, "onDrawEnd", getAreaAndLength);
+                    //if (navigator.userAgent.indexOf("Opera") != -1 || navigator.userAgent.indexOf("Mozilla") != -1) {
+                    if (navigator.userAgent.indexOf("Opera") != -1) {
+                        map.disablePan();
+                        dijit.byId("mapPan").set("checked", false);
+                        dijit.byId("mapPan").set("Disabled", true);
+                    }
+                });
+
+                var bookmark = new esri.dijit.Bookmarks({
+                    map: map,
+                    bookmarks: [],
+                    editable: true
+                }, dojo.byId('bookmark'));
+
+                var fullExtent = {
+                    "extent": {
+                        "spatialReference": {
+                            "wkid": 102718
+                        },
+                        "xmin": 1297232.4692940111,
+                        "ymin": 223864.66964762594,
+                        "xmax": 1501876.5665162336,
+                        "ymax": 325535.6765920704
+                    },
+                    "name": "Town Extent"
+                }
+                bookmark.addBookmark(fullExtent);
+
+                var multipleResults = new esri.layers.GraphicsLayer({ id: "multipleResults" });
+                map.addLayer(multipleResults);
+
+                var sessionGraphicsLayer = new esri.layers.GraphicsLayer({ id: "sessionGraphicsLayer" });
+                map.addLayer(sessionGraphicsLayer);
+
+                var measureGraphicsLayer = new esri.layers.GraphicsLayer({ id: "measureGraphicsLayer" });
+                map.addLayer(measureGraphicsLayer);
+                measureGraphicsLayer.on("click", function (graphic) { editMeasureGraphic(graphic); });
+
+                var mailingLabelsGraphicsLayer = new esri.layers.GraphicsLayer({ id: "mailingLabelsGraphicsLayer" });
+                map.addLayer(mailingLabelsGraphicsLayer);
+
+                dojo.connect(sessionGraphicsLayer, "onGraphicAdd", function (graphic) {
+                    //graphic.setSymbol(useDefaultSymbol());
+                    if (dijit.byId('keepResults').checked) {
+                        gsvc.labelPoints([graphic.geometry], function (labelPoint) {
+                            createRow(labelPoint[0], graphic.toJson(), "reg");
+                        }, function (e) {
+                            alert(e.message);
+                        });
+                    } else {
+                        setTimeout(function () {
+                            sessionGraphicsLayer.remove(graphic);
+                        }, 5000);
+                    }
+                });
+                dojo.connect(map, 'onLayerAddResult', function (results) {
+                    //if (results.id == "lmCore") {
+                    //    createLegend(map);
+                    //    document.getElementById('enableJava').style.display = "none";
+                    //}
+                    dojo.connect(results, "onVisibilityChange", function (e) {
+                        var sc = map.getScale();
+                        if ((e && map.getScale() > map.getLayer(results.id).minScale || e && map.getScale() < map.getLayer(results.id).maxScale) && map.getLayer(results.id).maxScale > 0) {
+                            document.getElementById("message").innerHTML = results.id + " is not visible at this scale";
+                            dojo.fx.wipeIn({ node: messageWipeTarget }).play();
+
+                            setTimeout(function () {
+                                if (messageWipeTarget.style.display != "none") {
+                                    dojo.fx.wipeOut({ node: messageWipeTarget }).play();
+                                }
+                            }, 4000);
+                            //alert("Elevation is not visible at this scale \rplease zoom in to view detail");
+                        }
+                    });
+                    //alert(results);
+                });
+                map.on('layers-add-result', function (results) {
+                    var previousSession = getCookie('landManagerSessionResults');
+                    if (previousSession) {
+                        if (previousSession.split(",").length > 0) {
+                            doFind(previousSession);
+                        }
+                    }
+                   checkCredentials('init', dijit.byId('lmUser'));
+                }, function (e) { alert(e.message); });
+                
+                dojo.connect(map, "onExtentChange", function (extent, delta, levelChange, lod) {
+                    closeDialog();
+                    var visibleLayers = [];
+                    if (delta && levelChange) {
+                        for (var j = 0; j < map.layerIds.length; j++) {
+                            var lay = map.getLayer(map.layerIds[j]);
+                            if (lay.visible && lay.declaredClass == "esri.layers.ArcGISTiledMapServiceLayer" && (lay.maxScale > lod.scale || lay.minScale < lod.scale)) {
+                                visibleLayers.push(lay.id);
+                            }
+                        }
+                        if (visibleLayers.length != 0) {
+
+                            document.getElementById("message").innerHTML = visibleLayers.join(', ') + " is not be visible at this scale";
+                            dojo.fx.wipeIn({ node: messageWipeTarget }).play();
+
+                            setTimeout(function () {
+                                if (messageWipeTarget.style.display != "none") {
+                                    dojo.fx.wipeOut({ node: messageWipeTarget }).play();
+                                }
+                            }, 4000);
+                        }
+                    }
+                });
+                var wipeOutButton = dojo.byId("closeToolbar");
+                var wipeInButton = dojo.byId("openToolbar");
+                wipeTarget = dijit.byId("collapseToolbar");
+
+                dojo.connect(wipeInButton, "onclick", function (evt) {
+                    dojo.fx.wipeIn({ node: wipeTarget.domNode }).play();
+                    document.getElementById('closeToolbar').style.display = "block";
+                    document.getElementById('openToolbar').style.display = "none";
+                });
+                dojo.connect(wipeOutButton, "onclick", function (evt) {
+                    dojo.fx.wipeOut({ node: wipeTarget.domNode }).play();
+                    document.getElementById('closeToolbar').style.display = "none";
+                    document.getElementById('openToolbar').style.display = "block";
+                });
+
+                var messageWipeTarget = dojo.byId("fm");
+                //var message = dojo.byId('message');
+                var messageOutButton = dojo.byId("closeFirstMessage");
+                //message.innerHTML = "imagery might not be visible at this scale";
+
+                dojo.connect(messageOutButton, "onclick", function (evt) {
+                    dojo.fx.wipeOut({ node: messageWipeTarget }).play();
+                });
+
+                dojo.connect(map, "onUpdateStart", function () {
+                    document.getElementById('closeToolbar').style.display = "block";
+                    document.getElementById('openToolbar').style.display = "none";
+                });
+                dojo.connect(wipeOutButton, "onclick", function (evt) {
+                    dojo.fx.wipeOut({ node: wipeTarget.domNode }).play();
+                    document.getElementById('closeToolbar').style.display = "none";
+                    document.getElementById('openToolbar').style.display = "block";
+                });
+
+                var messageWipeTarget = dojo.byId("fm");
+                //var message = dojo.byId('message');
+                var messageOutButton = dojo.byId("closeFirstMessage");
+                //message.innerHTML = "imagery might not be visible at this scale";
+
+                dojo.connect(messageOutButton, "onclick", function (evt) {
+                    dojo.fx.wipeOut({ node: messageWipeTarget }).play();
+                });
+
+                dojo.connect(map, "onUpdateStart", function () {
+                    esri.show(dojo.byId("status"));
+                });
+                dojo.connect(map, "onUpdateEnd", function () {
+                    esri.hide(dojo.byId("status"));
+                });
+
+                selectByLocationToolBar = new esri.toolbars.Draw(map);
+                dojo.connect(selectByLocationToolBar, "onDrawEnd", function (graphic) {
+                    map.setCursor("progress");
+                    selectByLocationToolBar.deactivate();
+                    //var selectionQueryTask = new esri.tasks.QueryTask(lmURL + "/0");
+                    var selectionQuery = new esri.tasks.Query();
+
+                    selectionQuery.outSpatialReference = map.spatialReference;
+                    selectionQuery.returnGeometry = true;
+                    selectionQuery.outFields = ["*"];
+                    switch (graphic.type) {
+                        case "point":
+                            selectionQuery.geometry = new esri.geometry.Point(graphic.x, graphic.y, map.spatialReference);
+                            break;
+                        case "polyline":
+                            var polylineJson = { "paths": graphic.paths, "spatialReference": map.spatialReference };
+                            selectionQuery.geometry = new esri.geometry.Polyline(polylineJson);
+                            break;
+                        case "polygon":
+                            var polygonJson = { "rings": graphic.rings, "spatialReference": map.spatialReference };
+                            selectionQuery.geometry = new esri.geometry.Polygon(polygonJson);
+                            break;
+                    }
+                    taxParcelQueryTask.execute(selectionQuery, function (results) {
+                        showSelectByLocationResults(results.features);
+                        map.setCursor("default");
+                    }, function (e) {
+                        alert(e.message);
+                        map.setCursor("default");
+                    });
+                });
+                beToolBar = new esri.toolbars.Draw(map);
+                dojo.connect(beToolBar, "onDrawEnd", function (graphic) {
+                    if (graphic.type == "point") {
+                        map.setCursor("progress");
+                        beToolBar.deactivate();
+                        var selectionQuery = new esri.tasks.Query();
+
+                        selectionQuery.outSpatialReference = map.spatialReference;
+                        selectionQuery.returnGeometry = true;
+                        selectionQuery.outFields = ["*"];
+                        selectionQuery.geometry = graphic;
+                        taxParcelQueryTask.execute(selectionQuery, function (results) {
+                            if (results.features.length == 1) {
+                                var creds = eval('(' + callASHX("getJson.ashx?sender=be&ids=" + results.features[0].attributes.PARCEL_ID) + ')');
+                                if (creds.length == 1) {
+                                    document.getElementById('beInfoMeasureContainer').innerHTML = "Front: " + creds[0].Setbacks.Front + "<br/>Rear: " + creds[0].Setbacks.Rear + "<br/>Side: " + creds[0].Setbacks.Side;
+                                    var simp = false;
+                                    for (var i = 0; i < results.features[0].geometry.rings.length; i++) {
+                                        if (results.features[0].geometry.rings[i].length > 50) {
+                                            simp = true;
+                                        }
+                                    }
+                                    if (simp == true) {
+                                        var genParams = new esri.tasks.GeneralizeParameters();
+                                        genParams.maxDeviation = '1';
+                                        genParams.deviationUnit = esri.tasks.GeometryService.UNIT_FOOT;
+                                        genParams.geometries = [results.features[0].geometry];
+                                        gsvc.generalize(genParams, function (poly) {
+                                            results.features[0].geometry = poly[0];
+                                            initOffset(results, creds[0]);
+                                        }, function (evt) {
+                                            alert('ss');
+                                        });
+                                    } else {
+                                        initOffset(results, creds[0]);
+                                    }
+                                    dijit.byId('beSelect').set('disabled', true);
+                                    dijit.byId('beSides').set('disabled', false);
+                                    dijit.byId('beFinishBtn').set('disabled', false);
+                                } else if (creds.length > 1) {
+                                    alert('This is a split zone parcel');
+                                } 
+                                else {
+                                    alert('This zone\'s setbacks are not defined');
+                                }
+                                map.setCursor("default");
+                            } else {
+                                alert('Please select a parcel');
+                            }
+                        }, function (e) {
+                            alert(e.message);
+                            map.setCursor("default");
+                        });
+                    } else {
+                        if (dijit.byId('beRear').checked) {
+                            dijit.byId('beRear').set('checked', false);
+                            highlightSymbol = rearHighlightSymbol;
+                            selectionEnd(graphic, "Rear");
+                        } else if (dijit.byId('beFront').checked) {
+                            dijit.byId('beFront').set('checked', false);
+                            highlightSymbol = frontHighlightSymbol;
+                            selectionEnd(graphic, "Front");
+                        }
+                    }
+                });
+                mailingLablesToolBar = new esri.toolbars.Draw(map);
+                dojo.connect(mailingLablesToolBar, "onDrawEnd", function (graphic) {
+                    map.setCursor("progress");
+                    map.getLayer("mailingLabelsGraphicsLayer").clear();
+                    mailingLablesToolBar.deactivate();
+                    //var selectionQueryTask = new esri.tasks.QueryTask(lmURL + "/0");
+                    var selectionQuery = new esri.tasks.Query();
+                    //selectionQuery.spatialRelationship = esri.tasks.Query.SPATIAL_REL_CROSSES;
+                    mailingLablesToolBar.respectDrawingVertexOrder = true;
+                    selectionQuery.outSpatialReference = map.spatialReference;
+                    selectionQuery.returnGeometry = true;
+                    selectionQuery.outFields = ["*"];
+                    switch (graphic.type) {
+                        case "point":
+                            selectionQuery.geometry = new esri.geometry.Point(graphic.x, graphic.y, map.spatialReference);
+                            break;
+                        case "polyline":
+                            var polylineJson = { "paths": graphic.paths, "spatialReference": map.spatialReference };
+                            selectionQuery.geometry = new esri.geometry.Polyline(polylineJson);
+                            break;
+                        case "polygon":
+                            var polygonJson = { "rings": graphic.rings, "spatialReference": map.spatialReference };
+                            selectionQuery.geometry = new esri.geometry.Polygon(polygonJson);
+                            break;
+                    }
+                    taxParcelQueryTask.execute(selectionQuery, function (results) {
+                        getMailingLabels(results, "interactive");
+                        map.setCursor("default");
+                    }, function (e) {
+                        alert(e.message);
+                        map.setCursor("default");
+                    });
+                });
+
+                dijit.byId("grid").canSort = function (col) {
+                    if (Math.abs(col) != 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                };
+//                document.addEventListener("touchstart", touchHandler, true);
+//                document.addEventListener("touchmove", touchHandler, true);
+//                document.addEventListener("touchend", touchHandler, true);
+//                document.addEventListener("touchcancel", touchHandler, true);  
+
+                dojo.connect(dijit.byId("grid"), "onCellClick", getCellClicked);
+                //Zoom back to the initial map extent
+                //dojo.connect(dijit.byId("grid"), "onRowClick", onRowClickHandler);
+//                DragHandler.attach(document.getElementById('pSearchDragHandler'));
+//                DragHandler.attach(document.getElementById('drawDragHandler'));
+//                DragHandler.attach(document.getElementById('measureDragHandler'));
+//                DragHandler.attach(document.getElementById('selectByLocationDragHandler'));
+//                DragHandler.attach(document.getElementById('mailingLabelDragHandler'));
+//                DragHandler.attach(document.getElementById('svDialogHandle'));
+//                DragHandler.attach(document.getElementById('openPermitsDragHandler'));
+//                DragHandler.attach(document.getElementById('compsDashboardDragHandler'));
+                DragHandler.attach(document.getElementById('inspectDialogHandle'));
+                
+                if (!Array.prototype.indexOf) {
+                    Array.prototype.indexOf = function (elt /*, from*/) {
+                        var len = this.length;
+
+                        var from = Number(arguments[1]) || 0;
+                        from = (from < 0)
+                             ? Math.ceil(from)
+                             : Math.floor(from);
+                        if (from < 0)
+                            from += len;
+
+                        for (; from < len; from++) {
+                            if (from in this &&
+                            this[from] === elt)
+                                return from;
+                        }
+                        return -1;
+                    };
+                }
+                var SVsymbol = new esri.symbol.SimpleMarkerSymbol().setColor(new dojo.Color([0, 0, 255]));
+                dojo.connect(dijit.byId("svDialog"), "hide", function (e) { map.graphics.clear(); });
+                dojo.connect(dijit.byId("searchSelectAll"), "onChange", function (isChecked) {
+                    var list = dojo.query("input", "searchTooltip");
+                    for (i = 0; i < list.length; i++) {
+                        //list[i].checked = isChecked;
+                        dijit.byId(list[i].id).set("checked", isChecked);
+                    }
+                });
+                dojo.connect(dijit.byId("selectAll"), "onChange", function (isChecked) {
+                    var list = dojo.query("input", "toolTip");
+                    for (i = 0; i < list.length; i++) {
+                        //list[i].checked = isChecked;
+                        dijit.byId(list[i].id).set("checked", isChecked);
+                    }
+                });
+                defaultSymbol = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASH, new dojo.Color([255, 0, 0]), 3); //red dashed line
+                //highlightSymbol = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASH, new dojo.Color([127, 255, 255]), 3); //blue dashed line
+                frontHighlightSymbol = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASH, new dojo.Color([255, 100, 255]), 3); //purple dashed line
+                rearHighlightSymbol = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASH, new dojo.Color([127, 255, 127]), 3); //green dashed line
+                movedSymbol = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASH, new dojo.Color([255, 0, 255]), 3); //purple dashed line
+
+                //finishedSymbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_FORWARD_DIAGONAL, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_NULL, null, null), new dojo.Color([0, 0, 0, 0]));
+                finishedSymbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_NULL, null, null), new dojo.Color([255, 255, 0, .25]));
+        }
+        function handleMLChange(id) {
+            var radioButtons = dojo.query(".mlstype");
+            for (var i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    dojo.byId('mltype').value = radioButtons[i].value;
+                }
+            }
+            dojo.byId('mls').value = "";
+            dojo.byId('mls').focus();
+        }
+        function handleChange(id) {
+            var radioButtons = dojo.query(".stype");
+            for (var i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    dojo.byId('type').value = radioButtons[i].value;
+                }
+            }
+            dojo.byId('fs').value = "";
+            dojo.byId('fs').focus();
+        }
+
+        dojo.ready(init);
+    </script>
+  </head> 
+  <body class="claro">
+    <div id="enableJava" style="z-index:200; display:block; height:100%; width:100%; position:absolute; top:0px;left:0px; background-color:White;">
+            <span style="position:absolute; top:40%; left:40%; font-size: large; font-family: 'arial black'; color: #0099CC;">
+            <span style="font-family: 'arial black'; color: #006699; font-size: x-large;">Welcome </span><br /> 
+            Town of Southampton Land Manager <br /> <img alt='' src="images/waitBlue2.gif" /></span>      
+    </div>
+    <div data-dojo-type="dijit.Dialog" style="" data-dojo-props="title:'', onShow:function(e){ document.getElementById('openPermitsPanel').style.display = 'none'; togglePermitsLayer(); document.getElementById('inspectDialog').style.display = 'none'; toggleInspectLayer();}" id="deptDialog">
+        <p style="font-weight:bold;">Please select a Department from the following</p>
+        <div id="intro" style="border:1px solid #769dc4;padding:5px 10px 5px 10px;">
+             <table>
+                <tr>
+                    <td><input id="rad1" type="radio" name="dept" value="Basic" /><label for='rad1'>Basic</label></td>
+                    <td><input id="rad2" type="radio" name="dept" value="all" checked="checked" /><label for='rad2'>No Department</label></td>
+                </tr>
+                <tr>
+                    <td><input id="rad4" type="radio" name="dept" value="10" /><label for='rad4'>Assessors</label></td>
+                    <td><input id="rad3" type="radio" name="dept" value="02" /><label for='rad3'>Building</label></td>
+                </tr>
+                <tr>
+                    <td><input id="rad7" type="radio" name="dept" value="21" /><label for='rad7'>Code</label></td>
+                    <td><input id="rad10" type="radio" name="dept" value="04" /><label for='rad10'>Electrical</label></td>
+                </tr>
+                <tr>
+                    <td><input id="rad5" type="radio" name="dept" value="05" /><label for='rad5'>Environment</label></td>
+                    <td><input id="rad6" type="radio" name="dept" value="16" /><label for='rad6'>Fire Prevention</label></td>
+                </tr>
+                <tr>
+                    <td ><input id="rad9" type="radio" name="dept" value="09" /><label for='rad9'>Licensing</label></td>
+                    <td><input id="rad8" type="radio" name="dept" value="06" /><label for='rad8'>Trustees</label></td>
+                </tr>
+            </table>
+        </div>
+        <div class="dijitDialogPaneActionBar">
+            <div data-dojo-type="dijit.form.Button" data-dojo-props='type:"submit", onClick:function(){ showLayerByDept(); }'>OK</div>
+            <!--<button id="cancelButton" data-dojo-type="dijit.form.Button" data-dojo-props='type:"button", onClick:function(){alert("You Must Select OK to Continue") }'>Cancel</button>-->
+        </div>
+    </div>
+    <div data-dojo-type="dijit.layout.BorderContainer" style="width:100%; height:100%;">
+        <div dojotype="dojox.layout.ExpandoPane" id="leftPane" region="left" splitter="true" style="width:25%; height:100%;" >
+            <div data-dojo-type="dijit.layout.AccordionContainer" data-dojo-props="region:'leading', splitter:true, minSize:20, style:'height:100%; width:100%;'" id="leftAccordion">
+                <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props='title:"<img src=\"images/info-icon4.png\"/>&nbsp;Search Options", style:"width:100%;"' selected="true">
+		            <div id="single">
+                        <div class="expandDiv">
+                            <table style="WIDTH: 100%; border-collapse:collapse;">
+                                <tr id="Tr1" class="expandDiv">
+                                    <img alt="" style="display:inline; vertical-align:middle; padding:5px" id="singleSearchImg" onclick="collapse('singleSearch')" src="Images/collapse_Icon.gif"/>
+                                    <div style="display:inline; vertical-align:middle;" onclick="collapse('singleSearch')">&nbsp;Single Parcel Search</div>
+                                </tr>
+                            </table>
+                        </div>
+					    <div id="singleSearch" style="padding:10px; display:block;" >
+						    <form action="javascript:void(0);" id="parcelSearch">
+					            <div dojoType="ComboBoxReadStore"  doClientPaging="true" jsId="store" url="GetJSON.ashx" requestMethod="get"> </div>
+							    <table border="0" style="width:95%;">
+							        <tr>
+							            <td>
+                                            Enter Search Criteria
+							                <input id="fs"  labelAttr="eltype" searchAttr="eltype" dojoType="dijit.form.FilteringSelect" store="store" pageSize="10"  style="width:95%" />
+							                <input id="p_id" type="hidden" name="p_id"/>
+							                <input id="type" type="hidden" name="type" value="1"/>
+							                <div class="searchOptions">
+								                <span><input  tabindex="3" class="stype" id="rb1" type="radio" value="1" checked="checked"  name="searchType" /><label for="rb1">Parcel ID</label></span><br />
+								                <span><input  tabindex="4" class="stype" id="rb2" type="radio" value="2" name="searchType" /><label for="rb2">Tax Map</label></span><br />
+								                <span><input  tabindex="5" class="stype" id="rb3" type="radio" value="3" name="searchType" /><label for="rb3">Last Name</label></span><br />
+								                <span><input  tabindex="6" class="stype" id="rb4" type="radio" value="4" name="searchType" /><label for="rb4">Address</label></span><br />
+                                                				<span><input tabindex="7" class="stype" id="rb9" type="radio" value="9" name="searchType" /><label for="rb9">Subdivision</label></span><br />
+										<span><input tabindex="8" class="stype" id="rb14" type="radio" value="14" name="searchType" /><label for="rb14">Permit/ Cert/ App #</label></span><br/>
+                                                				<span><input tabindex="9" class="stype" id="rb13" type="radio" value="13" name="searchType" /><label for="rb13">Company</label></span>
+							                </div>
+                                            <br/>
+							                <button tabindex="2" id="doFindBtn" data-dojo-type="dijit.form.Button" data-dojo-props='onClick:function(){ doFind();}, value:"Search"'>Search</button>
+                                        </td>
+							        </tr>
+							    </table>
+						    </form>
+                        </div>
+                        <div class="expandDiv">
+                            <table style="WIDTH: 100%; border-collapse:collapse;">
+                                <tr id="Tr2" class="expandDiv">
+                                    <img alt="" style="display:inline; vertical-align:middle; padding:5px" id="resultsDivImg" onclick="collapse('resultsDiv')" src="Images/expand_Icon.gif"/>
+                                    <div style="display:inline; vertical-align:middle;" onclick="collapse('resultsDiv')">&nbsp;Search Results</div>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="resultsDiv" style="display:none; max-height:250px; -webkit-overflow-scrolling: touch; overflow: auto;">
+                            <div data-dojo-type="dijit.form.DropDownButton" style="float:left;">
+                                <span><img alt='' src='Images/govern.png' /></span>
+                                <div data-dojo-type="dijit.Menu">
+                                    <div data-dojo-type="dijit.MenuItem" onclick="aggregateParcelIds();">Transfer To Govern</div>
+                                    <div data-dojo-type="dijit.MenuItem" onclick="loadParcels();">Load From Govern</div>
+                                </div>
+                            </div>
+                            <div style="float:left;" id="resultsEditController" disabled="disabled" data-dojo-props='iconClass:"dijitIconEdit", showLabel: false' dojotype="dijit.form.Button" onclick="toggleAllowEditResults('allow');dijit.byId('resultsEditController').domNode.style.display = 'none';document.getElementById('resultsEditOptions').style.display = 'block'; ">Edit</div>
+                            <div id="resultsEditOptions" style="display: none; float: left;">
+                                <div data-dojo-type="dijit.form.DropDownButton" label="<img alt='' src='Images/broom-icon.png' />" >
+                                    <span></span>
+                                    <div data-dojo-type="dijit.Menu" >
+                                        <div data-dojo-type="dijit.MenuItem" onclick="deleteRow();" >Delete Selected</div>
+                                        <div data-dojo-type="dijit.MenuItem" onclick="clearTable();" >Remove All</div>
+                                        <div data-dojo-type="dijit.MenuItem" onclick="selectAll();">Select All</div>
+                                        <div data-dojo-type="dijit.MenuItem" onclick="selectNone();">Select None</div>
+                                    </div>
+                                </div>
+                                <div data-dojo-type="dijit.form.DropDownButton" data-dojo-props='iconClass:"dijitIconSave"'>
+                                    <span></span>
+                                    <div data-dojo-type="dijit.Menu">
+                                        <div data-dojo-type="dijit.MenuItem" onclick="saveResults();">Save Selected</div>
+                                        <div data-dojo-type="dijit.MenuItem" onclick="saveAllResults();">Save All</div>
+                                        <div data-dojo-type="dijit.MenuItem" onclick="clearSavedResults();">Clear Saved</div>
+                                    </div>
+                                </div>
+                                <!--<div dojotype="dijit.form.Button" onclick="aggregateParcelIds();" label="<img alt='' src='Images/govern.png' />" data-dojo-props=''></div>-->
+                                <div dojoType="dijit.form.Button" onclick="shareResults();" data-dojo-props='iconClass:"dijitIconMail", showLabel: false'>Share</div>
+                                <div dojoType="dijit.form.Button" data-dojo-props='iconClass:"dijitIconDelete", showLabel: false'  onclick="toggleAllowEditResults('cancel');document.getElementById('resultsEditOptions').style.display ='none';dijit.byId('resultsEditController').domNode.style.display = 'block';" >Cancel</div>
+                            </div>
+                           
+                            <table id="sessionResults" border-collapse="collapse" cellspacing="0" cellpadding="0" style="padding:13px; width:100%;" ></table>
+                        </div> 
+                        <div class="expandDiv">
+                            <table style="WIDTH: 100%; border-collapse:collapse;">
+                                <tr id="Tr3" class="expandDiv">
+                                    <td>
+                                        <img alt="" style="display:inline; vertical-align:middle; padding:5px" id="multipleSearchImg" onclick="collapse('multipleSearch')" src="Images/collapse_Icon.gif"/>
+                                        <div style="display:inline; vertical-align:middle;" onclick="collapse('multipleSearch')">&nbsp;Multiple Parcel Search</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+			            <div id="multipleSearch" style="display:block;height:250px;">
+                            <form action="javascript:void(2);">
+                                <div style="padding: 5px; margin-left: 10px">
+                                        <input tabindex='7'  type="text" id="searchInfo" value="" style="width: 95%" /><br />
+                                        <button tabindex='8' id="doMultiFindBtn" data-dojo-type="dijit.form.Button" data-dojo-props='onClick:function(){ doMultiFind();}, value:"Search"'>Find</button>
+                                        <!--<button tabindex='9' data-dojo-type="dijit.form.Button" data-dojo-props='onClick:function(){ clearGrid();}'>Clear</button>-->
+                                </div>
+                            </form>
+                            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'center'" style="width:95%; height:100%;">
+                                <table data-dojo-type="dojox.grid.DataGrid" id="grid" data-dojo-props="rowSelector:'0px'" selectionMode='none' style="width:100%; height:100%; font-size: 9px;">
+				                    <thead>
+				                        <tr>
+                                            <th field="0" formatter="addGridResultsToResults" width="25px"><img height="10px;" alt="" src="images/add-icon.png" /></th>
+                                            <th field="1" formatter="removeGridResults" width="25px"><img height="10px;" alt="" src="images/nav_decline.png" /></th>
+                                            <th field="2" width="100px">Address</th>
+                                            <th field="3" width="50px">PID</th>
+                                            <th field="4" width="100px">DSBL</th>
+                                            <th field="5" width="75px">First Name</th>
+                                            <th field="6" width="75px">Last Name</th>
+                                            <th field="7" width="200px">Hamlet</th>
+                                            <th field="8" width="225px">Company</th>
+                                            <th field="9" width="75px">Prop Type</th>
+                                            <th field="10" width="150px">Acreage</th>
+				                        </tr>
+				                    </thead>
+			                    </table>
+                            </div>
+                        </div>
+      	            </div>
+                </div>
+                <div data-dojo-type="dijit.layout.ContentPane" id="legendDIV" data-dojo-props='title:"<img  height=\"16px\" width=\"16px\" src=\"images/legend_icon.png\"/>&nbsp;Legend", style:"width:100%;"' selected="false">
+                    <div id="operationalLayersHeading">
+                        <input type='checkbox' checked="checked" onclick="toggleMapLayer('lmCore', this)"/>
+                        <img alt='collapse' src='images/minus-icon.png' onClick="document.getElementById('operationalLayers').style.display = (document.getElementById('operationalLayers').style.display != 'none' ? 'none' : '' ); this.src = (this.src.indexOf('images/minus-icon.png') == -1 ? 'images/minus-icon.png' : 'images/plus-icon.png');"/>Operational Layers
+                    </div>
+                    <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "lmCore"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                    </div>
+                       
+                    <span style="white-space:nowrap; margin-left:20px;-webkit-overflow-scrolling: touch;" id="operationalLayers">
+                        <img alt="" src="images/waitBlue2.gif" />
+                    </span>
+                    <div class="rasterLayerdiv" >
+                        <input id="2014" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("2014 Aerial Imagery", this, "2014men");'/>2014 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "2014 Aerial Imagery"); }, 
+                            value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div> 
+                    <div class="rasterLayerdiv" >
+                        <input id="2013" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("2013 Aerial Imagery", this, "2013men");'/>2013 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "2013 Aerial Imagery"); }, 
+                            value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div> 
+                    <div class="rasterLayerdiv" >
+                        <input id="2010" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("2010 Aerial Imagery", this, "2010men");'/>2010 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "2010 Aerial Imagery"); }, 
+                            value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="2008" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("2008 Aerial Imagery", this, "2008men");'/>2008 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "2008 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="2004" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("2004 Aerial Imagery", this, "2004men");'/>2004 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "2004 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="2001" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("2001 Aerial Imagery", this, "2001men");'/>2001 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "2001 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="1996" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("1996 Aerial Imagery", this, "1996men");'/>1996 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "1996 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+		            <div class="rasterLayerdiv">
+                        <input id="1994" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("1994 Aerial Imagery", this, "1994men");'/>1994 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "1994 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="1984" dojoType="dijit.form.CheckBox"  style="margin-right:10px;" onclick='toggleAerialLayers("1984 Aerial Imagery", this, "1984men");'/>1984 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "1984 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="1976" dojoType="dijit.form.CheckBox" onclick='toggleAerialLayers("1976 Aerial Imagery", this, "1976men");'/>1976 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "1976 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="1962" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("1962 Aerial Imagery", this, "1962men");'/>1962 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "1962 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="1930" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("1930 Aerial Imagery", this, "1930men");'/>1930 Aerial Imagery
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "1930 Aerial Imagery"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="elevat" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("Elevation", this, "elevatmen" );'/>Elevation
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "Elevation"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+                    <div class="rasterLayerdiv">
+                        <input id="hpm" dojoType="dijit.form.CheckBox" style="margin-right:10px;" onclick='toggleAerialLayers("Historic Planning Maps", this, "hpmmen");'/>Historic Planning Maps
+                        <div data-dojo-type='dijit.form.HorizontalSlider' data-dojo-props='onChange:function(val){ changeLayerOpacity(val, "Historic Planning Maps"); }, 
+                        value:100, maximum:100, minimum:0, pageIncrement:100, showButtons:true, intermediateChanges:true, slideDuration:500, style:{width:"95%", height:"30px"}'>
+                        </div>
+                    </div>
+		</div>
+<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props='title:"<img src=\"images/car.png\" /><img src=\"images/walking.png\" /><img src=\"images/boat.png\" />&nbsp;Search by: License, Permit, Name...", style:"width:100%;"'>
+                    <table border="0" style="width:95%;">
+                        <tr>
+                            <td>
+                                <span data-dojo-type="NamePermitComboBoxReadStore" jsid="store" url="Modules/namePermits/NamePermitsHandler.ashx" requestmethod="get"></span>
+                                <input id="NamePermitsSearch" data-dojo-type="dijit.form.FilteringSelect" data-dojo-props="placeholder: 'Enter Search...'" store="store" pagesize="10" style="width:95%" />
+                                <div class="searchOptions">
+                                    <span><input tabindex="3" class="namePermitSearchType" id="ps1" type="radio" value="1" name="namePermitSearchType" /><label for="ps1">License / Permit #</label></span><br />
+                                    <span><input tabindex="4" class="namePermitSearchType" id="ps2" type="radio" value="2" checked="checked" name="namePermitSearchType" /><label for="ps2">Last Name / Company</label></span><br />
+                                    <span><input tabindex="5" class="namePermitSearchType" id="ps3" type="radio" value="3" name="namePermitSearchType" /><label for="ps3">Plate # / Boat Reg #</label></span><br />
+                                    
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <button data-dojo-type="dijit.form.Button" data-dojo-props=' onClick:function(){ loadNamePermitTypes(this);}'>Search</button>
+                </div>
+            </div>
+        </div>
+       <div id="map" data-dojo-type="dijit.layout.ContentPane" region="center" style="width:75%; height:100%;">
+            <div id="fm" class="imageryWarning" style="display:none;" >
+                <div id="closeFirstMessage" class="firstMessageClose">X</div>
+                <span id="message" style=" word-wrap:break-word;margin-right:20px;"></span>
+            </div>
+                <div id="allIdentifyPanel" dojoType="dojo.dnd.Moveable"  handle='pSearchDragHandler' class="dragPanel" style="padding:10px;display:none; top: 50px; left: 55px;">
+                <div id='pSearchDragHandler' style="cursor:move; width:100%;font-weight:bold;font-size: small; font-family:Arial Black; color:White;">IDENTIFY RESULTS</div>
+                <div class="firstMessageClose" onclick="dijit.byId('allIdentifyPanelCheckBox').set('checked', (document.getElementById('allIdentifyPanel').style.display == true ? true : false )); document.getElementById('allIdentifyPanel').style.display = (document.getElementById('allIdentifyPanel').style.display != 'none' ? 'none' : '' );">X</div>
+                <div id="allIdentifyInnerDiv" class="searchInnerDiv" style="height:225px; width: 280px;padding:5px;">
+                    <div id="allIdentifyInnerDivContent"></div>
+                    <div id="someNodeHandle" data-dojo-type="dojox.layout.ResizeHandle" data-dojo-props="targetId:'allIdentifyInnerDiv'"></div>
+                </div> 
+                <div class="measureWindowback"></div>
+            </div>
+            <!--  <div id="navArrows" class="navArrows" style="white-space:nowrap;top:20px; height:72px; width:72px; left:8px; position:absolute; z-index:99; text-align:center;  opacity: 0.8; filter: alpha(opacity=80); background-image:url('Images/Windrose_svg.png');  background-repeat: no-repeat;">
+
+               <div style="position:absolute; width:20px; height:20px; top:0px; left:24px; cursor:pointer" title="Pan Map North" onclick="map.panUp();"></div>
+                <div style="position:absolute; top:23px;left:0px; width:20px; height:20px; cursor:pointer" title="Pan Map West" onclick="map.panLeft();"></div>
+                <div style="position:absolute; top:23px;left:24px; width:20px; height:20px; cursor:pointer" title="Full Extent" onclick="map.setExtent(startExtent);"></div>
+                <div style="position:absolute; top:23px; left:48px; width:20px; height:20px; cursor:pointer" title="Pan Map East" onclick="map.panRight();"></div>
+                <div style="position:absolute; top:47px;left:24px; width:20px; height:20px; cursor:pointer" title="Pan Map South" onclick="map.panDown();"></div>
+            </div>-->
+            <div id="locationTools" >
+                <div id="geolocateButton" onclick="geolocation();"></div>
+                <div id="homeButton" onclick="map.setExtent(startExtent);"></div>
+            </div>
+            <span id="status" style="position: absolute; right: 5px; bottom: 5px; display:none;"> 
+                The Map is Updating... 
+            </span> 
+            <div id="toolbar" style="position:absolute; width:100%; top:0px; left:0px; z-index: 100; ">
+                <div id="collapseToolbar" data-dojo-type="dijit.Toolbar">
+                    <div label="<img alt='' src='Images/settings.png' />"  dojoType="dijit.form.DropDownButton">
+                        <div dojoType="dijit.Menu" id="mainMenu">
+                            <div id="makeVis" dojoType="dijit.CheckedMenuItem" checked="false" onChange="updateLayerVisibility(128, this)">Show Property Address</div>
+                            <div data-dojo-type="dijit.CheckedMenuItem" checked="false" onchange="labels(this, [0,1], '[DSBL]', ['black', 'yellow'])">Show SCTM#s</div>
+                            <div data-dojo-type="dijit.PopupMenuItem">
+			                    <span>Book Marks</span>
+			                    <div data-dojo-type="dijit.layout.ContentPane" style="background:white;"><div id="bookmark"></div></div>
+		                    </div>
+                            <div data-dojo-type="dijit.PopupMenuItem">
+			                    <span>Print Options</span>
+                                <div data-dojo-type="dijit.TooltipDialog" style="background:white; width:279px; height:auto; overflow:visible; font-size:small;" region="center">
+                                    <div class="fatInnerDiv" >
+                                        <input style="padding:1px; margin:5px; width:95%;" id="printMapTitle" data-dojo-type="dijit.form.ValidationTextBox" data-dojo-props="placeHolder:'Enter a Map Title'"/>
+                                        <hr style="width:95%" />
+                                        <input style="padding:1px; margin:5px; width:95%;" id="printMapAuthor" data-dojo-type="dijit.form.ValidationTextBox" data-dojo-props="placeHolder:'Enter an Author'"/>
+                                        <hr style="width:95%"/>&nbsp;Print File Type:&nbsp;
+                                        <select id="printExportTemplate">
+                                            <option value="pdf" selected="selected">PDF</option>
+                                            <option value="png32">PNG32</option>
+                                            <option value="png8">PNG8</option>
+                                            <option value="jpg">JPG</option>
+                                            <option value="gif">GIF</option>
+                                            <option value="eps">EPS</option>
+                                            <option value="svg">SVG</option>
+                                            <option value="svgz">SVGZ</option>
+                                        </select>
+                                        <hr style="width:95%" />
+                                        &nbsp;<label for="printLegend">Show Legend</label>&nbsp;&nbsp;<input id="printLegend" type="checkbox" checked="checked" /><br />
+                                        Click here for a <a href="HelpDocs/legend.pdf" target="_blank" >Complete Legend</a>
+                                        <hr style="width:95%" />
+                                        <div data-dojo-type="dijit.layout.ContentPane" style="background:white;"><div id="printButton"></div></div>
+                                    </div>
+                                </div>
+		                    </div>
+                            <div id="flaggsToggler" dojoType="dijit.CheckedMenuItem" checked="true">Use Flags</div>
+				<div dojotype="dijit.CheckedMenuItem" id="governFlags" onclick="showFlagsOnMap(this.checked)">Show Govern Flags On Map (DEPT)</div>
+                            <div id="keepResults" dojoType="dijit.CheckedMenuItem" checked="true">Keep Search Results</div>
+                            <!--<div dojoType="dijit.CheckedMenuItem" data-dojo-props="onChange:function(val){dijit.byId('saveResultsBTN').set('disabled', !val);}" checked="false">Enable Save Results</div>-->
+                            <div data-dojo-type="dijit.MenuItem" onclick="clearSavedResults();">Clear Saved Results</div>
+                            <div id="legDND" data-dojo-type="dijit.CheckedMenuItem" checked="false" data-dojo-props='disabled:true' disabled>Enable Legend Drag and Drop</div>
+                            <div id="allIdentifyPanelCheckBox" dojoType="dijit.MenuItem"  data-dojo-props="label:'Identify All Results Panel', onClick:function(val){ document.getElementById('allIdentifyPanel').style.display = (document.getElementById('allIdentifyPanel').style.display != 'none' ? 'none' : 'block'); }"></div>
+                            <!--<div dojoType="dijit.MenuItem"  data-dojo-props="label:'Share Map Extent', onClick:function(val){shareMap();}"></div>-->
+                            <!--<div dojoType="dijit.MenuItem"  data-dojo-props="label:'Show Identify Results', onClick:function(val){ document.getElementById('allIdentifyPanel').style.display = (document.getElementById('allIdentifyPanel').style.display != 'none' ? 'none' : 'block'); this.set('label', (document.getElementById('allIdentifyPanel').style.display != 'none' ? 'Hide Identify Results' : 'Show Identify Results')); }"></div>-->
+                            <!--<div id="flaggsToggler" dojoType="dijit.ToggleButton" onClick="this.outerHTML = (this.checked != true ? 'Turn Flags On' : 'Turn Flags Off')">Turn Flags Off</div>-->
+                            <div dojoType="dijit.MenuItem" data-dojo-props="label:'Change Department', onClick:function(val){dijit.byId('deptDialog').show();}"></div>
+                            <!--<div dojotype="dijit.MenuItem" id="lmUser"  data-dojo-props="label:'Change User: (General)', onClick:function(val){checkCredentials('changeUser', this);}"></div>-->
+                            <div data-dojo-type="dijit.PopupMenuItem">
+                                <span>Change User</span>
+                                <div data-dojo-type="dijit.TooltipDialog" style="background:white; height:auto; overflow:visible; font-size:small;">
+                                    <div class="fatInnerDiv">
+                                        <div style="margin: 10px;">
+                                            <h3>You are currently logged in as:</h3>
+                                            <div id="lmUserName">General User</div>
+                                            <input id="lmUser" type="hidden" value="General User"/>
+                                            <input id="lmUserEmail" type="hidden" value="test@test.com" />
+						<input id="lmUserGroups" type="hidden" value="General User" />
+                                            <div data-dojo-type="dijit.form.Button" data-dojo-props="label:'Log In', onClick:function(val){changeUser('changeUser', this);}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="diqLayers" dojotype="dijit.MenuItem" data-dojo-props='onClick:function(){ document.getElementById("DIQ_Dialog").style.display = (document.getElementById("DIQ_Dialog").style.display != "none" ? "none" : "" ); }'>DIQ Layers</div>
+                            <div id="filterSalesOptions" data-dojo-type="dijit.PopupMenuItem">
+                                    <span>Filter Sales</span>
+                                    <div dojotype="dijit.TooltipDialog" style="background:white;height:auto; overflow:visible; font-size:small;">
+                                        <div class="fatInnerDiv">
+                                            <div id="filterMessage"></div>
+                                            <div class="filterCriteria">
+                                                <label for="propType">Property Type:</label>
+                                                <select id="propType" data-dojo-type="dijit.form.Select" data-dojo-props="style:'width:240px'" style="position:absolute;">
+                                                    <option value="%" selected="selected">Select A Property Type</option>
+                                                    <option value="1%">Agricultural</option>
+                                                    <option value="2%">Residential</option>
+                                                    <option value="3%">Vacant</option>
+                                                    <option value="4%">Commercial</option>
+                                                    <option value="5%">Recreation & Entertainment</option>
+                                                    <option value="6%">Community Services</option>
+                                                    <option value="7%">Industrial</option>
+                                                    <option value="8%">Public Services</option>
+                                                    <option value="9%">Wild, Forested, Conservation Lands & Public Parks</option>
+                                                </select>
+                                            </div>
+                                            <div class="filterCriteria" style="white-space:nowrap;">
+                                                <label>Water Front:</label>
+                                                <div id="waterFront" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: '%W'"></div>
+                                            </div>
+                                            <div class="filterCriteria">
+                                                <label for="startDate">Date From:</label>
+                                                <input name="date" id="startDate" dojotype="dijit.form.DateTextBox" required="true" value="2006-07-01" onchange="dijit.byId('endDate').constraints.min = arguments[0];"
+                                                       constraints={datePattern:'yyyy/MM/dd'},{min:'2006-07-01'} lang="en-us" promptmessage="yyyy/mm/dd" invalidmessage="Invalid date. Please use mm/dd/yy format." /><br />
+                                            </div>
+                                            <div class="filterCriteria">
+                                                <label for="endDate">Date To:</label>
+                                                <input name="date" id="endDate" dojotype="dijit.form.DateTextBox" required="true" value="now" onchange="dijit.byId('startDate').constraints.max = arguments[0];"
+                                                       constraints={datePattern:'yyyy/MM/dd'},{min:'2006-07-01'} lang="en-us" promptmessage="yyyy/mm/dd" invalidmessage="Invalid date. Please use mm/dd/yy format." />
+                                            </div>
+                                            <div class="filterCriteria">
+                                                <label for="startMoney">Min Price:</label>
+                                                <input id="startMoney" type="text" value="0" required="true" dojotype="dijit.form.CurrencyTextBox"
+                                                       constraints="{fractional:false}" currency="$" invalidmessage="Invalid amount." />
+                                            </div>
+                                            <div class="filterCriteria">
+                                                <label for="endMoney">Max Price:</label>
+                                                <input id="endMoney" type="text" value="600000000" required="true" dojotype="dijit.form.CurrencyTextBox"
+                                                       constraints="{fractional:false}" currency="$" invalidmessage="Invalid amount." />
+                                            </div>
+                                            <div dojotype="dijit.form.DropDownButton" id="dist" label="Hamlet">
+                                                <div dojotype="dijit.TooltipDialog">
+                                                    <input id="selectAll" class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'All'" /><label id="selectAllLBL" class="hamletlabel">Select All</label>
+                                                    <div id="toolTip" data-dojo-type="dijit.layout.ContentPane">
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value:  'Bridgehampton'" /><label class="hamletlabel">BRIDGEHAMPTON</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Quiogue'" /><label class="hamletlabel">QUIOGUE</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Quogue'" /><label class="hamletlabel">VILLAGE OF QUOGUE</label></span>
+                                                        </div>
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'East Quogue'" /><label class="hamletlabel">EAST QUOGUE</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Riverside'" /><label class="hamletlabel">RIVERSIDE</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Sag Harbor'" /><label class="hamletlabel">VILLAGE OF SAG HARBOR</label></span>
+                                                        </div>
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Eastport'" /><label class="hamletlabel">EASTPORT</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Sag Harbor'" /><label class="hamletlabel">SAG HARBOR</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Sagaponack'" /><label class="hamletlabel">VILLAGE OF SAGAPONACK</label></span>
+                                                        </div>
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Flanders'" /><label class="hamletlabel">FLANDERS</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Sagaponack'" /><label class="hamletlabel">SAGAPONACK</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Southampton'" /><label class="hamletlabel">VILLAGE OF SOUTHAMPTON</label></span>
+                                                        </div>
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Hampton Bays'" /><label class="hamletlabel">HAMPTON BAYS</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Shinnecock Hills'" /><label class="hamletlabel">SHINNECOCK HILLS</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Westhampton Beach'" /><label class="hamletlabel">VILLAGE OF WESTHAMPTON BEACH</label></span>
+                                                        </div>
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'North Sea'" /><label class="hamletlabel">NORTH SEA</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Remsenburg/ Speonk'" /><label class="hamletlabel">REMSENBURG/ SPEONK</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Westhampton Dunes'" /><label class="hamletlabel">VILLAGE OF WESTHAMPTON DUNES</label></span>
+                                                        </div>
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Northampton'" /><label class="hamletlabel">NORTHAMPTON</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Tuckahoe'" /><label class="hamletlabel">TUCKAHOE</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Water Mill'" /><label class="hamletlabel">WATER MILL</label></span>
+                                                        </div>
+                                                        <div class="hamletCol">
+                                                            <span class="hamletName1"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Noyac'" /><label class="hamletlabel">NOYAC</label></span>
+                                                            <span class="hamletName2"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of North Haven'" /><label class="hamletlabel">VILLAGE OF NORTH HAVEN</label></span>
+                                                            <span class="hamletName3"><input class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Westhampton'" /><label class="hamletlabel">WESTHAMPTON</label></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="filterCriteria">
+                                                <button id="filter" dojotype="dijit.form.Button" onclick="filterResults(this.id)">Filter</button><button id="Button1" dojotype="dijit.form.Button" onclick="map.getLayer('lmCore').setLayerDefinitions(null, false);dijit.byId('waterFront').set('checked',false);document.getElementById('filterMessage').style.display = 'none';">Clear Filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div data-dojo-type="dijit.PopupMenuItem">
+                                <span>Search Symbols</span>
+                                <div data-dojo-type="dijit.TooltipDialog" style="background:white; height:auto; overflow:visible; font-size:small;">
+                                    <div class="fatInnerDiv">
+                                        <div style="margin: 10px;">
+
+                                            <div style="height:75px;">
+                                                <div style="float:left; margin-right:5px;">Single&nbsp;<br />Parcel&nbsp;<br />Search&nbsp;<br />Symbol</div>
+                                                <div style="float:left;">
+                                                    <div data-dojo-type="dijit.form.DropDownButton">
+                                                        <span>Outline Color</span>
+                                                        <div data-dojo-type="dijit.TooltipDialog" data-dojo-props='title:"Select A Color"'>
+                                                            <div data-dojo-type="dijit.ColorPalette" id="graphPolyOut" data-dojo-props="palette:'7x10'"
+                                                                <!--                                                        ,onChange:function(e){
+                                                                                                    var outColor = new dojo.Color(e);
+                                                                                                    prevOutSymbol = [outColor.r, outColor.g, outColor.b];
+                                                                                                    polysymbol.outline.color = new dojo.Color([outColor.r, outColor.g, outColor.b]);
+                                                                                                }-->
+                                                                >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <div data-dojo-type="dijit.form.DropDownButton">
+                                                        <span>Fill Color</span>
+                                                        <div data-dojo-type="dijit.TooltipDialog" data-dojo-props='title:"Select A Color"'>
+                                                            <div data-dojo-type="dijit.ColorPalette" id="graphPolyFill" data-dojo-props="palette:'7x10'"
+                                                                <!--                                                        ,onChange:function(e){
+                                                                                                    var Color = new dojo.Color(e);
+                                                                                                    prevFillSymbol = [Color.r, Color.g, Color.b, 0.35];
+                                                                                                    if (dijit.byId('TgraphPolyFill').checked){ polysymbol.color = null; }else{
+                                                                                                        polysymbol.color = new dojo.Color([Color.r, Color.g, Color.b, 0.35]);
+                                                                                                    }
+                                                                                                }-->
+                                                                >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    &nbsp;No Fill&nbsp;<input id="TgraphPolyFill" data-dojo-type="dijit.form.CheckBox" data-dojo-props="checked:true,
+                                            onChange:function(){
+                                                //polysymbol.color = (!this.checked ? changeTrans() : null);
+                                            }
+                                            " />
+                                                    <!--                                                &nbsp;Use Default&nbsp;<input id="useDefaultGraphicSymbol" data-dojo-type="dijit.form.CheckBox" data-dojo-props="checked:false,
+                                                                            onChange:function(){
+                                                                                //dijit.byId('graphPolyOut').set('value', new dojo.Color('orange'));
+                                                                                //dijit.byId('graphPolyFill').set('value', '');
+                                                                            }
+                                                                            "/>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div data-dojo-type="dijit.PopupMenuItem">
+                                <span>Navigation Options</span>
+                                <div data-dojo-type="dijit.Menu">
+                                    <div data-dojo-type="dijit.CheckedMenuItem" checked="checked" data-dojo-props='onChange:function(val){val == true ? map.enableDoubleClickZoom() : map.disableDoubleClickZoom()}'>Double Click Zoom</div>
+                                    <!--<div data-dojo-type="dijit.CheckedMenuItem" checked="checked" data-dojo-props='onChange:function(val){val == true ? map.enableKeyboardNavigation() : map.disableKeyboardNavigation()}'>Keyboard Navigation</div>-->
+                                    <div data-dojo-type="dijit.CheckedMenuItem" checked="checked" data-dojo-props='onChange:function(val){val == true ? map.enableMapNavigation() : map.disableMapNavigation()}'>Navigation Short Cuts</div>
+                                    <div id="mapPan" data-dojo-type="dijit.CheckedMenuItem" checked="checked" data-dojo-props='onChange:function(val){val == true ? map.enablePan() : map.disablePan()}'>Pan</div>
+                                    <div data-dojo-type="dijit.CheckedMenuItem" checked="checked" data-dojo-props='onChange:function(val){val == true ? createMapMenu() : ctxMenuForMap.destroy()}'>Right Click Navigation</div>
+                                    <div data-dojo-type="dijit.CheckedMenuItem" checked="checked" data-dojo-props='onChange:function(val){val == true ? map.enableScrollWheelZoom() : map.disableScrollWheelZoom()}'>Scroll Wheel Zoom</div>
+                                    <!--<div data-dojo-type="dijit.CheckedMenuItem" checked="checked" data-dojo-props='onChange:function(val){toggleNavArrowDisplay(val); val == true ? map.showZoomSlider() : map.hideZoomSlider()}'>Show Navigation Tools</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div label="<img alt='' src='Images/Info-icon.png' />"  dojoType="dijit.form.DropDownButton">
+                        <div dojoType="dijit.Menu">
+                            <div id="doPermits" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onClick="doPermit(this);">Permits</div>
+                            <div id="doPRC" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onClick="doPropertyRecordCard(this);">Property Record Card</div>
+                            <div id="doReferral" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onClick="doReferral(this);">Referrals</div>
+                            <div id="identify" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onclick="doIdentify(this);">Identify Parcel</div>
+                            <div id="allIdentify" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onclick="doAllIdentify(this);">Identify All</div>
+                            <div id="activeIdentify" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onclick="doActiveIdentify(this);">Identify Active Layer</div>
+                            <div id="getFlags" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onclick="doGetFlags(this);">Get Flags</div>
+                            <div id="doPictometry" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onclick="doPictometry(this);">View Pictometry</div>
+                            <div id="doSV" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onclick="doStreetView(this);">Google Street View</div>
+                            <div id="doGroundEle" class="toggleButtonTools" dojoType="dijit.CheckedMenuItem" checked="false" onclick="doGetElevation(this);">Ground Elevation</div>
+                            
+                        </div>
+                    </div>
+                    <div label="<img alt='' src='Images/tools.png' />"  dojoType="dijit.form.DropDownButton">
+                        <div dojoType="dijit.Menu">
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props='onClick:function(){ selectByLocationToolBar.deactivate(); mailingLablesToolBar.deactivate();togglePanel("measurePanel");clickConnect(true, "3", this); }'>Measure Tools</div>
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props='onClick:function(){ selectByLocationToolBar.deactivate(); mailingLablesToolBar.deactivate();togglePanel("drawPanel");clickConnect(true, "3", this); }'>Draw Tools</div>
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props='onClick:function(){ togglePanel("selectByLocationPanel");clickConnect(true, "3", this); }'>Select By Location Tools</div>
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props='onClick:function(){ bePanelHandler("beDialog"); }'>Building Envelope Tool</div>
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props='onClick:function(){ togglePanel("mailingLablePanel");clickConnect(true, "3", this); }'>Mailing Labels Tools</div>
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){ getPermitTypes();document.getElementById('openPermitsPanel').style.display = (document.getElementById('openPermitsPanel').style.display != 'none' ? 'none' : '' ); togglePermitsLayer(); }">Permits Panel</div>
+                            <div id="compsDashboardBTN" data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){ document.getElementById('compsDashboard').style.display = (document.getElementById('compsDashboard').style.display != 'none' ? 'none' : '' ); }">Comps Dashboard</div>
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){ (document.getElementById('offenderEditPanel').style.display == 'none' ? checkCredentials('police') : offenderPanelHandler(this)); }">Police Info</div>
+                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){  document.getElementById('inspectDialog').style.display = (document.getElementById('inspectDialog').style.display != 'none' ? 'none' : '' ); doInspectors(); toggleInspectLayer(); }">Inspections</div>
+			    <div data-dojo-type="dijit.MenuItem" data-dojo-props='onClick:function(){ selectByLocationToolBar.deactivate(); mailingLablesToolBar.deactivate();togglePanel("zoomToCoordinatesPanel"); }'>Zoom To Coordinates</div>
+                        </div>
+                    </div>
+                    <div label="<img alt='' src='Images/AerialsIcon.png' />"  dojoType="dijit.form.DropDownButton">
+                        <div dojoType="dijit.Menu">
+                            <div id="2014men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("2014 Aerial Imagery", this, "2014"); }'>2014 Aerial Imagery</div>
+                            <div id="2013men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("2013 Aerial Imagery", this, "2013"); }'>2013 Aerial Imagery</div>
+                            <div id="2010men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("2010 Aerial Imagery", this, "2010"); }'>2010 Aerial Imagery</div>
+                            <div id="2008men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("2008 Aerial Imagery", this, "2008"); }'>2008 Aerial Imagery</div>
+                            <div id="2004men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("2004 Aerial Imagery", this, "2004"); }'>2004 Aerial Imagery</div>
+                            <div id="2001men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("2001 Aerial Imagery", this, "2001"); }'>2001 Aerial Imagery</div>
+                            <div id="1996men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("1996 Aerial Imagery", this, "1996"); }'>1996 Aerial Imagery</div>
+			    <div id="1994men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("1994 Aerial Imagery", this, "1994"); }'>1994 Aerial Imagery</div>
+                            <div id="1984men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("1984 Aerial Imagery", this, "1984"); }'>1984 Aerial Imagery</div>
+                            <div id="1976men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("1976 Aerial Imagery", this, "1976"); }'>1976 Aerial Imagery</div>
+                            <div id="1962men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("1962 Aerial Imagery", this, "1962"); }'>1962 Aerial Imagery</div>
+                            <div id="1930men" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("1930 Aerial Imagery", this, "1930"); }'>1930 Aerial Imagery</div>
+                            <div id="elevatmen" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("Elevation", this, "elevat" ); }'>Elevation</div>
+                            <div id="hpmmen" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props='onClick:function(){ toggleAerialLayers("Historic Planning Maps", this, "hpm"); }'>Historic Planning Maps</div>
+                        </div>
+                    </div>
+                    <div label="<img alt='' src='Images/help-icon.png' />"  dojoType="dijit.form.DropDownButton">
+                        <div dojoType="dijit.Menu">
+                            <div  class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('http://www.southamptontownny.gov/');">Town Website</div>
+                            <div class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('http://ecode360.com/SO0286');">Town Code</div>
+                            <div class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('http://shtown.zendesk.com/home');">Tech Support</div>
+                            <div class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('helpDocs/propclassManual.pdf');">Property Class Codes</div>
+			 <div dojotype="dijit.MenuItem" onclick="javascript: window.open('http://gis2.southamptontownny.gov/propertysearch');">Quick Property Lookup</div>
+                            <div dojoType="dijit.MenuItem" onClick="javascript: window.open('http://gis2.southamptontownny.gov/webdata/SH_Town_Landuse_Patterns.pdf');">Town Land Use Patterns (1968)</div>
+                            <div dojotype="dijit.MenuItem" onclick="javascript: window.open('http://gis2.southamptontownny.gov/webdata/Contour_of_Water_Table_1983.pdf ');">Water Table Contour Map (1983)</div>
+                            <div data-dojo-type="dijit.PopupMenuItem" >
+                                <span>Other GIS Websites</span>
+                                <div dojoType="dijit.Menu">
+                                    <!--<div class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('https://gis2.southamptontownny.gov/recentSales');">Internal Sales Map</div>-->
+                                    <div class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('http://infocenter.southamptontownny.gov/');">Public Information Center</div>
+                                    <div class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('http://historic.southamptontownny.gov/');">Historic Resources Map</div>
+                                    <!--<div class="toggleButtonTools" dojoType="dijit.MenuItem" onClick="javascript:window.open('https://stormwater.southamptontownny.gov/');">Stormwater Map</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div id="closeToolbar" style="background:#009999; text-align:center; vertical-align:middle; display:block; cursor: pointer; opacity: 0.8; filter: alpha(opacity=80);"><img alt="Collapse" src="Images/Collapsebutton.gif" /></div>
+                <div id="openToolbar" style="background:#009999; text-align:center; vertical-align:middle; display:none; cursor: pointer; opacity: 0.8; filter: alpha(opacity=80);"><img alt="Expand" src="Images/Expandbutton.gif" /></div>-->
+                 <div id="closeToolbar" class="minimizeBar" style="display:block;">
+                    <div style="overflow:hidden; left:49%; position:absolute;">
+                        <div class="closeBarButton"></div>
+                    </div>
+                </div>
+                <div id="openToolbar" class="minimizeBar" style="display:none;">
+                    <div style="overflow:hidden; left:49%; position:absolute;">
+                        <div class="closeBarButton"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="mailingLablePanel" class="Panel" dojoType="dojo.dnd.Moveable"  handle='mailingLabelDragHandler' style="padding:10px;display:none; position:absolute; left:80px; top:60px; z-Index:99;text-align:center">
+                <div  id="mailingLabelDragHandler" style="cursor:move;font-weight:bold;font-size: small; font-family:Arial Black; color:White;">MAILNG LABELS TOOLS</div>
+                <div class="firstMessageClose" onclick="mailingLablesToolBar.deactivate();togglePanel('mailingLablePanel');">X</div>
+                <div class="innerDiv"> 
+                    <div class='drawPanel'>
+                        Interactive Selection<br />
+                    </div>
+                    <div>   
+                    <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){mailingLablesToolBar.activate(esri.toolbars.Draw.POLYLINE);},iconClass:'measureLine'"></button>      
+                    <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){mailingLablesToolBar.activate(esri.toolbars.Draw.POLYGON);},iconClass:'measurePolygon'"></button>   
+                    <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){mailingLablesToolBar.activate(esri.toolbars.Draw.CIRCLE);},iconClass:'measureCircle'"></button>
+                    <button data-dojo-type="dijit.form.Button" data-dojo-props="showLabel:true, iconClass:'deactivateIcon', onClick:function(){mailingLablesToolBar.deactivate();map.getLayer('mailingLabelsGraphicsLayer').clear();}, iconClass:'deactivateIcon'"></button>
+                    </div>
+                    <div class='drawPanel'>
+                        Single Parcel Selection<br />
+                    </div> 
+                    <div id="mLabels">
+                    	<div dojoType="MailingComboBoxReadStore" doClientPaging="true" jsId="mlStore" url="GetJSON.ashx" requestMethod="get"></div>
+                        <input id="Hidden3" type="hidden" name="p_id"/>
+				        <input id="mltype" type="hidden" name="type" value="1"/>
+                        <div style="margin-left:10px; margin-top:10px;">
+                            <label for="query">Buffer Extent:</label>
+		                    <select id="buffdist" data-dojo-type="dijit.form.Select" data-dojo-props="name: 'buffdist', style:'width:75px'">
+				                    <option value="5" selected="selected">Abutters Only</option>
+				                    <option value="50">50</option>
+				                    <option value="100">100</option>
+				                    <option value="200">200</option>
+				                    <option value="500">500</option>
+				                    <option value="1000">1,000</option>
+                                    <option value="1320">1/4 mi</option>
+                                    <!--<option value="2640">1/2 mi</option>-->
+		                    </select>
+                        
+                            <p>Include Originator: <input id="includeOrig" class="apptype" dojoType="dijit.form.CheckBox"/></p>
+                            EnterSearch Criteria<input id="mls" labelAttr="eltype" searchAttr="eltype" dojoType="dijit.form.FilteringSelect" store="mlStore" pageSize="10" />
+                        </div>
+                        <fieldset class="searchOptions" style="text-align:center; margin:10px;">
+                            <legend>Options</legend>
+						    <input class="mlstype" id="Radio5" type="radio" value="1" checked="checked"  name="searchType" />Parcel ID&nbsp;
+						    <input class="mlstype" id="Radio6" type="radio" value="2" name="searchType" />&nbsp;Tax Map&nbsp;<br />
+						    <input class="mlstype" id="Radio7" type="radio" value="3" name="searchType" />Last Name&nbsp;
+						    <input class="mlstype" id="Radio8" type="radio" value="4" name="searchType" />&nbsp;Address
+				        </fieldset>
+                        <button data-dojo-type="dijit.form.Button" data-dojo-props='style:"margin-left:10px; margin-bottom:10px;", onClick:function(){ doMailingLabels();}, value:"Search"'>Search</button>
+                    </div>
+                </div> 
+                    <div class="measureWindowback"></div>
+            </div>
+            <div id="selectByLocationPanel" class="Panel" dojoType="dojo.dnd.Moveable"  handle='selectByLocationDragHandler'  style="display:none; position:absolute; left:80px; top:60px; z-Index:99;text-align:center; padding:10px;">
+                <div id="selectByLocationDragHandler" style="cursor:move;font-weight:bold;font-size: small; font-family:Arial Black; color:White;">SELECT BY LOCATION TOOLS</div>
+                <div class="firstMessageClose" onclick="selectByLocationToolBar.deactivate();togglePanel('selectByLocationPanel');">X</div>
+                <div class="innerDiv"> 
+                    <div class='drawPanel'>
+                        SELECT TOOL TYPE<br />
+                    </div>
+                    <div>
+                        <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){selectByLocationToolBar.activate(esri.toolbars.Draw.POINT);},iconClass:'measurePoint'"></button>   
+                        <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){selectByLocationToolBar.activate(esri.toolbars.Draw.POLYLINE);},iconClass:'measureLine'"></button>      
+                        <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){selectByLocationToolBar.activate(esri.toolbars.Draw.POLYGON);},iconClass:'measurePolygon'"></button>   
+                        <button data-dojo-type="dijit.form.Button" data-dojo-props="showLabel:true, iconClass:'deactivateIcon', onClick:function(){selectByLocationToolBar.deactivate();},iconClass:'deactivateIcon'"></button>
+                    </div> 
+                </div> 
+                <div class="measureWindowback"></div>
+            </div>
+           <div id="zoomToCoordinatesPanel" class="Panel" dojotype="dojo.dnd.Moveable" handle='zoomToCoordinatesDragHandler' style="display:none; position:absolute; left:80px; top:60px; z-Index:120;text-align:center; padding:10px;">
+               <div id="zoomToCoordinatesDragHandler" style="cursor:move;font-weight:bold;font-size: small; font-family:Arial Black; color:White;">ZOOM TO COORDINATES</div>
+               <div class="firstMessageClose" onclick="togglePanel('zoomToCoordinatesPanel');">X</div>
+               <div class="innerDiv">
+                   <div style="margin:10px;">
+                       <div><h3>Decimal Degrees:</h3></div><hr/>   
+                       <input id="LATITUDE" type="text" data-dojo-type="dijit/form/NumberTextBox" name="elevation" required="true" value="" data-dojo-props="style:'', placeHolder:40.888323, constraints:{min:40,max:42, round: 6},
+                                invalidMessage:'Please enter a numeric value.',
+                                rangeMessage:'That Latitude is outside of the town.'" /><br />Latitude(format: 00.00000)<hr />
+                       <input id="LONGITUDE" type="text" data-dojo-type="dijit/form/NumberTextBox" name="elevation" required="true" value="" data-dojo-props="placeHolder:-72.502619, constraints:{min:-72.7,max:-72.2, round: 6},
+                                invalidMessage:'Please enter a numeric value.',
+                                rangeMessage:'That Longitude is outside of the town.'" /><br />Longitude(format: -00.00000)<br />
+                       <button data-dojo-type="dijit.form.Button" onclick="addPointViaLatLng(dijit.byId('LONGITUDE').value, dijit.byId('LATITUDE').value)">Add Marker</button>
+                   </div>
+               </div>
+               <div class="measureWindowback"></div>
+           </div>
+            <!--<div id="measurePanel" class="Panel"  dojoType="dojo.dnd.Moveable"  handle='dragHandle'  style="display:none; position:absolute; left:80px; top:60px; z-Index:99;text-align:center">
+                <div id='dragHandle' class="noteHandle"></div>
+                <textarea class="note">This form element can't trigger drag action</textarea>
+            </div>-->
+            <div id="measurePanel" class="Panel"  dojoType="dojo.dnd.Moveable"  handle='measureDragHandler'  style="display:none; position:absolute; left:80px; top:60px; z-Index:99;text-align:center; padding:10px;">
+                <div id="measureDragHandler" style="cursor:move; font-weight:bold;font-size: small; font-family:Arial Black; color:White;">MEASURE TOOLS</div>
+                <div class="firstMessageClose" onclick="togglePanel('measurePanel'); dijit.byId('convertMeasureGraphicsBTN').set('disabled', true);">X</div>
+                <div class="innerDiv" style="min-height:150px;"> 
+                        <div id="measure" data-dojo-type="dijit.layout.ContentPane" style="position:absolute; z-index:100; overflow:hidden;">
+                        <div>
+                            <div data-dojo-type="dijit.form.Button" title="Point" data-dojo-props="onClick:function(){activateMeasureTools('point');}, iconClass:'measurePoint'"></div>
+                            <div data-dojo-type="dijit.form.Button" title="Line" data-dojo-props="onClick:function(){activateMeasureTools('polyline');},iconClass:'measureLine'"></div>
+                            <div data-dojo-type="dijit.form.Button" title="Area" data-dojo-props="onClick:function(){activateMeasureTools('polygon');},iconClass:'measurePolygon'"></div>
+                            <div data-dojo-type="dijit.form.Button" title="Circle" data-dojo-props="onClick:function(){activateMeasureTools('circle');},iconClass:'measureCircle'"></div>
+                            <div data-dojo-type="dijit.form.Button" title="Convert to Graphics" id="convertMeasureGraphicsBTN" disabled data-dojo-props="onClick:function(){ convertMeasureToGraphic(); },iconClass:'convertToGraphics'"></div>
+                            <div data-dojo-type="dijit.form.Button" title="Disable Tools" data-dojo-props="onClick:function(){measureToolbar.deactivate();},iconClass:'deactivateIcon'"></div>
+                        </div>
+                        <div>
+                            <select onchange="measureGraphichandleChange(this)" id="pointSelect" style="display:none;float:left;">
+                                <option value="4326" >Degrees</option>
+                                <option value="4326" selected="selected">DMS</option>
+                                <option value="102718">Map Units</option>
+                            </select>
+                            <select onchange="measureGraphichandleChange(this)" id="lengthSelect" style="display:none;float:left;">
+                                <option value="esri.tasks.GeometryService.UNIT_STATUTE_MILE" >Miles</option>
+                                <option value="esri.tasks.GeometryService.UNIT_KILOMETER">Kilometers</option>
+                                <option value="esri.tasks.GeometryService.UNIT_FOOT" selected="selected">Feet</option>
+                                <option value="esri.tasks.GeometryService.UNIT_METER">Meters</option>
+                                <option value="esri.tasks.GeometryService.UNIT_US_NAUTICAL_MILE">Nautical Mile</option>
+                            </select>
+                            <select onchange="measureGraphichandleChange(this)" id="areaSelect" style="display:none;float:left;">
+                                <option value="esri.tasks.GeometryService.UNIT_ACRES" >Acres</option>
+                                <option value="esri.tasks.GeometryService.UNIT_SQUARE_MILES">Sq Miles</option>
+                                <option value="esri.tasks.GeometryService.UNIT_SQUARE_YARDS">Sq Yards</option>
+                                <option value="esri.tasks.GeometryService.UNIT_SQUARE_FEET" selected="selected">Sq Feet</option>
+                                <option value="esri.tasks.GeometryService.UNIT_SQUARE_METERS">Sq Meters</option>
+                            </select>
+                        </div>
+                        <br />
+                        <hr style="width:250px;" />
+                        <div id="measureResult" style="min-height:50px;"></div>
+			<div style="color:gray;" id="measureLengthResult"></div>
+                    </div> 
+                </div> 
+                <div class="measureWindowback"></div>
+        </div>
+            <div id="drawPanel" class="Panel" dojoType="dojo.dnd.Moveable"  handle='drawDragHandler' style="padding:10px; display:none; position:absolute; left:80px; top:60px; z-Index:99;text-align:center">
+                <div id="drawDragHandler" style="cursor:move; width:100%;font-weight:bold;font-size: small; font-family:Arial Black; color:White;">DRAW TOOLS</div>
+                <div class="firstMessageClose" onclick="togglePanel('drawPanel');">X</div>
+                <div class="innerDiv"> 
+                        <table width="100%" >
+                            <tr align="left">
+                                <td style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #CCCCCC">
+                                <div>
+                                    <button class="drawTools" data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){activeDrawTool = 'Point'; toggleDrawTool('Point',true)},iconClass:'measurePoint'"></button>   
+                                    <button class="drawTools" data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){activeDrawTool = 'line'; toggleDrawTool('Line',true)},iconClass:'measureLine'"></button>      
+                                    <button class="drawTools" data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){activeDrawTool = 'polygon'; toggleDrawTool('Polygon',true)},iconClass:'measurePolygon'"></button>   
+                                    <button class="drawTools" data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){activeDrawTool = 'text'; toggleDrawTool('text', true)}">T</button>
+                                    <button class="drawTools" data-dojo-type="dijit.form.Button" data-dojo-props="iconClass:'deactivateIcon', onClick:function(){graphToolBar.deactivate();}"></button> 
+                                    <div data-dojo-type="dijit.form.DropDownButton" label="<img alt='' src='Images/broom-icon.png' />">
+                                        <span>Options</span>
+                                        <div data-dojo-type="dijit.Menu" >
+                                            <div id="graphicsDelete" data-dojo-type="dijit.MenuItem" data-dojo-props="showLabel:true, disabled: true, onClick:function(e){editToolbar.getCurrentState().graphic.getLayer().remove(editToolbar.getCurrentState().graphic); editToolbar.deactivate();}">Delete</div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="showLabel:true, onClick:function(e){ editToolbar.deactivate();drawToolsLayer.clear();}" >Clear</div>
+                                        </div>
+                                    </div>
+                                </div> 
+<!--                                    <fieldset id="Fieldset1">
+                                        <input class="drawGeomType" id="drawPOINT"  data-dojo-type="dijit.form.RadioButton" data-dojo-props='onChange:function(val){toggleDrawTool("Point",this.checked)},value:"Point"'/>Point|
+                                        <input class="drawGeomType" id="drawPOLYLINE" data-dojo-type="dijit.form.RadioButton" data-dojo-props='onChange:function(val){toggleDrawTool("Line",this.checked)},value:"Line"'/>Line|
+                                        <input class="drawGeomType" id="drawPOLYGON" data-dojo-type="dijit.form.RadioButton" data-dojo-props='onChange:function(val){toggleDrawTool("Polygon",this.checked)},value:"Polygon"'/>Polygon|
+                                        <input class="drawGeomType" id="drawTEXT" data-dojo-type="dijit.form.RadioButton" data-dojo-props='onChange:function(val){toggleDrawTool("text",this.checked)},value:"Polygon"'/>Text
+                                    </fieldset>-->
+                                    <div><input id="storeMeasurements" type="checkbox"/><label for="storeMeasurements">Calculate Measurements</label></div>
+                                </td>
+                            </tr>
+                            <!--<tr><td>
+                               
+                            </td></tr>-->
+                           <!--<tr>
+                                <td>
+                                    <div class="undoButtons" style="display:inline;">
+                                      <button id="graphicsUndo" data-dojo-props="disabled:true, showLabel:true, onClick:function(e){graphicsUndoManager.undo();}" data-dojo-type="dijit.form.Button">Undo</button>
+                                      <button id="graphicsRedo" data-dojo-props="disabled:true, showLabel:true,  onClick:function(e){graphicsUndoManager.redo();}" data-dojo-type="dijit.form.Button">Redo</button>
+                                      <button id="graphicsDelete" data-dojo-props="showLabel:true, disabled: true, onClick:function(e){ editToolbar.deactivate();drawToolsLayer.remove(selected);this.set('disabled', true);}" data-dojo-type="dijit.form.Button">Delete</button>
+                                      <button id="graphicsClear" data-dojo-props="showLabel:true, onClick:function(e){ editToolbar.deactivate();drawToolsLayer.clear();}" data-dojo-type="dijit.form.Button">Clear</button>
+                                    </div>
+                                </td>
+                            </tr>-->
+                            <tr>
+                                <td>
+                                    <div id="PolygonSymbolBuilder" style="display:none;">
+                                        <table style="width:100%;">
+                                            <tr>
+                                                <td colspan="2"><div class='drawPanel'>Outline Symbol</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <select id="outStyle" name="polygon" data-dojo-type="dijit.form.Select" data-dojo-props="style:'width:75px;'">
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_SOLID" selected="selected" >Outline Style</option>
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_SOLID">Solid</option> 
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_DASHDOT">Dash Dot</option> 
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_DASH">Dash</option> 
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_DOT">Dot</option> 
+                                                    </select>
+                                                    <div id="outColorButton" data-dojo-type="dijit.form.DropDownButton">
+					                                    <span>Outline Color</span>
+					                                    <div data-dojo-type="dijit.TooltipDialog" data-dojo-props='title:"Select A Color"'>
+						                                    <div data-dojo-type="dijit.ColorPalette" id="outColor" name="polygon" data-dojo-props="value: '#000000', palette:'3x4', onChange:function(e){ selectColor(e, 'outColorButton');}"></div>
+					                                    </div>
+				                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td colspan="2" ><div class='drawPanel'>Fill Symbol</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <select id="fillStyle" name="polygon" 
+                                                    data-dojo-type="dijit.form.Select" data-dojo-props=" style:'display: inline-block;width:75px; white-space: nowrap; overflow:hidden;'">
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_SOLID" selected="selected">Fill Style</option>
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_NULL">None</option> 
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_SOLID" >Solid</option>
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_CROSS">Cross</option>
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_DIAGONAL">Diagonal</option>
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_DIAGONAL_CROSS">Diagonal Cross</option> 
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_HORIZONTAL">Horizontal Line</option> 
+                                                        <option value="esri.symbol.SimpleFillSymbol.STYLE_VERTICAL">Vertical Line</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <span id="fillColorButtonSpan" style="display: inline-block; white-space: nowrap; overflow:hidden;" >
+                                                        <div data-dojo-type="dijit.form.DropDownButton" id="fillColorButton" >
+					                                        <span>Fill Color</span>
+					                                        <div data-dojo-type="dijit.TooltipDialog" data-dojo-props='title:"Select A Color"'>
+						                                        <div data-dojo-type="dijit.ColorPalette" id="fillColor" name="polygon" data-dojo-props="palette:'3x4', onChange:function(e){ selectColor(e, 'fillColorButton');}"></div>
+					                                        </div>
+				                                        </div>
+                                                    </span >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" ><div class='drawPanel'>Extras</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="bufferpolygonGraphic">Buffer</label><input id="bufferpolygonGraphic" type="checkbox" onchange="dijit.byId('buffpolygonGraphicDist').set('disabled', (this.checked == true ? false : true))"  style="display: inline-block;" />
+                                                    <select id="buffpolygonGraphicDist" disabled="disabled" data-dojo-type="dijit.form.Select" data-dojo-props=" style:'display: inline-block; width:75px; white-space: nowrap; overflow:hidden;'">
+                                                        <option value="75" selected="selected">75 ft</option>
+                                                        <option value="100">100 Ft</option> 
+                                                        <option value="125">125 Ft</option> 
+                                                        <option value="150">150 Ft</option>
+                                                        <option value="200">200 Ft</option>
+                                                        <option value="300">300 Ft</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div id="PointSymbolBuilder" style="display:none;">
+                                        <table style="width:100%;">
+                                            <tr class="drawPanel" >
+                                                <td colspan="2" ><div class='drawPanel'>Point Symbol</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <select id="drawPointStyle"
+                                                    data-dojo-type="dijit.form.Select" data-dojo-props="style:'width:75px;', onChange:function(e){ if(this.value == 'esri.symbol.SimpleMarkerSymbol.STYLE_CROSS' || this.value == 'esri.symbol.SimpleMarkerSymbol.STYLE_X'){ document.getElementById('drawPointColorSpan').style.display = 'none'; } else { document.getElementById('drawPointColorSpan').style.display = 'block';}}">
+                                                        <option value="esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE" selected="selected">Symbol Style</option>
+                                                        <option value="esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE">Square</option> 
+                                                        <option value="esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE">Circle</option>
+                                                        <option value="esri.symbol.SimpleMarkerSymbol.STYLE_CROSS" >Cross</option>
+                                                        <option value="esri.symbol.SimpleMarkerSymbol.STYLE_DIAMOND">Diamond</option>
+                                                        <option value="esri.symbol.SimpleMarkerSymbol.STYLE_X">X</option> 
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <span id="drawPointColorSpan" style="display: inline-block; white-space: nowrap; overflow:hidden;" >
+                                                        <div data-dojo-type="dijit.form.DropDownButton" id="drawPointColorButton">
+					                                        <span>Fill Color</span>
+					                                        <div data-dojo-type="dijit.TooltipDialog"  data-dojo-props='title:"Select A Color"'>
+						                                        <div data-dojo-type="dijit.ColorPalette" id="drawPointColor" data-dojo-props=" palette:'3x4', onChange:function(e){ selectColor(e, 'drawPointColorButton');}"></div>
+					                                        </div>
+				                                        </div>
+                                                    </span >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"><div class='drawPanel'>Symbol Size</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <input id="drawPointSize" type="text"data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="smallDelta:1, value:10, constraints:{min:1,max:1550,places:0}" />
+                                                </td>
+                                            </tr>
+                                            
+                                        </table>
+                                    </div>
+                                   <div id="LineSymbolBuilder" style="display:none;">
+                                        <table style="width:100%;">
+                                            <tr>
+                                                <td colspan="2" ><div class='drawPanel'>Line Symbol</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                     <select id="lineStyle" data-dojo-type="dijit.form.Select" data-dojo-props="style:'width:75px;'">
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_SOLID" selected="selected">Solid</option>
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_DASHDOT">Dash Dot</option> 
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_DASH">Dash</option> 
+                                                        <option value="esri.symbol.SimpleLineSymbol.STYLE_DOT">Dot</option> 
+
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <span id="drawLineColorSpan" style="display: inline-block; white-space: nowrap; overflow:hidden;" >
+                                                        <div data-dojo-type="dijit.form.DropDownButton" id="drawLineColorButton" >
+					                                        <span>Line Color</span>
+					                                        <div data-dojo-type="dijit.TooltipDialog" data-dojo-props='title:"Select A Color"'>
+						                                        <div data-dojo-type="dijit.ColorPalette" id="drawLineColor" data-dojo-props="value: '#000000', palette:'3x4', onChange:function(e){ selectColor(e, 'drawLineColorButton');}"></div>
+					                                        </div>
+				                                        </div>
+                                                    </span >
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class='drawPanel'>Line Width</div>
+                                                </td>
+                                                    
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <input id="lineSize" type="text" data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="smallDelta:1, value:3, constraints:{min:1,max:1550,places:0}" />
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class='drawPanel'>Extras</div>
+                                                </td>
+                                                    
+                                            </tr>
+                                            <tr >
+                                                <td style="">
+                                                    <div style="display: inline-block;">Arrow</div>
+                                                    <div style="display: inline-block;">
+                                                        <input id="startArrow" type="checkbox" />Start<br />
+                                                        <input id="endArrow" type="checkbox" />End
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    Buffer<input id="bufferpolylineGraphic" type="checkbox" onchange="dijit.byId('buffpolylineGraphicDist').set('disabled', (this.checked == true ? false : true))"  style="display: inline-block;" />
+                                                    <select id="buffpolylineGraphicDist" disabled="disabled" data-dojo-type="dijit.form.Select" data-dojo-props=" style:'display: inline-block; width:75px; white-space: nowrap; overflow:hidden;'">
+                                                        <option value="75" selected="selected">75 ft</option>
+                                                        <option value="100">100 Ft</option> 
+                                                        <option value="125">125 Ft</option> 
+                                                        <option value="150">150 Ft</option>
+                                                        <option value="200">200 Ft</option>
+                                                        <option value="300">300 Ft</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div id="textSymbolBuilder" style="display:none;">
+                                        <table style="width:100%;">
+                                            <tr>
+                                                <td colspan="2" ><div class='drawPanel'>Text Symbol</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <select id="textStyle" data-dojo-type="dijit.form.Select" data-dojo-props=" style:'display: inline-block; width:75px; white-space: nowrap; overflow:hidden;'">
+                                                        <option value="Arial" selected="selected">Text Style</option>
+                                                        <option value="Arial">Arial</option> 
+                                                        <option value="Calibri">Calibri</option> 
+                                                        <option value="Helvetica">Helvetica</option>
+                                                        <option value="Times" >Times</option>
+                                                    </select>
+                                                </td>
+                                                <td align="left">
+                                                    <span id="textColorSpan" style="display: inline-block; white-space: nowrap; overflow:hidden;" >
+                                                        <div data-dojo-type="dijit.form.DropDownButton" id="textColorButton">
+					                                        <span>Color</span>
+					                                        <div data-dojo-type="dijit.TooltipDialog" data-dojo-props='title:"Select A Color"'>
+						                                        <div data-dojo-type="dijit.ColorPalette" id="textColor" data-dojo-props="value: '#000000', palette:'3x4', onChange:function(e){ selectColor(e, 'textColorButton');}"></div>
+					                                        </div>
+				                                        </div>
+                                                    </span >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"><div class='drawPanel'>Font Size</div></td>
+                                            </tr>
+                                            <tr style="width:100%;">
+                                                <td colspan="2" style="white-space: nowrap">
+                                                    <input id="textSize" type="text"data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="smallDelta:1, value:30, style:'width:100px;', constraints:{min:1,max:1550,places:0}" />
+                                                </td>
+
+                                            </tr>
+                                            
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>  
+                      </table>
+                </div> 
+                 <div class="measureWindowback"></div>
+            </div>
+		</div>
+        <!-- Share Map Extent dialog -->
+        <div id="showExtentLinkDLG" dojoType="dojox.widget.DialogSimple" style="width:200px"></div>
+        <!-- Pictometry dialog -->
+        <div id="pictoDialog" dojoType="dojox.widget.Dialog" sizeToViewport="true" viewportPadding="100" >
+            <div id="pictoControls" dojotype="dijit.layout.ContentPane" region="center">
+                <div id="A1" class="overhead" onclick="ChangeImageType('Or'); return" style="border-style: none; top:17px; position:absolute; left:20px; z-index:2;">Overhead View</div>
+                <div id="w" class="w" onclick="ChangeOrientation('Ob','W'); return" >W</div>
+                <div id="e" class="e" onclick="ChangeOrientation('Ob','E'); return" >E</div>
+                <div id="n" class="n" onclick="ChangeOrientation('Ob','N'); return" >N</div>
+                <div id="s" class="s" onclick="ChangeOrientation('Ob','S'); return" >S</div>
+                <div id="pictoWait"><img  alt='' src="images/waitBlue2.gif" /></div>
+                <table id="pan_controls" style="top:50px; position:absolute; left:7px; z-index:2; height: 100px; width: 60px;">
+                    <tr style="height:60px; width:60px">
+                        <td >
+                            <a id="pan_W" class="a2" onclick="javascript:ImgNav.PanImage('-40','0')" onmousedown="javascript:ImgNav.ContinuousPan('-40','0')" onmouseup="javascript:ImgNav.StopContinuousPan()"
+                                style="background-position: center center; top:20px; position:absolute; 
+                                left:0px; z-index:2; background-image: url('images/west.gif'); background-repeat: no-repeat;" >
+                            </a>
+                            <a id="pan_E" class="a2" onclick="javascript:ImgNav.PanImage('40','0')" onmousedown="javascript:ImgNav.ContinuousPan('40','0')" onmouseup="javascript:ImgNav.StopContinuousPan()"
+                                style="background-position: center center; top:20px; position:absolute;
+                                left:40px; z-index:2; background-image: url('images/east.gif'); background-repeat: no-repeat;" >
+                            </a>
+                            <a id="pan_S" class="a2" onclick="javascript:ImgNav.PanImage('0','40')" onmousedown="javascript:ImgNav.ContinuousPan('0','40')" onmouseup="javascript:ImgNav.StopContinuousPan()"
+                                style="background-position: center center; top:40px; position:absolute; 
+                                left:20px; z-index:2; background-image: url('images/south.gif'); background-repeat: no-repeat;" >
+                            </a>
+                            <a id="pan_N" class="a2" onclick="javascript:ImgNav.PanImage('0','-40')" onmousedown="javascript:ImgNav.ContinuousPan('0','-40')" onmouseup="javascript:ImgNav.StopContinuousPan()"
+                                style="background-position: center center; top:0px; position:absolute;
+                                left:20px; z-index:2; background-image: url('images/Up-arrow_icon.gif'); background-repeat: no-repeat;" >
+                            </a>
+                        </td>   
+                    </tr>
+                    <tr>
+                        <td>
+                            <a class="z2" name="zoomin" onclick="setScale('in')" 
+                                style="border-style: none; background-position: center center; position:absolute; top:65px; 
+                                left:19px; background-image: url('images/zoomin.png'); background-repeat: no-repeat;" ></a> 
+                                <br />
+                            <a type="xoomout" class="z2" name="zoomin" onclick="setScale('out')" 
+                                style="border-style: none; background-position: center center; position:absolute;  top:87px; 
+                                left:19px; background-image: url('images/zoomout.png'); background-repeat: no-repeat;" ></a> 
+                        </td>
+                    </tr>
+                </table>
+             </div>
+            <div id="ImageViewerContainer" style="top: 10px; left:10px; position:absolute;overflow:hidden"></div>  
+            <div  id="MenuBar" class="Menu"></div>
+        </div>
+    </div>
+    <!-- Editor dialog -->
+    <div id="offenderEditPanel" class="dragPanel" dojoType="dojo.dnd.Moveable"  handle='offenderEditPanelDragHandler' style="padding:10px; display:none; position:absolute; left:155px; top:100px; z-Index:99;text-align:center;">
+        <span id="offenderEditPanelDragHandler" style="cursor:move;font-weight:bold;font-size: small; font-family:Arial Black; color:White; text-align: left;">SEX OFFENDERS</span>&nbsp;
+        <div class="firstMessageClose" onclick="offenderPanelHandler(this);">X</div>
+        <div class="innerDiv" style="overflow:scroll; height:50px;">
+            <!--<div data-dojo-type="dijit.Toolbar" style="position:fixed; width:245px;" >-->
+            <div style="position:fixed; width:245px; background-color: #FFFFFF;" >
+                <div data-dojo-type="dijit.form.DropDownButton" data-dojo-props="style:'float:left'" label="<img alt='' src='Images/layers.png' />">
+                    <span>Layers</span>
+                    <div data-dojo-type="dijit.Menu">
+                        <div id="offender" data-dojo-type="dijit.CheckedMenuItem" checked="true" data-dojo-props="onChange:function(){ map.getLayer('offenderLyr').setVisibility(this.checked); }">Offenders</div>
+                    </div>
+                </div>
+                <div id="editToggler" data-dojo-type="dijit.form.ToggleButton" data-dojo-props="checked:false, style:'float:left', onClick:function(){ startEditingHandler(this); }"><img src="images/report-edit-icon.png" /></div>
+                <div id="editorOptions" style='display:none; float:left;'>
+                    <div id="addOffender" data-dojo-type="dijit.form.ToggleButton" data-dojo-props="onChange:function(){ (this.checked ? offenderEditToolbar.activate(esri.toolbars.Draw.POINT) : offenderEditToolbar.deactivate()); }"><img src="images/Add-icon.png" /></div>
+                    <div id="saveChanges" data-dojo-type="dijit.form.Button" data-dojo-props="iconClass:'dijitIconSave', onClick:function(){ saveChanges(); }"></div>
+                    <div id="deleteChanges" data-dojo-type="dijit.form.Button" disabled data-dojo-props="iconClass:'dijitIconDelete', onClick:function(){ deleteChanges(); }"></div>
+                </div>
+            </div>
+            <div style="overflow:auto; padding-top:30px;">
+                <table cellspacing="0" cellpadding="0" id="unmappedOffenders" style="width:95%;"></table>
+            </div>
+        </div> 
+        <div class="measureWindowback"></div>
+    </div>
+    <!-- streetview dialog -->
+    <div id="svDialog" dojoType="dojo.dnd.Moveable"  handle='svDialogHandle' class="dragPanel" style="padding:10px;height:65%; width:30%; display:none; top: 75px; left: 55px;">
+        <div id='svDialogHandle' style="cursor:move; width:95%; font-weight:bold;font-size: small; font-family:Arial Black; color:White;">GOOGLE STREET VIEW</div>
+        <div class="firstMessageClose" onclick="document.getElementById('svDialog').style.display = (document.getElementById('svDialog').style.display != 'none' ? 'none' : ''); clearStreetView();">X</div>
+        <input id="svX" type="hidden" />
+        <input id="svY" type="hidden" />
+        <div id="googleInnerDiv" data-dojo-type="dijit.layout.ContentPane" class="googleInnerDiv" >
+            <div id="streetview" style="width:100%; height:100%;"></div>
+        </div> 
+        <div data-dojo-type="dojox.layout.ResizeHandle" data-dojo-props="targetId:'svDialog'"></div>
+        <div class="measureWindowback"></div>
+    </div>
+    <!-- Building Envelopes -->
+    <div id="beDialog" dojotype="dojo.dnd.Moveable" handle='beDialogHandle' class="dragPanel" style="display:none; position:absolute; left:80px; top:60px; z-Index:99;text-align:center; padding:10px;">
+          <div id='beDialogHandle' style="cursor:move; width:95%; font-weight:bold;font-size: small; font-family:Arial Black; color:White;">BUILDING ENVELOPE</div>
+          <div class="firstMessageClose" onclick='bePanelHandler("beDialog");'>X</div>
+          <!--<div class="firstMessageClose" onclick="document.getElementById('beDialog').style.display = (document.getElementById('beDialog').style.display != 'none' ? 'none' : ''); beToolBar.deactivate();">X</div>-->
+          <div class="innerDiv">
+              <div style="padding:3px;">
+                  <!--<input type="text" id="userInputDistance" value="25" /><span data-dojo-type="dijit.form.Button" id="beGoBtn" data-dojo-props="showLabel:true, disabled:true , onClick: function(){ goBtnClick(); }">GO</span><span id="beUndoBTN" data-dojo-type="dijit.form.Button" data-dojo-props="disabled:true, iconClass:'undoIcon', onClick: function(){ beUndoBtn(); }"></span>-->
+                  <div>
+                      <button id="beSelect" data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(){beToolBar.activate(esri.toolbars.Draw.POINT);},iconClass:'measurePoint'"></button>
+                      <div id="beSides" data-dojo-type="dijit.form.DropDownButton" data-dojo-props="iconClass:'measurePolygon', disabled: true">
+                          <span>Sides</span>
+                          <div data-dojo-type="dijit.Menu">
+                              <div id="beFront" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props="onClick:function(){beToolBar.activate(esri.toolbars.Draw.POLYGON);}">Front</div>
+                              <div id="beRear" data-dojo-type="dijit.CheckedMenuItem" data-dojo-props="onClick:function(){beToolBar.activate(esri.toolbars.Draw.POLYGON);}">Rear</div>
+                          </div>
+                      </div>
+                      <button data-dojo-type="dijit.form.Button" id="beFinishBtn" data-dojo-props="showLabel:true, disabled:true, onClick: function(){ beFinishBtnClick(); }">Finish</button>
+                      <!--<button data-dojo-type="dijit.form.Button" data-dojo-props="showLabel:true, onClick:function(){beToolBar.deactivate();},iconClass:'deactivateIcon'"></button>-->
+                      <button data-dojo-type="dijit.form.Button" data-dojo-props="showLabel:true, title:'Clear', onClick:function(){beClear('beDialog')}"><img alt='' src='Images/broom-icon.png' /></button>
+                      <img class="picImg" onclick="setCustomSetbacks()" id="beInfo" alt='' src='Images/info-icon3.png' />
+                      <div data-dojo-type="dijit.Tooltip" data-dojo-props='connectId:["beInfo"]'>
+                            <div id="beInfoMeasureContainer" style="width:100px;">There are no setbacks</div>
+                      </div>
+                      <div class="measureWindowback"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    <!-- Inspections -->
+    <div id="inspectDialog" class="dragPanel" style="display:none; position:absolute; left:80px; top:60px; z-Index:99;text-align:center; padding:10px;">
+          <div id='inspectDialogHandle' style="cursor:move; width:95%; font-weight:bold;font-size: small; font-family:Arial Black; color:White;">INSPECTIONS</div>
+          <div class="firstMessageClose" onclick="document.getElementById('inspectDialog').style.display = 'none'; toggleInspectLayer();">X</div>
+          <!--<div class="firstMessageClose" onclick="document.getElementById('beDialog').style.display = (document.getElementById('beDialog').style.display != 'none' ? 'none' : ''); beToolBar.deactivate();">X</div>-->
+       
+        <div class="innerDiv" style="overflow:scroll; height:350px; width:350px;">
+            <div style="padding:5px 3px 5px 5px; background:white;vertical-align:top; ">
+                <table>
+                    <tr>
+                        <td><div id="selectInspector" data-dojo-type="dijit.form.FilteringSelect" data-dojo-props="placeHolder:'Select Inspector', style:'width:250px;'" pagesize="6" searchattr='field'></div></td>
+                        <td><div data-dojo-type="dijit.form.Button" data-dojo-props="" onclick="doInspections()">Go</div></td>
+                    </tr>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Change Dates:&nbsp;<input id="inspectionChangeDates" dojotype="dijit.form.CheckBox" style="margin:0px !important;" onclick="dijit.byId('inspectionEndDate').set('disabled', !this.checked); dijit.byId('inspectionStartDate').set('disabled', !this.checked);" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>
+                            <input style="width:100%;" id="inspectionStartDate" data-dojo-type="dijit.form.DateTextBox" data-dojo-props="disabled:true" required="true" value="now" onchange="dijit.byId('inspectionEndDate').constraints.min = arguments[0];"
+                                   constraints="{datepattern:'dd-mm-yyyy'}" lang="en-us" promptmessage="Start Date" invalidmessage="Invalid date." /><br />
+                        </td>
+                        <td>&nbsp;To:&nbsp;</td>
+                        <td>
+                            <input style="width:100%;" id="inspectionEndDate" data-dojo-props="disabled:true" data-dojo-type="dijit.form.DateTextBox" required="true" value="now" onchange=""
+                                   constraints="{datepattern:'dd-mm-yyyy'}" lang="en-us" promptmessage="End Date" invalidmessage="Invalid date." /><br />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="padding:10px 10px 10px;"><table id="inspectTable" style="border-collapse: collapse; width:100%;"></table></div>
+        </div>
+        <div class="measureWindowback"></div>
+      </div>
+    <!--Permits Panel-->
+    <div id="openPermitsPanel" class="dragPanel" dojoType="dojo.dnd.Moveable"  handle='openPermitsDragHandler' style="padding:10px;display:none; position:absolute; left:155px; top:100px; z-Index:99;text-align:center;">
+        <span id="openPermitsDragHandler" style="cursor:move;font-weight:bold;font-size: small; font-family:Arial Black; color:White; text-align: left;">PERMIT PANEL</span>&nbsp;
+        <img alt='' id="openPermitsLegend" src="images/Info-icon.png" style="width: 15px; height: 15px;" />
+        <div data-dojo-type="dijit.Tooltip" data-dojo-props='connectId:["openPermitsLegend"]'>
+            <table>
+                <tr><td style="border: 2px solid #0000FF; width: 10px; height: 10px;"></td><td>Application</td></tr>
+                <tr><td style="border: 2px solid #00FF00; width: 10px; height: 10px;"></td><td>Active Permit</td></tr>
+                <tr><td style="border: 2px solid #FF0000; width: 10px; height: 10px;"></td><td>Expired Permit</td></tr>
+                <tr><td style="border: 2px solid #9900CC; width: 10px; height: 10px;"></td><td>Multiple Permits</td></tr>
+            </table>
+        </div>
+        <div class="firstMessageClose" onclick="document.getElementById('openPermitsPanel').style.display = (document.getElementById('openPermitsPanel').style.display != 'none' ? 'none' : '' ); togglePermitsLayer();">X</div>
+        <div class="innerDiv" style="overflow:scroll; height:250px;">
+            <input type="hidden" id="openPermitsDepartment" value="0" />
+            <div style="padding:5px 3px 5px 5px; width:240px; position:fixed; z-index:1000; background:white;vertical-align:top; ">
+                <table style="width:90%;">
+                    <tr>
+                        <td colspan="3"><div id="selectPermitType" data-dojo-type="dijit.form.FilteringSelect" data-dojo-props="placeHolder:'Select Permit Type',style:'width:100%;', onChange: function(e){dijit.byId('exportPermits').set('disabled', true);}" pagesize="10" searchattr='field'></div></td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <img alt="" style="display:inline; padding:2px; vertical-align:middle;cursor:pointer;" id="openPermitsFilterOptionsImg" onclick="collapse('openPermitsFilterOptions')" src="Images/expand_icon.gif" />
+                                <div style="display:inline; vertical-align:middle;cursor:pointer;" onclick="collapse('openPermitsFilterOptions')">&nbsp;Options</div>
+                            </div>
+                        </td>
+                        <td><div id="permitGoBtn" dojotype="dijit.form.Button" data-dojo-props="" onclick="moveTypes('go');">Go</div></td>
+                        <td>
+                            <div data-dojo-type="dijit.form.Button" id="exportPermits" data-dojo-props="disabled:true" onclick="exportPermitsPanel();">Export</div>
+                        </td>
+                    </tr>
+                </table>
+                <div style="display:none; width:90%;" class="expandDiv" id="openPermitsFilterOptions">
+                    <div style="padding:3px;">
+                        <select id="permitsPanelHamlet" style="width:40%;" onchange="dijit.byId('exportPermits').set('disabled', true);">
+                            <option></option>
+                            <option value="Bridgehampton">Bridgehampton</option>
+                            <option value="East Quogue">East Quogue</option>
+                            <option value="Eastport">Eastport</option>
+                            <option value="Flanders">Flanders</option>
+                            <option value="Hampton Bays">Hampton Bays</option>
+                            <option value="North Haven">North Haven</option>
+                            <option value="North Sea">North Sea</option>
+                            <option value="Northampton">Northampton</option>
+                            <option value="Noyac">Noyac</option>
+                            <option value="Quiogue">Quiogue</option>
+                            <option value="Remsenburg/ Speonk">Remsenburg/ Speonk</option>
+                            <option value="Riverside">Riverside</option>
+                            <option value="Sag Harbor">Sag Harbor</option>
+                            <option value="Sagaponack">Sagaponack</option>
+                            <option value="Shinnecock Hills">Shinnecock Hills</option>
+                            <!--<option value="Shinnecock Indian Nation">Shinnecock Indian Nation</option>-->
+                            <option value="Speonk-Remsenburg">Speonk-Remsenburg</option>
+                            <option value="Tuckahoe">Tuckahoe</option>
+                            <option value="Village of North Haven">Village of North Haven</option>
+                            <option value="Village of Quogue">Village of Quogue</option>
+                            <option value="Village of Sag Harbor">Village of Sag Harbor</option>
+                            <option value="Village of Sagaponack">Village of Sagaponack</option>
+                            <option value="Village of Southampton">Village of Southampton</option>
+                            <option value="Village of Westhampton Beach">Village of Westhampton Beach</option>
+                            <option value="Village of Westhampton Dunes">Village of Westhampton Dunes</option>
+                            <option value="Water Mill">Water Mill</option>
+                            <option value="Westhampton">Westhampton</option>
+                        </select><label for="permitsPanelHamlet">&nbsp;Hamlet</label>
+                    </div>
+                    <!--<div style="padding:3px;">
+                <select id="permitsPanelStatus">
+                    <option></option>
+                    <option value="application">Application</option>
+                    <option value="active">Active Permit</option>
+                    <option value="expired">Expired</option>
+                </select><label for="permitsPanelStatus">&nbsp;Status</label>
+            </div>-->
+                    <!--<div style="padding:3px;">
+                <input dojotype="dijit.form.CheckBox" style="margin:0px !important;" id="useMapExtent" /><label for="useMapExtent">&nbsp;Map Extent Only</label>
+            </div>-->
+                    <div style="padding:3px;">
+                        <input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="intermediateChanges:true, constraints:{min:0,max:1000}, smallDelta: 50, largeDelta:50, value:500, style:'width:40%;'" id="permitPanelPageSize" /><label for="permitPanelPageSize">&nbsp;#&nbsp;Results to Display</label>
+                    </div>
+                </div>
+                <div style="display:none;" id="openPermitsWait">Finding Permits...</div>
+            </div>
+            <div style="padding:75px 10px 10px 10px;"><table id="openPermitsTable"></table></div>
+        </div> 
+        <div id="additionalPermits" style="display:none;">
+            <div>
+                <!--<div data-dojo-type="dijit.form.Button" id="permitPanelFirstPageBTN" onclick="loadData_PermitsPanel(0, 'first');"> |< </div>-->
+                <div data-dojo-type="dijit.form.Button" id="previousButton" onclick="moveTypes('previous');"> Previous </div>
+                <label id="lblPageNumber" style="font-weight:bold;font-size: small; font-family:Arial Black; color:White; text-align: left;">1</label>
+                <div data-dojo-type="dijit.form.Button" id="nextButton" onclick="moveTypes('next');"> Next </div>
+                <!--<div data-dojo-type="dijit.form.Button" id="permitPanelLastPageBTN" onclick="moveTypes('last');"> >| </div>-->
+            </div>
+        </div>
+        <div class="measureWindowback"></div>
+    </div>
+
+    <!--Comps Dashboard-->
+    <div id="compsDashboard" class="dragPanel" dojoType="dojo.dnd.Moveable"  handle='compsDashboardDragHandler' style="padding:10px;display:none; position:absolute; left:155px; top:100px; z-Index:99;text-align:center;">
+        <span id="compsDashboardDragHandler" style="cursor:move;font-weight:bold;font-size: small; font-family:Arial Black; color:White;">COMPS DASHBOARD</span>&nbsp;
+        <div class="firstMessageClose" onclick="document.getElementById('compsDashboard').style.display = (document.getElementById('compsDashboard').style.display != 'none' ? 'none' : '' );">X</div>
+        <div class="innerDiv" style="overflow:scroll; height:250px;">
+            <div data-dojo-type="dijit.Toolbar" id="salesAnalysisTabToolbar" style="position:fixed; width:245px;">
+                <div id="cleanArTableBTN" data-dojo-type="dijit.form.DropDownButton" label="<img alt='' src='Images/broom-icon.png' />">
+                    <span>Options</span>
+                    <div data-dojo-type="dijit.Menu" >
+                        <div data-dojo-type="dijit.MenuItem" onclick="deleteArTableRow();" >Delete</div>
+                        <div data-dojo-type="dijit.MenuItem" onclick="clearArTable();" >Clear</div>
+                    </div>
+                </div>
+                <div id="searchCompsBTN" data-dojo-type="dijit.form.DropDownButton" label="<img alt='Search' src='Images/info-icon4.png' />">
+                    <div data-dojo-type="dijit.TooltipDialog" id="searchSalesTTD">
+                        <table>
+                            <tr>
+                                <td><input type="checkbox" checked="checked" onchange="disableElements('acres', this)"/></td>
+                                <td>Acres:</td>
+                                <td title="Acreage" id="acres">
+                                    <input id='acresV' name="compSearch" type="text" data-dojo-type="dijit.form.NumberSpinner" style="width:55px;" data-dojo-props="smallDelta:.1, value:.1, constraints:{min:0,max:1250,places:2}" />
+                                    <span style="cursor:pointer">&nbsp;<span id="acresRange" title="Plus Minus" onclick="changeRange(this)">&plusmn;</span>&nbsp;</span>
+                                    <input id='acresM' type="text" data-dojo-type="dijit.form.NumberSpinner" style="width:55px;" data-dojo-props="smallDelta:.1, value:.1, constraints:{min:0,max:1250,places:2}" />
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" checked="checked" onchange="disableElements('bed', this)"/></td>
+                                <td>Bedrooms:</td>
+                                <td title="bed" id="bed"><input id='bedV' name="compSearch" type="text" data-dojo-type="dijit.form.NumberSpinner" style="width:55px;" data-dojo-props="smallDelta:1, value:2, constraints:{min:0,max:150,places:0}" /></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" checked="checked" onchange="disableElements('bath', this)"/></td>
+                                <td>Bathrooms:</td>
+                                <td title="bath" id="bath"><input id='bathV' name="compSearch" type="text" data-dojo-type="dijit.form.NumberSpinner" style="width:55px;" data-dojo-props="smallDelta:.1, value:1.0, constraints:{min:0,max:150,places:1}" /></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td ><input type="checkbox" checked="checked" onchange="disableElements('LV_AREA', this)"/></td>
+                                <td>Size:</td>
+                                <td title="LV_AREA" id="LV_AREA">
+                                    <input id='LV_AREAV' name="compSearch" type="text" data-dojo-type="dijit.form.NumberSpinner" style="width:75px;" 
+                                        data-dojo-props="smallDelta:10, value:1000, constraints:{min:0,max:213015,places:0}" />
+                                    <span style="cursor:pointer">&nbsp;<span id="LV_AREARange" title="Plus Minus" onclick="changeRange(this)">&plusmn;</span>&nbsp;</span>
+                                    <input id='LV_AREAM' type="text" data-dojo-type="dijit.form.NumberSpinner" style="width:75px;" 
+                                        data-dojo-props="smallDelta:50, value:50, constraints:{min:0,max:213015,places:0}" />
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" checked="checked" onchange="disableElements('Year_Built', this)"/></td>
+                                <td>Year Built:</td>
+                                <td title="Year_Built" id="Year_Built">
+                                    <input id='Year_BuiltV' name="compSearch" type="text" data-dojo-type="dijit.form.NumberSpinner" 
+                                        style="width:55px;" data-dojo-props="smallDelta:1, value:1976, constraints:{min:1648,places:0, pattern: '0000'}" />
+                                        <span style="cursor:pointer">&nbsp;<span id="Year_BuiltRange" title="Plus Minus" onclick="changeRange(this)">&plusmn;</span>&nbsp;</span>
+                                    <input id='Year_BuiltM' type="text" data-dojo-type="dijit.form.NumberSpinner" style="width:75px;" 
+                                        data-dojo-props="smallDelta:5, value:5, constraints:{min:0,places:0}" />
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" checked="checked" onchange="disableElements('designSelect', this)"/></td>
+                                <td>Design</td>
+                                <td colspan='2'>
+                                    <select id="designSelect">
+                                        <optgroup label="Exceptional Homes">
+                                        <option value="ms0007">Exceptional Homes</option>
+                                        </optgroup>
+                                        <optgroup label="Residential">
+                                        <option value="ms0001a">Bungalow</option>
+                                        <option value="ms0001b">Cape Cod</option>
+                                        <option value="ms0001c">Colonial</option>
+                                        <option value="ms0001d">Contemporary</option>
+                                        <option value="ms0001e">Cottage</option>
+                                        <option value="ms0005">Duplex</option>
+                                        <option value="ms0001f">Log Cabin - R</option>
+                                        <option value="ms0002">Low-rise Multiple</option>
+                                        <option value="ms0006">Manufactured Housing</option>
+                                        <option value="ms0001g">Old Style</option>
+                                        <option value="ms0001h">Post Modern</option>
+                                        <option value="ms0001i">Raised Ranch</option>
+                                        <option value="ms0001j" selected="selected">Ranch</option>
+                                        <option value="ms0001k">Split Level</option>
+                                        <option value="ms0003">Town House, End Unit</option>
+                                        <option value="ms0004">Twn House, Inside Unit</option>
+                                        </optgroup>
+                                        <optgroup label="Special Studies">
+                                        <option value="ms0011">A-Frame Cabins</option>
+                                        <option value="ms0008">Clubhouses</option>
+                                        <option value="ms0013">Dome Houses</option>
+                                        <option value="ms0016">Earth-Sheltered Homes</option>
+                                        <option value="ms0015">Elevated Homes</option>
+                                        <option value="ms0012">Log Cabins - SS</option>
+                                        <option value="ms0010">Low-Cost Cottages</option>
+                                        <option value="ms0009">Prefabricated Cottage</option>
+                                        <option value="ms0017">Rammed & Baled Homes</option>
+                                        <option value="ms0014">Tropical Houses</option>
+                                        </optgroup>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div dojoType="dijit.form.DropDownButton" label="Hamlet" >
+                                        <div dojoType="dijit.TooltipDialog" >
+                                        <input id="searchSelectAll" class="hamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'All'"/><label id="Label1" class="hamletlabel">Select All</label>
+                                            <div id="searchTooltip" data-dojo-type="dijit.layout.ContentPane">
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Bridgehampton'"/><label class="hamletlabel">BRIDGEHAMPTON</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Quiogue'"/><label class="hamletlabel">QUIOGUE</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Quogue'"/><label class="hamletlabel">VILLAGE OF QUOGUE</label></span>
+                                                </div>
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'East Quogue'"/><label class="hamletlabel">EAST QUOGUE</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Riverside'"/><label class="hamletlabel">RIVERSIDE</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Sag Harbor'"/><label class="hamletlabel">VILLAGE OF SAG HARBOR</label></span>
+                                                </div>
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Eastport'"/><label class="hamletlabel">EASTPORT</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Sag Harbor'"/><label class="hamletlabel">SAG HARBOR</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Sagaponack'"/><label class="hamletlabel">VILLAGE OF SAGAPONACK</label></span>
+                                                </div>
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Flanders'"/><label class="hamletlabel">FLANDERS</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Sagaponack'"/><label class="hamletlabel">SAGAPONACK</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Southampton'"/><label class="hamletlabel">VILLAGE OF SOUTHAMPTON</label></span>
+                                                </div>
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Hampton Bays'"/><label class="hamletlabel">HAMPTON BAYS</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Shinnecock Hills'"/><label class="hamletlabel">SHINNECOCK HILLS</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Westhampton Beach'" /><label class="hamletlabel">VILLAGE OF WESTHAMPTON BEACH</label></span>
+                                                </div>
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'North Sea'"/><label class="hamletlabel">NORTH SEA</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Remsenburg/ Speonk'"/><label class="hamletlabel">REMSENBURG/ SPEONK</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of Westhampton Dunes'"/><label class="hamletlabel">VILLAGE OF WESTHAMPTON DUNES</label></span>
+                                                </div>
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Northampton'"/><label class="hamletlabel">NORTHAMPTON</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Tuckahoe'"/><label class="hamletlabel">TUCKAHOE</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Water Mill'"/><label class="hamletlabel">WATER MILL</label></span>
+                                                </div>
+                                                <div class="hamletCol">
+                                                    <span class="hamletName1"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Noyac'"/><label class="hamletlabel">NOYAC</label></span>
+                                                    <span class="hamletName2"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Village of North Haven'"/><label class="hamletlabel">VILLAGE OF NORTH HAVEN</label></span>
+                                                    <span class="hamletName3"><input class="searchHamlet" data-dojo-type="dijit.form.CheckBox" data-dojo-props="value: 'Westhampton'"/><label class="hamletlabel">WESTHAMPTON</label></span>
+                                                </div>  
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'><div data-dojo-type="dijit.form.Button" onclick="compsQuery(this);" >Search</div></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div id="arButton" disabled="true" data-dojo-type="dijit.form.Button" onclick="openArReport();" label="<img alt='Appraisal Report' src='Images/report-edit-icon.png' />"></div>
+                <div id="indicator" disabled="true" data-dojo-type="dijit.form.Button"></div>
+            </div>
+            <div style="padding-top: 30px;">
+                <table cellspacing="0" cellpadding="0" id="arResults" style="width:95%;"></table>
+            </div>
+        </div> 
+        <div class="measureWindowback"></div>
+    </div>
+<!--DIQ LAYERS-->
+    <div id="DIQ_Dialog" dojotype="dojo.dnd.Moveable" handle='DIQ_DialogHandle' class="dragPanel" style="display:none; position: absolute; left: 80px; top: 60px; z-Index: 99; text-align: center; padding: 10px;">
+        <div id='DIQ_DialogHandle' style="cursor:move; width:95%; font-weight:bold;font-size: small; font-family:Arial Black; color:White;">DATA INTEGRITY</div>
+        <div class="firstMessageClose" onclick="document.getElementById('DIQ_Dialog').style.display = (document.getElementById('DIQ_Dialog').style.display != 'none' ? 'none' : '');">X</div>
+        <div data-dojo-type="dijit.layout.ContentPane" class="innerDiv" style="width: 300px; height: 300px">
+            <div id="navcontainer">
+                <ul style="display:inline-block;">
+                    <li id="diq_bldg_Header" style="background-color: #b2c1d1;" onclick="diqHandler(this);">Buildings</li>
+                    <li id="diq_site_Header" onclick="diqHandler(this);">SITE</li>
+                    <li id="diq_land_Header" onclick="diqHandler(this);">LAND</li>
+                </ul>
+                <div style="display: inline-block;">GOV Hold<input type="checkbox" id="govHold" style="vertical-align:middle;" onchange='setGovHold(this);'/></div>
+            </div>
+            <div id="diq_bldg" style="display:block; margin-top:10px;">
+                <input type="checkbox" id="BLDG_DIQ_CHECK" onclick='changeDIQLayerVisibility(0, this);' />Visible
+                <select id="BLDG_DIQ_SELECT" onchange="getDIQ(this.value, 'BLDG_DIQ', 0);">
+                    <option selected="selected"></option>
+                    <option value="BLDG_MODEL_CODE">Bulding Model</option>
+                    <option value="BLDG_USE_CODE">Buiding Use</option>
+                    <option value="E_HOMES">Exceptional Homes</option>
+                    <option value="Historic">Historic Adjustment</option>
+                    <option value="S_ADQ">Super Adequacy</option>
+                    <option value="ENHANCE">Refinements & Enhancements</option>
+                </select>
+                <div id="BLDG_DIQ_Legend" style="width:100%; height:auto; padding-top:5px;"></div>
+            </div>
+            <div id="diq_site" style="display: none; margin-top:10px;">
+                <input type="checkbox" id="MA_SITE_VW_CHECK" onclick='changeDIQLayerVisibility(1, this);' />Visible
+                <select id="MA_SITE_VW_SELECT" onchange="getDIQ(this.value, 'MA_SITE_VW', 1);">
+                    <option selected="selected"></option>
+                    <option value="ROAD_TYP">Road Type</option>
+                    <option value="SITE25">Proximity To Commercial</option>
+                    <option value="SITE26">Proximity To LIRR</option>
+                    <option value="SITE27">Proximity To Traffic</option>
+                    <option value="SITE28">Water Access / Views</option>
+                    <option value="SITE30">Proximity To Schools</option>
+                    <option value="SITE35">Proximity To Utilities</option>
+                    <option value="SITE40">Proximity To Green Spaces</option>
+                    <option value="SITE_ADV">Adverse External Influence</option>
+                    <option value="MKTADJ">Market Adjustment</option>
+                </select>
+                <div id="MA_SITE_VW_Legend" style="width:100%; height:auto; padding-top:5px;"></div>
+            </div>
+            <div id="diq_land" style="display: none; margin-top: 10px;">
+                <input type="checkbox" id="MA_LAND_VW_CHECK" onclick='changeDIQLayerVisibility(2, this);' />Visible
+                <select id="MA_LAND_VW_SELECT" onchange="getDIQ(this.value, 'MA_LAND_VW', 2);">
+                    <option selected="selected"></option>
+                    <option value="TERMEASM">Easements</option>
+                    <option value="ENV_HAZ">Environmental Hazard</option>
+                    <option value="SIZE">Improved / Vacant Adjustment</option>
+                    <option value="INFLUENCFACT">Influence Factor</option>
+                    <option value="pine">Pine Barrens Properties</option>
+                    <option value="ADJT03">Property Shape Land Adjustment</option>
+                    <option value="ROWEASM">Right of Way Easments</option>
+                    <option value="NBHDADJ">Neighborhood Adjustments</option>
+                    <option value="rear">Rears / Landlocked Properties</option>
+                    <option value="SIZE_ADJ">Size Adjustment</option>
+                    <option value="split_type">Split Type</option>
+                    <option value="SUBNBHD">Sub NBHD Adjustments</option>
+                    <option value="TOPO">Topography Adjustment</option>
+                    <option value="wet">Wetland Properties</option>
+                </select>
+                <div id="MA_LAND_VW_Legend" style="width:100%; height:auto; padding-top:5px;"></div>
+            </div>
+        </div>
+        <div class="measureWindowback"></div>
+    </div>
+      <input id="passValid" type="hidden" value='' />
+    <!-- Start of StatCounter Code for Default Guide -->
+    <script type="text/javascript">
+            var sc_project = 8706108;
+            var sc_invisible = 1;
+            var sc_security = "9de8484d";
+            var scJsHost = (("https:" == document.location.protocol) ?
+        "https://secure." : "https://www.");
+            document.write("<sc" + "ript type='text/javascript' src='" +
+        scJsHost +
+        "statcounter.com/counter/counter.js'></" + "script>");
+    </script>
+    <noscript><div class="statcounter"><a title="web stats"
+    href="https://statcounter.com/free-web-stats/"
+    target="_blank"><img class="statcounter"
+    src="https://c.statcounter.com/8706108/0/9de8484d/1/"
+    alt="web stats"></a></div></noscript>
+    <!-- End of StatCounter Code for Default Guide -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-16220510-19', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="https://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Oblique Image Viewer for Town of Southampton</title>
+    <script src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3" type="text/javascript" language="javascript"></script>
+    
+    <script language="javascript" type="text/javascript" >
+        function getRequestParam(name) {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.href);
+            if (results == null)
+                return "";
+            else
+                return results[1];
+        }
+        //var y = 40.87;
+        //var x = -72.51;
+
+        var y = getRequestParam('ycoord');
+        var x = getRequestParam('xcoord');
+        
+        var map = null;
+        var centerat = null;
+        var agisve_services = null;
+
+        //following is just a test
+        //var tileUrl = "https://localhost/ArcGIS/rest/services/TaxWebMercator/MapServer";
+
+        function OnPageLoad(x, y) {
+            // create point to use as map center point
+            // alert("x: " + x + " y: " + y);
+            centerat = new VELatLong(y, x);
+            pinLocation = new VELatLong(y, x);
+            // new map instance
+            map = new VEMap('mymap');
+            var mapOptions = new VEMapOptions();
+            mapOptions.EnableBirdseye = true;
+            // load map
+            map.AttachEvent("onobliqueenter", OnObliqueEnterHandler);
+            map.LoadMap(centerat, 15, VEMapStyle.Hybrid, false, VEMapMode.Mode2D, false, 0, mapOptions);
+        }
+
+        function OnObliqueEnterHandler() {
+            if (map.IsBirdseyeAvailable()) {
+                map.SetBirdseyeScene(centerat);
+                AddPin();
+            }
+        }
+
+        function AddPin() {
+            if (map.IsBirdseyeAvailable()) {
+                pinLocation.SetAltitude(200, VEAltitudeMode.RelativeToGround);
+
+                var pushpin = new VEShape(VEShapeType.Pushpin, pinLocation);
+                map.AddShape(pushpin);
+            }
+        }
+
+        function AddMap() {
+
+            // create a new layer factory
+            agisve_services = new ESRI.ArcGIS.VE.ArcGISLayerFactory();
+            // create the tile layer specfication using url and response function
+            agisve_services.CreateLayer(tileUrl, "Tax Parcels", GetMap);
+
+        }
+
+        function GetMap(tileSourceSpec, resourceInfo) {
+            var all = "";
+            for (var i = 0; i < tileSourceSpec.length; i++) {
+                var theName = tileSourceSpec[i].name;
+                all += theName + "\n";
+            }
+            // set opacity of tile layer specification
+            tileSourceSpec.Opacity = 0.35;
+            // add layer to map using the tile layer specification
+            map.AddTileLayer(tileSourceSpec, true);
+            map.SetMapStyle(VEMapSTyle.Hybrid);
+            $get("resultDiv").style.visibility = "hidden";
+        }
+
+    </script>
+</head>
+<body onload="OnPageLoad(x, y)">
+     <form action="" >
+        <div id='mymap' style="position:absolute; left: 0px; top: 0px; width: 100%; height: 100%;"></div>
+        <!--div id='resultDiv' style="position:absolute; width:200px; height: 50px; left: 540px; top: 10px; font-family: Verdana; font-size: x-small; border: double black; background-color: White; z-index: 10000;">
+        <div id="resultHeader" style="width: 100%; text-align: center; height: 50px;">
+      Click Add to add a map service<br /><input type="button" value="Add" style="width: 75px;" onclick="AddMap()" /></div-->
+     </form>
+</body>
+</html>

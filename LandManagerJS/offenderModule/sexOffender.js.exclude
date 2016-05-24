@@ -1,0 +1,54 @@
+﻿/// <reference path="../jsapi_vsdoc10_v38.js"/>
+function addSexOffenders() {
+    var offenderData = eval('(' + callASHX("getJson.ashx?sender=sexOffender") + ')');
+
+    var offenderLayer = new esri.layers.GraphicsLayer({ id: 'Offender_Level_1' });
+
+    var fieldInfo = dojo.fromJson("[" + offenderData.items[offenderData.items.length - 1][0].FieldInfo + "]");
+    offenderLayer.fieldInfo = fieldInfo[0];
+    var unMapped = [];
+    if (offenderData.items) {
+        var symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE, 10, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 1), new dojo.Color([0, 255, 0, 0.25]));
+        var idList = [];
+        var duplicatIds = {};
+        for (x = 0, ll = offenderData.items.length - 1; x < ll; x++) {
+            var attributes = {};
+            for (i in offenderData.items[x]) {
+                if (i != "Geometry") { 
+                    attributes[i] = offenderData.items[x][i];
+                }
+            }
+            var geom = false, alias;
+            
+            if (offenderData.items[x].LatFeet != -1) {
+//                var dup = idList.indexOf(offenderData.items[x].Offender_ID);
+//                if (dup != -1) {
+//                    if (!duplicatIds[offenderData.items[x].Offender_ID]) {
+//                        duplicatIds[offenderData.items[x].Offender_ID] = [dup, idList.length];
+//                    } else {
+//                        duplicatIds[offenderData.items[x].Offender_ID].push(idlist.length);
+//                    }
+//                }
+//                idList.push(offenderData.items[x].Offender_ID); 
+                offenderLayer.add(new esri.Graphic(new esri.geometry.Point(offenderData.items[x].LonFeet, offenderData.items[x].LatFeet, map.spatialReference), symbol, attributes));
+            }
+            else {
+                unMapped.push(attributes);
+            }
+        }
+        //offenderLayer.on('click', offenderLayerClick);
+        offenderLayer.on('click', function (e) {
+            if (dijit.byId('editToggler').checked) {
+                connectClick(e, e.graphic.getLayer());
+            } else {
+                selectedGraphic = e.graphic;
+                showEditorPopup(e, e.graphic.getLayer());
+            }
+        });
+        map.addLayer(offenderLayer);
+    }
+}
+function offenderLayerClick(evt) {
+    alert(evt);
+}
+
