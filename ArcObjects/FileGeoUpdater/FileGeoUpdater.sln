@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileGeoUpdater", "FileGeoUpdater\FileGeoUpdater.csproj", "{988E1F4F-8262-4CB3-BA8C-55B3B1491141}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E415F5B-1ADC-4EA3-BCA0-9D4AA06D6183}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Debug|x64.ActiveCfg = Debug|x64
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Debug|x64.Build.0 = Debug|x64
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Debug|x86.ActiveCfg = Release|x86
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Debug|x86.Build.0 = Release|x86
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Release|x64.ActiveCfg = Release|x64
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Release|x64.Build.0 = Release|x64
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Release|x86.ActiveCfg = Release|x86
+		{988E1F4F-8262-4CB3-BA8C-55B3B1491141}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

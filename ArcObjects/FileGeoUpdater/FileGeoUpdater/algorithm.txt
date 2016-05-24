@@ -1,0 +1,68 @@
+            while (ds != null)
+            {
+                IEnumDataset dsSub = ds.Subsets;
+
+                for (IDataset sdeclass = dsSub.Next(); sdeclass != null; sdeclass = dsSub.Next())
+                {
+                    Exception e;
+                     IDataset fgDS = this.GetFGDBDataset(this.fgdbSpace, ds.Name);
+                     IDatasetName targetDatasetName = (IDatasetName)fgDS.FullName;
+                    IName targetName = (IName)targetDatasetName;
+                    IFeatureClassName featureClassName = new FeatureClassNameClass();
+
+                    // Set the featureClassName properties.
+                    IDatasetName sourceDatasetName = (IDatasetName)featureClassName;
+                    sourceDatasetName.WorkspaceName = wsSourceName;
+                    sourceDatasetName.Name = sdeclass.Name;
+                    IName sourceName = (IName)sourceDatasetName;
+
+                    // Create an enumerator for source datasets.
+                    IEnumName sourceEnumName = new NamesEnumeratorClass();
+                    IEnumNameEdit sourceEnumNameEdit = (IEnumNameEdit)sourceEnumName;
+
+                    // Add the name object for the source class to the enumerator.
+                    sourceEnumNameEdit.Add(sourceName);
+
+                    // Create a GeoDBDataTransfer object and a null name mapping enumerator.
+                    IGeoDBDataTransfer geoDBDataTransfer = new GeoDBDataTransferClass();
+                    IEnumNameMapping enumNameMapping = null;
+
+                    // Use the data transfer object to create a name mapping enumerator.
+                    Boolean conflictsFound = geoDBDataTransfer.GenerateNameMapping(sourceEnumName,targetName,out enumNameMapping);
+                    enumNameMapping.Reset();
+
+                    // Check for conflicts.
+                    if (conflictsFound)
+                    {
+                        // Iterate through each name mapping.
+                        INameMapping nameMapping = null;
+                        while ((nameMapping = enumNameMapping.Next()) != null)
+                        {
+                            // Resolve the mapping's conflict (if there is one).
+                            if (nameMapping.NameConflicts)
+                            {
+                                nameMapping.TargetName = nameMapping.GetSuggestedName(targetName);
+                            }
+
+                            // See if the mapping's children have conflicts.
+                            IEnumNameMapping childEnumNameMapping = nameMapping.Children;
+                            if (childEnumNameMapping != null)
+                            {
+                                childEnumNameMapping.Reset();
+
+                                // Iterate through each child mapping.
+                                INameMapping childNameMapping = null;
+                                while ((childNameMapping = childEnumNameMapping.Next()) != null)
+                                {
+                                    if (childNameMapping.NameConflicts)
+                                    {
+                                        childNameMapping.TargetName = childNameMapping.GetSuggestedName
+                                            (targetName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Start the transfer.
+                    geoDBDataTransfer.Transfer(enumNameMapping, targetName);
