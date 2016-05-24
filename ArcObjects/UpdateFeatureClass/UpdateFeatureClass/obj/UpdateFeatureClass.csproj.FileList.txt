@@ -1,0 +1,6 @@
+bin\Debug\UpdateFeatureClass.exe
+bin\Debug\UpdateFeatureClass.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\UpdateFeatureClass.exe
+obj\Debug\UpdateFeatureClass.pdb
+bin\Debug\msmdvbanet.dll

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="UpdateFeatureClass">
+</Property><Property Name="Solution File" Value="E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\UpdateFeatureClass.sln">
+</Property><Property Name="User Options File" Value="E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\UpdateFeatureClass.suo">
+</Property><Property Name="Date" Value="Tuesday, October 07, 2014">
+</Property><Property Name="Time" Value="11:13 AM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="UpdateFeatureClass.sln" Description="File successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass.sln">
+</Event><Event ErrorLevel="0" Project="" Source="UpdateFeatureClass.suo" Description="File successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass.suo">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\UpdateFeatureClass.csproj" Description="Project file successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass\UpdateFeatureClass.csproj">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\ArcObjectsInit.cs" Description="File successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass\ArcObjectsInit.cs">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\RetrieveQuery.cs" Description="File successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass\RetrieveQuery.cs">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\Program.cs" Description="File successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass\Program.cs">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\Properties\AssemblyInfo.cs" Description="File successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\SDELogin.cs" Description="File successfully backed up as E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup1\Backup\UpdateFeatureClass\SDELogin.cs">
+</Event><Event ErrorLevel="1" Project="UpdateFeatureClass" Source="UpdateFeatureClass\UpdateFeatureClass.csproj" Description="Your project is targeting .NET Framework 2.0 or 3.0. If your project uses assemblies requiring a newer .NET Framework, your project will fail to build. You can change the .NET Framework version by clicking Properties on the project menu and then selecting a new version in the '.NET Framework' dropdown box. (In Visual Basic, this is located on the Compile tab by clicking the 'Advanced Compiler Options...' button.)">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\UpdateFeatureClass.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="UpdateFeatureClass" Source="UpdateFeatureClass\UpdateFeatureClass.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="UpdateFeatureClass.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="UpdateFeatureClass.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="UpdateFeatureClass" Source="UpdateFeatureClass\UpdateFeatureClass.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

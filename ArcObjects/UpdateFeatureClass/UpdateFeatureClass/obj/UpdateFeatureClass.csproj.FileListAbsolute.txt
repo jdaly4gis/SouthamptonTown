@@ -1,0 +1,15 @@
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\Debug\UpdateFeatureClass.exe
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\Debug\UpdateFeatureClass.pdb
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\bin\Debug\UpdateFeatureClass.exe
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\bin\Debug\UpdateFeatureClass.pdb
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\bin\x86\Debug\UpdateFeatureClass.exe
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\bin\x86\Debug\UpdateFeatureClass.pdb
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\x86\Debug\UpdateFeatureClass.exe
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\x86\Debug\UpdateFeatureClass.pdb
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\bin\x86\Release\UpdateFeatureClass.exe
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\bin\x86\Release\UpdateFeatureClass.pdb
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\x86\Release\UpdateFeatureClass.exe
+C:\Documents and Settings\jdaly\My Documents\Visual Studio 2005\Projects\UpdateFeatureClass\UpdateFeatureClass\obj\x86\Release\UpdateFeatureClass.pdb

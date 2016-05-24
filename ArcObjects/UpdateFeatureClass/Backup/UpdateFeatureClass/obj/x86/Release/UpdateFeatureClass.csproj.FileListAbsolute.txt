@@ -1,0 +1,8 @@
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\obj\x86\Release\UpdateFeatureClass.csproj.ResolveComReference.cache
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\bin\x86\Release\UpdateFeatureClass.exe
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\bin\x86\Release\UpdateFeatureClass.pdb
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\obj\x86\Release\UpdateFeatureClass.exe
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\obj\x86\Release\UpdateFeatureClass.pdb
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\bin\x86\Release\Interop.ArcGISVersionLib.dll
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\obj\x86\Release\UpdateFeatureClass.csprojResolveAssemblyReference.cache
+E:\VisualStudio2010\Projects\UpdateFeatureClass\Backup\UpdateFeatureClass\obj\x86\Release\Interop.ArcGISVersionLib.dll
