@@ -12,20 +12,17 @@ use MIME::Lite;
 use List::MoreUtils qw(pairwise);
 
 
-my $GOVDSN  = "Govern_64";
-my $govuser = "webdb";
-my $govpass = "wgov021";
+my $GOVDSN  = "";
+my $govuser = "";
+my $govpass = "";
 
-my $VECTORDSN  = "VECTOR";
-my $vectoruser = "SDEadmin";
-my $vectorpass = "SDEadmin";
+my $VECTORDSN  = "";
+my $vectoruser = "";
+my $vectorpass = "";
 
-my $from = 'reporter@southamptontownny.gov';
-#my $to   = 'mbaldwin@southamptontownny.gov';
-#my $to   = 'mlloyd@southamptontownny.gov';
-my $to   = 'jdaly@southamptontownny.gov';
-
-my $cc   = 'jdaly@southamptontownny.gov';
+my $from = "";
+my $to   = "";
+my $cc   = "";
 my $subject = 'Application Query: ';
 
 
@@ -220,7 +217,7 @@ sub sendLogs
 	 );
 
 
-	MIME::Lite -> send ('smtp','10.10.1.100');
+	MIME::Lite -> send ('smtp','xx.xx.xx.xx');
 	$msg -> send;
 
 	return($err);

@@ -6,14 +6,14 @@ use FileHandle;
 use warnings;
 use Error;
 
-my $from = 'errors@southamptontownny.gov';
-my $to   = 'jdaly@southamptontownny.gov';
-my $cc   = 'mbaldwin@southamptontownny.gov';
+my $from = "";
+my $to   = "";
+my $cc   = "";
 my $subject = 'Updater Error Logs: ';
 my @errors = ();
 
 
-my @files = ("C://Temp/UpdateFeatureClassErrors/log.txt","C://Temp/UpdateFGDBErrors/log.txt");
+my @files = ("");
 
 
 #######################################################################################
@@ -113,7 +113,7 @@ sub sendLogs
     );
 
 
-	MIME::Lite -> send ('smtp','10.10.1.100' );
+	MIME::Lite -> send ('smtp','xx.xx.xx.xx' );
 
 	$msg -> send;
 
@@ -178,7 +178,7 @@ sub main
     );
 
 
-	MIME::Lite -> send ('smtp','10.10.1.100' );
+	MIME::Lite -> send ('smtp','xx.xx.xx.xx' );
 
 	$msg->send;
      }

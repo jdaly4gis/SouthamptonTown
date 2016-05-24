@@ -12,15 +12,15 @@ use feature qw(switch);
 use List::Util 'max';
 
 
-my $from = 'reporter@southamptontownny.gov';
-my $to   = 'tcoady@southamptontownny.gov';
-my $cc   = 'jdaly@southamptontownny.gov';
+my $from = "";
+my $to   = "";
+my $cc   = "";
 my $subject = 'Record Update Report: ';
-my $apath = 'C:\Temp\AccelaChanges.accdb';
+my $apath = '';
 
-my $DSN  = "Govern_64";
-my $user = "webdb";
-my $pass = "wgov021";
+my $DSN  = "";
+my $user = "";
+my $pass = "";
 
 
 #######################################################################################
@@ -113,7 +113,7 @@ sub sendLogs
 	 );
 
 
-	MIME::Lite -> send ('smtp','10.10.1.100');
+	MIME::Lite -> send ('smtp','xx.xx.xx.xx');
 	$msg -> send;
 
 	return($err);

@@ -13,11 +13,11 @@ use DBD::ODBC;
 use Data::Dumper;
 use Switch;
 
-my $DSN = "GOV_DB";
-my $user = '';
-my $pass = '';
+my $DSN = "";
+my $user = "";
+my $pass = "";
 
-my $file = "C:\\Temp\\penal.txt";
+my $file = "";
 my @tables = ('tblAttachment');
 
 #######################################################################################

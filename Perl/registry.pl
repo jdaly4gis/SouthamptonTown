@@ -10,9 +10,9 @@ use DBD::ODBC;
 use Data::Dumper;
 use Switch;
 
-my $DSN  = "Offender";
-my $user = "OffenderAdmin";
-my $pass = "JustD02t!";
+my $DSN  = "";
+my $user = "";
+my $pass = "";
 my $count = 0;
 
 my %towns = (

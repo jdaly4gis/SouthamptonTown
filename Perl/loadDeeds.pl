@@ -15,19 +15,18 @@ use List::Util 'max';
 use String::Util 'trim';
 
 
-my $from = 'reporter@southamptontownny.gov';
-my $to   = 'jdaly@southamptontownny.gov';
-my $cc   = 'jdaly@southamptontownny.gov';
-#my $cc   = 'mbaldwin@southamptontownny.gov,ppobat@southamptontownny.gov';
+my $from    = "";
+my $to      = "";
+my $cc      = "";
 my $subject = 'Record Update Report: ';
-my $apath = 'C:\Temp\AccelaChanges.accdb';
-my $xlsPath = 'C:\Temp\Deeds\July2.xlsx';
+my $apath   = "";
+my $xlsPath = "";
 
-my $DSN  = "Govern_64";
-my $user = "webdb";
-my $pass = "wgov021";
+my $DSN  = "";
+my $user = "";
+my $pass = "";
 
-my $GOV = "GOV_DB";
+my $GOV = "";
 
 
 my @colnames = ('DATE','LIBER','PAGE','TAX_MAP','GRANTOR_FIRST','GRANTOR_MIDDLE','GRANTOR_LAST','GRANTOR_SUFFIX','GRANTOR_CORP','GRANTEE_FIRST','GRANTEE_MIDDLE','GRANTEE_LAST','GRANTEE_SUFFIX','GRANTEE_CORP','PROPERTY_ADDRESS','DEED_TYPE','CONS_AMOUNT','TRANS_AMOUNT','PROP_STR_NUM','PROP_STR_PRE_DIRECTION','PROP_STR_NAME','PROP_STR_TYPE','PROP_STR_POST_DIRECTION','PROP_TOWN','PROP_VILLAGE','PROP_ZIP','TXBLL_NAME','TXBLL_STR_NUM','TXBLL_STR','TXBLL_STR_TYPE','TXBLL_TOWN','TXBLL_STATE','TXBLL_ZIP','TXBLL_POSTAL_CODE','TXBLL_COUNTRY','NO_PRCLS','PRTL_PRC_CDE','PRT_4A','PRT_4B','PRT_4C','FRONT_FEET','DEPTH','H_FRONTAGE','H_DEPTH','PROP_USE','CONDOMINIUM','NEW_CONSTRUCTION','AGRICULTURAL','DISCLOSURE_NOTICE','SALE_CONTRACT_DATE','DATE_OF_SALE','FULL_SALE_PRICE','PER_PROP_VALUE','T_DESCRIPTION','ASSESSMENT_YR','TOT_ASSMNT_VALUE','PROP_CLASS','S_DESCRIPTION','LAND_USE1','LAND_USE2','BUYER_ATTRNY_NAME','BUYER_ATTRNY_PHN','BUYER_NAME','BUYER_STR_NUM','BUYER_STR_PRE_DIRECTION','BUYER_STR_NAME','BUYER_STR_TYPE','BUYER_STR_POST_DIRECTION','BUYER_STR_UNIT','BUYER_TOWN','BUYER_VILLAGE','BUYER_STATE','BUYER_ZIP','BUYER_POSTAL_CODE','BUYER_COUNTRY','GOV_TAX_MAP','STATUS','T_MESSAGE','ALL_GRANTEES','ALL_GRANTORS','GOV_OWNER', 'PARCEL_ID', 'IS_COMPANY');
@@ -985,7 +984,7 @@ sub sendLogs
 	 );
 
 
-	MIME::Lite -> send ('smtp','10.10.1.100');
+	MIME::Lite -> send ('smtp','xx.xx.xx.xx');
 	$msg -> send;
 
 	return($err);

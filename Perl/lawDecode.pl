@@ -14,8 +14,8 @@ use JSON qw(decode_json);
 use Spreadsheet::ParseXLSX;
 
 
-my $file = "C:\\Temp\\penal.json";
-my $xlsx = "C:\\Development\\Archonix\\work\\ABC_Stage2.xlsx";
+my $file = "";
+my $xlsx = "";
 
 
 #######################################################################################

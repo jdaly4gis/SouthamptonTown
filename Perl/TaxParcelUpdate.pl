@@ -12,20 +12,20 @@ use warnings;
 use MIME::Lite;
 use Switch;
 
-my $GOVDSN  = "ProfessionalServices";
-my $govuser = "SDEadmin";
-my $govpass = "SDEadmin";
+my $GOVDSN  = "";
+my $govuser = "";
+my $govpass = "";
 
-my $VECTORDSN  = "VECTOR";
-my $vectoruser = "SDEadmin";
-my $vectorpass = "SDEadmin";
+my $VECTORDSN  = "";
+my $vectoruser = "";
+my $vectorpass = "";
 
-my $from = 'reporter@southamptontownny.gov';
-my $to   = 'mbaldwin@southamptontownny.gov';
-my $cc   = 'jdaly@southamptontownny.gov';
+my $from = "";
+my $to   = "";
+my $cc   = "";
 my $subject = 'SDE Tax Parcel Update Status: ';
 
-my $program = "C:\\UpdateFeatureClass/UpdateFeatureClass.exe";
+my $program = "";
 
 
 #######################################################################################
@@ -213,7 +213,7 @@ sub sendLogs
 	 );
 
 
-	MIME::Lite -> send ('smtp','10.10.1.100');
+	MIME::Lite -> send ('smtp','xx.xx.xx.xx');
 	$msg -> send;
 
 	return($err);

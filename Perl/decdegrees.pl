@@ -11,13 +11,13 @@ use Getopt::Long;
 use FileHandle;
 use charnames ':full';
 
-my $DSN  = "Govern_64";
-my $user = "webdb";
-my $pass = "wgov021";
+my $DSN  = "";
+my $user = "";
+my $pass = "1";
 
 my $width=440;
 my $height=600;
-my $logfile = 'E:\\PerlLogs\geocode.log';
+my $logfile = 'E:\\';
 
 #######################################################################################
 #  Function: connectToSQLServer()

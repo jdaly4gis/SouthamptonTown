@@ -13,11 +13,11 @@ use warnings;
 use Switch;
 
 
-my $PSDSN  = "ProfessionalServices";
+my $PSDSN  = "";
 my $psuser = "";
 my $pspass = "";
 
-my @tables = ('EXPORT');
+my @tables = ('');
 
 #######################################################################################
 #  Function: connectToSQLServer()
